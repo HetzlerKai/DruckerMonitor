@@ -106,14 +106,14 @@ sap.ui.controller("view.Product", {
 					type: 'line'
 				},
 				title: {
-					text: 'Ink Consumption'
+					text: 'Paper Consumption'
 				},
 				xAxis: {
-					categories: ['Ink']
+					categories: ['Paper']
 				},
 				yAxis: {
 					title: {
-						text: 'Ink used'
+						text: 'Paper used'
 					}
 				},
 				series: [{
