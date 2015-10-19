@@ -100,6 +100,7 @@ sap.ui.controller("view.Product", {
 			this._SecondTabContentIsLoaded = true;
 			$(sId).append(this._$content);
 
+
 		} else if(oSelectedItem.getTooltip() === "Ink consumption of this printer"){
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
