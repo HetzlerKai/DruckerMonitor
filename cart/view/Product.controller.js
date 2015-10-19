@@ -227,5 +227,4 @@ sap.ui.controller("view.Product", {
 		this._router.navTo("cart");
 	},*/
 
-
 });
