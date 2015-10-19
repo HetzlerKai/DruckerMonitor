@@ -1,0 +1,33 @@
+[
+ {
+		"ProductId" : "id_10",
+		"Name" : "Laser Allround Pro",
+		"Category" : "PR",
+		"SupplierName" : "Canon",
+		"ShortDescription" : "Print up to 25 ppm letter and 24 ppm A4 color or monochrome, with a first-page-out-time of less than 13 seconds for monochrome and less than 15 seconds for color",
+		"Weight" : "786",
+		"status" : "",
+		"IP" : "120.10.01.202",
+		"PictureUrl" :"img/product/HT-1052.jpg"
+	}, {
+		"ProductId" : "id_11",
+		"Name" : "Laser Allround Ultimate",
+		"Category" : "PR",
+		"SupplierName" : "HP",
+		"ShortDescription" : "Print up to 25 ppm letter and 24 ppm A4 color or monochrome, with a first-page-out-time of less than 13 seconds for monochrome and less than 15 seconds for color",
+		"Weight" : "786",
+		"status" : "No ink",
+  		"IP" : "200.10.01.202",
+		"PictureUrl" :"img/product/HT-1040.jpg"
+	}, {
+		"ProductId" : "id_12",
+		"Name" : "Laser Allround X",
+		"Category" : "PR",
+		"SupplierName" : "Lexmark",
+		"ShortDescription" : "Print up to 25 ppm letter and 24 ppm A4 color or monochrome, with a first-page-out-time of less than 13 seconds for monochrome and less than 15 seconds for color",
+		"Weight" : "786",
+		"status" : "No ink",
+  		"IP" : "10.10.01.202",
+		"PictureUrl" : "img/product/All-in-One.jpg"
+	}
+]
