@@ -109,19 +109,16 @@ sap.ui.controller("view.Product", {
 					text: 'Ink Consumption'
 				},
 				xAxis: {
-					categories: ['Apples', 'Bananas', 'Oranges']
+					categories: ['Ink']
 				},
 				yAxis: {
 					title: {
-						text: 'Fruit eaten'
+						text: 'Ink used'
 					}
 				},
 				series: [{
-					name: 'Jane',
-					data: [1, 0, 4]
-				}, {
-					name: 'John',
-					data: [5, 7, 3]
+					name: 'Druker X',
+					data: [0, 2, 3, 5, 7, 9, 9, 10, 10, 13]
 				}]
 			});
 			this._SecondTabContentIsLoaded = true;
