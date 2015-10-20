@@ -12,7 +12,7 @@
 		showNavButton="{device>/isPhone}"
 		navButtonPress="handleNavButtonPress" >
 		<headerContent>
-			<Button icon="sap-icon://log"/>
+			<Button icon="sap-icon://log" press="fnOnLogOutPress"/>
 		</headerContent>
 		<footer>
 			<Toolbar>

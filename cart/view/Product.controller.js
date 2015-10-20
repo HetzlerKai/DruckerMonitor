@@ -14,6 +14,10 @@ sap.ui.controller("view.Product", {
 		oBus.subscribe("shoppingCart", "updateProduct", this.fnUpdateProduct, this);
 	},
 
+	fnOnLogOutPress: function(){
+		location.reload();
+	},
+
 	_routePatternMatched: function(oEvent) {
 		var sId = oEvent.getParameter("arguments").productId,
 			oView = this.getView(),

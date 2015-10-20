@@ -47,3 +47,24 @@
 .welcomeIconFade {
 	opacity: 0;
 }
+
+.loginDialogLabel {
+	font-size: large;
+	margin-top: 7%;
+	margin-left: 10%;
+	visibility: visible !important;
+}
+
+.loginDialogInputUserPosition{
+	margin-top: 2%;
+	margin-left: 10%;
+	visibility: visible !important;
+}
+
+.loginDialogInputPwdPosition{
+	margin-top: 2%;
+	margin-left: 10%;
+	margin-bottom: 7%;
+	visibility: visible !important;
+}
+

@@ -3,17 +3,27 @@ sap.ui.define([
 	'sap/m/routing/Router',
 	'sap/ui/model/resource/ResourceModel',
 	'sap/ui/model/odata/ODataModel',
-	'sap/ui/model/json/JSONModel'
+	'sap/ui/model/json/JSONModel',
+	'sap/m/Dialog',
+	'sap/ui/layout/Grid',
+	'sap/m/Label',
+	'sap/m/Input',
+	'sap/m/Button'
 ], function (UIComponent,
-			Router,
-			ResourceModel,
-			ODataModel,
-			JSONModel) {
+             Router,
+             ResourceModel,
+             ODataModel,
+             JSONModel,
+             Dialog,
+             Grid,
+             Label,
+             Input,
+             Button) {
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
 
 		metadata: {
-			includes : ["css/style.css"],
+			includes: ["css/style.css"],
 			routing: {
 				config: {
 					routerClass: Router,
@@ -22,7 +32,7 @@ sap.ui.define([
 					controlId: "splitApp",
 					transition: "slide",
 					bypassed: {
-						target: ["home" , "notFound"]
+						target: ["home", "notFound"]
 					}
 				},
 				routes: [
@@ -39,7 +49,7 @@ sap.ui.define([
 					{
 						pattern: "product/{productId}",
 						name: "printerDetails",
-						target: ["home" , "productView"]
+						target: ["home", "productView"]
 					}
 				],
 				targets: {
@@ -71,6 +81,64 @@ sap.ui.define([
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 
+			var oComponent = this;
+
+			var sUser, sPwd, oDialog;
+
+			var oContent = [new Label({
+				text: "Username:",
+				id: "__userLabel"
+			}).addStyleClass("loginDialogLabel"),
+				new Input({
+					liveChange: function (oEvent) {
+						sUser = oEvent.getParameter('newValue');
+					},
+					id: "__userInput",
+					width: "80%"
+				}).addStyleClass("loginDialogLabel"),
+				new Label({
+					id: "__pwdLabel",
+					text: "Password:",
+				}).addStyleClass("loginDialogLabel"),
+				new Input({
+					liveChange: function (oEvent) {
+						sPwd = oEvent.getParameter('newValue');
+					},
+					id: "__pwdInput",
+					width: "80%",
+					type: sap.m.InputType.Password
+				}).addStyleClass("loginDialogInputPwdPosition")
+			];
+
+			new Dialog({
+				title: "Login",
+				contentWidth: "13%",
+				contentHeight: "28%",
+				content: oContent,
+				beginButton: new Button({
+					text: "Log on",
+					press: function () {
+						if (sUser === "Valeri" && sPwd === "1234") {
+							oComponent.fnPress();
+							oDialog.close()
+							return;
+						}
+						new sap.m.MessageToast.show("Wrong credentials");
+					}
+				})
+			}).open();
+
+			document.getElementById('__pwdLabel').style.visibility = "hidden";
+			document.getElementById('__userInput').style.visibility = "hidden";
+			document.getElementById('__userLabel').style.visibility = "hidden";
+			document.getElementById('__pwdInput').style.visibility = "hidden";
+		},
+
+		fnPress: function () {
+			this.onOpen();
+		},
+
+		onOpen: function () {
 			//extend the router
 			this._router = this.getRouter();
 
@@ -81,10 +149,9 @@ sap.ui.define([
 
 			// initialize the router
 			this._router.initialize();
-
 		},
 
-		myNavBack : function () {
+		myNavBack: function () {
 			var oHistory = sap.ui.core.routing.History.getInstance();
 			var oPrevHash = oHistory.getPreviousHash();
 			if (oPrevHash !== undefined) {
@@ -119,7 +186,7 @@ sap.ui.define([
 			var oMockServer = new sap.ui.core.util.MockServer({
 				rootUri: sUrl
 			});
-			oMockServer.simulate(jQuery.sap.getModulePath("model/metadata", ".xml"), jQuery.sap.getModulePath("model",""));
+			oMockServer.simulate(jQuery.sap.getModulePath("model/metadata", ".xml"), jQuery.sap.getModulePath("model", ""));
 			oMockServer.start();
 			var sMsg = "Running in demo mode with mock data.";
 			sap.m.MessageToast.show(sMsg, {
