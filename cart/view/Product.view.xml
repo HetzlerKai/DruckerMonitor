@@ -50,7 +50,7 @@
 							iconColor="Positive"
 							count="{product}"
 							tooltip="General information"
-							key="Ok">
+							key="GeneralTab">
 						<VBox alignItems="Center">
 							<Image
 									src= "{path : 'PictureUrl'}"
@@ -65,14 +65,14 @@
 							iconColor="Positive"
 							count="{product}"
 							tooltip="Statistic about this printer"
-							key="Chart">
+							key="ChartStatistic">
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://line-chart"
 							iconColor="Positive"
 							count="{product}"
-							tooltip="Ink consumption of this printer"
-							key="Chart">
+							tooltip="Paper consumption of this printer"
+							key="ChartPaper">
 					</IconTabFilter>
 				</items>
 			</IconTabBar>

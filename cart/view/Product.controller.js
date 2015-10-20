@@ -73,7 +73,7 @@ sap.ui.controller("view.Product", {
 			this._SecondTabContentIsLoaded = false;
 		}
 
-		if(oSelectedItem.getTooltip() === "Statistic about this printer" && !this._SecondTabContentIsLoaded){
+		if(oSelectedItem.getTooltip() === "ChartStatistic" && !this._SecondTabContentIsLoaded){
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
 					type: 'column'
@@ -100,7 +100,7 @@ sap.ui.controller("view.Product", {
 			this._SecondTabContentIsLoaded = true;
 			$(sId).append(this._$content);
 
-		} else if(oSelectedItem.getTooltip() === "Ink consumption of this printer"){
+		} else if(oSelectedItem.getTooltip() === "ChartPaper"){
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
 					type: 'line'
