@@ -73,7 +73,7 @@ sap.ui.controller("view.Product", {
 			this._SecondTabContentIsLoaded = false;
 		}
 
-		if(oSelectedItem.getTooltip() === "ChartStatistic" && !this._SecondTabContentIsLoaded){
+		if(oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded){
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
 					type: 'column'
@@ -100,7 +100,7 @@ sap.ui.controller("view.Product", {
 			this._SecondTabContentIsLoaded = true;
 			$(sId).append(this._$content);
 
-		} else if(oSelectedItem.getTooltip() === "ChartPaper"){
+		} else if(oSelectedItem.getKey() === "ChartPaper"){
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
 					type: 'line'
