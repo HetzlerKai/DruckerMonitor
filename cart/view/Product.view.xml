@@ -3,6 +3,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.ui.layout.form"
 	xmlns:control="control"
 	xmlns:h="http://www.w3.org/1999/xhtml">
 	<Page
@@ -51,14 +52,47 @@
 							count="{product}"
 							tooltip="General information"
 							key="GeneralTab">
-						<VBox alignItems="Center">
-							<Image
-									src= "{path : 'PictureUrl'}"
-									decorative="true"
-									densityAware="false" />
-						</VBox>
-						<Text text="{ShortDescription}">
-						</Text>
+
+						<f:Form id="FormDisplay"
+								minWidth="1024"
+								maxContainerCols="2"
+								editable="false">
+                            <f:title>
+                                <core:Title text="Details" />
+                            </f:title>
+                            <f:layout>
+                                <f:ResponsiveGridLayout
+                                        labelSpanL="3"
+                                        labelSpanM="3"
+                                        emptySpanL="4"
+                                        emptySpanM="4"
+                                        columnsL="1"
+                                        columnsM="1" />
+                            </f:layout>
+                            <f:formContainers>
+                            <f:FormContainer>
+                                <f:formElements>
+                                    <f:FormElement label="Name">
+                                        <f:fields>
+                                            <Text text="Xyx Drucker" id="nameText"  />
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <f:FormElement label="Hersteller">
+                                        <f:fields>
+                                            <Text text="HP" id="HerstellerText"  />
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <f:FormElement label="Modell">
+                                        <f:fields>
+                                            <Text text="HP 554" id="ModellText"  />
+                                        </f:fields>
+                                    </f:FormElement>
+                                </f:formElements>
+                            </f:FormContainer>
+                            </f:formContainers>
+                        </f:Form>
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://bar-chart"

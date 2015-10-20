@@ -54,7 +54,7 @@ sap.ui.controller("view.Product", {
 	},
 
 	handleDownloadButtonPress : function(oEvent){
-			sap.m.MessageToast.show("Download was started");
+		sap.m.MessageToast.show("Download was started");
 	},
 
 	handleNavButtonPress : function (oEvent) {
@@ -128,103 +128,103 @@ sap.ui.controller("view.Product", {
 	}
 
 	/*handleAddButtonPress : function (oEvent) {
-		var oBundle = sap.ui.getCore().getModel("i18n").getResourceBundle();
-		var oProduct = this.getView().getBindingContext().getObject();
-		var sProdStatus = oProduct.status;
-		var that = this;
+	 var oBundle = sap.ui.getCore().getModel("i18n").getResourceBundle();
+	 var oProduct = this.getView().getBindingContext().getObject();
+	 var sProdStatus = oProduct.status;
+	 var that = this;
 
-		switch (sProdStatus) {
-		case "D":
-			//show message dialog
-			sap.m.MessageBox.show(
-				oBundle.getText("PRODUCT_STATUS_DISCONTINUED_MSG"),{
-				icon: sap.m.MessageBox.Icon.ERROR,
-				titles: oBundle.getText("PRODUCT_STATUS_DISCONTINUED_TITLE"),
-				actions: [sap.m.MessageBox.Action.CLOSE]
-		});
-			break;
-		case "O":
-			// show message dialog
-			sap.m.MessageBox.show(
-				oBundle.getText("PRODUCT_STATUS_OUT_OF_STOCK_MSG"), {
-					icon: sap.m.MessageBox.Icon.QUESTION,
-					title: oBundle.getText("PRODUCT_STATUS_OUT_OF_STOCK_TITLE"),
-					actions: [sap.m.MessageBox.Action.OK, sap.m.MessageBox.Action.CANCEL],
-					onClose: function (oAction) {
-						// order
-						if (sap.m.MessageBox.Action.OK === oAction) {
-							that._addProduct(oProduct);
-						}
-					}
-				});
-			break;
-		case "A":
-			this._addProduct(oProduct);
-			break;
-		default:
-			if (!model.Config.isMock) {
-				this._addProduct(oProduct);
-			} else {
-				// log error
-				jQuery.sap.log.error("Unhandled product status: " + oProduct.status + ", " + model.Config.isMock);
-			}
-			break;
-		}
-	},*/
+	 switch (sProdStatus) {
+	 case "D":
+	 //show message dialog
+	 sap.m.MessageBox.show(
+	 oBundle.getText("PRODUCT_STATUS_DISCONTINUED_MSG"),{
+	 icon: sap.m.MessageBox.Icon.ERROR,
+	 titles: oBundle.getText("PRODUCT_STATUS_DISCONTINUED_TITLE"),
+	 actions: [sap.m.MessageBox.Action.CLOSE]
+	 });
+	 break;
+	 case "O":
+	 // show message dialog
+	 sap.m.MessageBox.show(
+	 oBundle.getText("PRODUCT_STATUS_OUT_OF_STOCK_MSG"), {
+	 icon: sap.m.MessageBox.Icon.QUESTION,
+	 title: oBundle.getText("PRODUCT_STATUS_OUT_OF_STOCK_TITLE"),
+	 actions: [sap.m.MessageBox.Action.OK, sap.m.MessageBox.Action.CANCEL],
+	 onClose: function (oAction) {
+	 // order
+	 if (sap.m.MessageBox.Action.OK === oAction) {
+	 that._addProduct(oProduct);
+	 }
+	 }
+	 });
+	 break;
+	 case "A":
+	 this._addProduct(oProduct);
+	 break;
+	 default:
+	 if (!model.Config.isMock) {
+	 this._addProduct(oProduct);
+	 } else {
+	 // log error
+	 jQuery.sap.log.error("Unhandled product status: " + oProduct.status + ", " + model.Config.isMock);
+	 }
+	 break;
+	 }
+	 },*/
 
-/*	_addProduct: function(oProduct) {
-		var oCartModel = this.getView().getModel("cartProducts");
-		var oCartData = oCartModel.getData();
-		var aCartEntries = oCartData.entries;
+	/*	_addProduct: function(oProduct) {
+	 var oCartModel = this.getView().getModel("cartProducts");
+	 var oCartData = oCartModel.getData();
+	 var aCartEntries = oCartData.entries;
 
-		// find existing entry for product
-		var oEntry = null;
-		for (var i = 0 ; i < aCartEntries.length ; i ++) {
-			if (aCartEntries[i].ProductId === oProduct.ProductId) {
-				oEntry = aCartEntries[i];
-				break;
-			}
-		}
+	 // find existing entry for product
+	 var oEntry = null;
+	 for (var i = 0 ; i < aCartEntries.length ; i ++) {
+	 if (aCartEntries[i].ProductId === oProduct.ProductId) {
+	 oEntry = aCartEntries[i];
+	 break;
+	 }
+	 }
 
-		if (oEntry === null) {
-			// create new entry
-			oEntry = {
-				Id : jQuery.sap.uid(),
-				Quantity : 1,
-				Name : oProduct.Name,
-				ProductId : oProduct.ProductId,
-				ProductName : oProduct.Name,
-				Price : oProduct.Price,
-				SupplierName : oProduct.SupplierName,
-				Status : oProduct.status,
-				Weight : oProduct.Weight,
-				PictureUrl : oProduct.PictureUrl
-			};
-			oCartData.entries[oCartData.entries.length] = oEntry;
+	 if (oEntry === null) {
+	 // create new entry
+	 oEntry = {
+	 Id : jQuery.sap.uid(),
+	 Quantity : 1,
+	 Name : oProduct.Name,
+	 ProductId : oProduct.ProductId,
+	 ProductName : oProduct.Name,
+	 Price : oProduct.Price,
+	 SupplierName : oProduct.SupplierName,
+	 Status : oProduct.status,
+	 Weight : oProduct.Weight,
+	 PictureUrl : oProduct.PictureUrl
+	 };
+	 oCartData.entries[oCartData.entries.length] = oEntry;
 
-		} else {
-			// update existing entry
-			oEntry.Quantity += 1;
-		}
+	 } else {
+	 // update existing entry
+	 oEntry.Quantity += 1;
+	 }
 
-		// recalculate total price
-		oCartData.totalPrice = 0;
-		for (var j = 0 ; j < oCartData.entries.length ; j ++) {
-			oCartData.totalPrice += parseFloat(oCartData.entries[j].Price) * oCartData.entries[j].Quantity;
-		}
+	 // recalculate total price
+	 oCartData.totalPrice = 0;
+	 for (var j = 0 ; j < oCartData.entries.length ; j ++) {
+	 oCartData.totalPrice += parseFloat(oCartData.entries[j].Price) * oCartData.entries[j].Quantity;
+	 }
 
-		//if there is at least one entry, the edit button is shown
-		oCartData.showEditAndProceedButton = true;
+	 //if there is at least one entry, the edit button is shown
+	 oCartData.showEditAndProceedButton = true;
 
-		// update model
-		oCartModel.setData(oCartData);
+	 // update model
+	 oCartModel.setData(oCartData);
 
-		var oBundle = sap.ui.getCore().getModel("i18n").getResourceBundle();
-		sap.m.MessageToast.show(oBundle.getText("PRODUCT_MSG_ADDED_TO_CART"));
-	},
+	 var oBundle = sap.ui.getCore().getModel("i18n").getResourceBundle();
+	 sap.m.MessageToast.show(oBundle.getText("PRODUCT_MSG_ADDED_TO_CART"));
+	 },
 
-	handleCartButtonPress :  function (oEvent) {
-		this._router.navTo("cart");
-	},*/
+	 handleCartButtonPress :  function (oEvent) {
+	 this._router.navTo("cart");
+	 },*/
 
 });
