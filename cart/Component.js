@@ -5,7 +5,6 @@ sap.ui.define([
 	'sap/ui/model/odata/ODataModel',
 	'sap/ui/model/json/JSONModel',
 	'sap/m/Dialog',
-	'sap/ui/layout/Grid',
 	'sap/m/Label',
 	'sap/m/Input',
 	'sap/m/Button'
@@ -15,7 +14,6 @@ sap.ui.define([
              ODataModel,
              JSONModel,
              Dialog,
-             Grid,
              Label,
              Input,
              Button) {
@@ -80,18 +78,46 @@ sap.ui.define([
 		init: function () {
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
-
-			var oComponent = this;
-
-			var sUser, sPwd, oDialog;
-
-			var oContent = [new Label({
+			
+			this.createDialog(this).open();
+			this.setDialogContentInvisible();
+		},
+		
+		createDialog: function(oComponent){
+			return new Dialog({
+				title: "Login",
+				contentWidth: "13%",
+				contentHeight: "28%",
+				content: oComponent.getDialogContent(oComponent),
+				beginButton: new Button({
+					text: "Log on",
+					press: oComponent.handleLoginPress(oComponent)
+				})
+			});
+		},
+		
+		handleLoginPress: function(){
+			if (oComponent.__user === "Valeri" && oComponent.__pwd === "1234") {
+				// Set up the routing
+				oComponent.routerIntialize();
+							
+				oDialog.close()
+				return;
+			}
+		},
+		
+		__user: null,
+		
+		__pwd: null,
+		
+		getDialogContent: function(oComponent){
+			return [new Label({
 				text: "Username:",
 				id: "__userLabel"
 			}).addStyleClass("loginDialogLabel"),
 				new Input({
 					liveChange: function (oEvent) {
-						sUser = oEvent.getParameter('newValue');
+						oComponent.__user = oEvent.getParameter('newValue');
 					},
 					id: "__userInput",
 					width: "80%"
@@ -102,43 +128,16 @@ sap.ui.define([
 				}).addStyleClass("loginDialogLabel"),
 				new Input({
 					liveChange: function (oEvent) {
-						sPwd = oEvent.getParameter('newValue');
+						oComponent.__pwd = oEvent.getParameter('newValue');
 					},
 					id: "__pwdInput",
 					width: "80%",
 					type: sap.m.InputType.Password
 				}).addStyleClass("loginDialogInputPwdPosition")
 			];
-
-			new Dialog({
-				title: "Login",
-				contentWidth: "13%",
-				contentHeight: "28%",
-				content: oContent,
-				beginButton: new Button({
-					text: "Log on",
-					press: function () {
-						if (sUser === "Valeri" && sPwd === "1234") {
-							oComponent.fnPress();
-							oDialog.close()
-							return;
-						}
-						new sap.m.MessageToast.show("Wrong credentials");
-					}
-				})
-			}).open();
-
-			document.getElementById('__pwdLabel').style.visibility = "hidden";
-			document.getElementById('__userInput').style.visibility = "hidden";
-			document.getElementById('__userLabel').style.visibility = "hidden";
-			document.getElementById('__pwdInput').style.visibility = "hidden";
 		},
 
-		fnPress: function () {
-			this.onOpen();
-		},
-
-		onOpen: function () {
+		routerIntialize: function () {
 			//extend the router
 			this._router = this.getRouter();
 
@@ -149,6 +148,14 @@ sap.ui.define([
 
 			// initialize the router
 			this._router.initialize();
+		},
+		
+		setDialogContentInvisible: function(){
+			// Should avoid flickering while rendering
+			document.getElementById('__pwdLabel').style.visibility = "hidden";
+			document.getElementById('__userInput').style.visibility = "hidden";
+			document.getElementById('__userLabel').style.visibility = "hidden";
+			document.getElementById('__pwdInput').style.visibility = "hidden";
 		},
 
 		myNavBack: function () {
