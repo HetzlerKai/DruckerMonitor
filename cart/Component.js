@@ -79,7 +79,7 @@ sap.ui.define([
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 			
-			this.createDialog(this).open();
+			this.__dialog = this.createDialog(this).open();
 			this.setDialogContentInvisible();
 		},
 		
@@ -91,20 +91,22 @@ sap.ui.define([
 				content: oComponent.getDialogContent(oComponent),
 				beginButton: new Button({
 					text: "Log on",
-					press: oComponent.handleLoginPress(oComponent)
+					press: function(){oComponent.handleLoginPress()}
 				})
 			});
 		},
 		
 		handleLoginPress: function(){
-			if (oComponent.__user === "Valeri" && oComponent.__pwd === "1234") {
+			if (this.__user === "Valeri" && this.__pwd === "1234") {
 				// Set up the routing
-				oComponent.routerIntialize();
-							
-				oDialog.close()
+				this.routerIntialize();
+
+				this.__dialog.close()
 				return;
 			}
 		},
+
+		__dialog: null,
 		
 		__user: null,
 		
