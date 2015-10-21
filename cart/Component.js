@@ -113,7 +113,8 @@ sap.ui.define([
 		__pwd: null,
 		
 		getDialogContent: function(oComponent){
-			return [new Label({
+			return [
+				new Label({
 				text: "Username:",
 				id: "__userLabel"
 			}).addStyleClass("loginDialogLabel"),
