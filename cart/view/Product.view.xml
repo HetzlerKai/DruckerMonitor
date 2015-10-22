@@ -108,6 +108,41 @@
 							tooltip="Paper consumption of this printer"
 							key="ChartPaper">
 					</IconTabFilter>
+					<IconTabFilter
+							icon="sap-icon://legend"
+							iconColor="Positive"
+							count="{product}"
+							tooltip="History about this printer"
+							key="History">
+
+
+
+                        <Table>
+                            <columns>
+                                <Column width="10%"> <Text text="Datum" /> </Column>
+                                <Column width="10%"> <Text text="Patrone" /> </Column>
+                                <Column width="76%"> <Text text="Kommentar" /> </Column>
+                                <Column width="4%"> <core:Icon src="sap-icon://add" press="handlePressAddTableEntry"></core:Icon> </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Label text="15.10.15"></Label>
+                                        <Label text="Cyan"></Label>
+                                        <Label text="Cyan Patrone gewechselt und Filter getauscht"></Label>
+                                    </cells>
+                                </ColumnListItem>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Label text="15.10.16"></Label>
+                                        <Label text="Magenta"></Label>
+                                        <Label text="Magenta Patrone gewechselt"></Label>
+                                    </cells>
+                                </ColumnListItem>
+
+                            </items>
+                        </Table>
+					</IconTabFilter>
 				</items>
 			</IconTabBar>
 		</content>

@@ -1,6 +1,7 @@
 jQuery.sap.require("util.Formatter");
 jQuery.sap.require("sap.m.MessageToast");
 jQuery.sap.require("sap.m.MessageBox");
+jQuery.sap.require("sap.m.Dialog");
 
 sap.ui.controller("view.Product", {
 
@@ -129,7 +130,26 @@ sap.ui.controller("view.Product", {
 			$(sId).append(this._$content);
 		}
 
-	}
+	},
+
+	handlePressAddTableEntry: function(){
+		var oDialog;
+
+		oDialog = this.createAddEntryDialog();
+		oDialog.open();
+	},
+
+	createAddEntryDialog: function(){
+		var oDialog;
+
+		oDialog = null; // build sap.m.Dialog here
+
+		return oDialog;
+	},
+
+    handleNewEntry: function(){
+
+    }
 
 	/*handleAddButtonPress : function (oEvent) {
 	 var oBundle = sap.ui.getCore().getModel("i18n").getResourceBundle();
