@@ -97,7 +97,7 @@ sap.ui.define([
 		},
 		
 		handleLoginPress: function(){
-			if (this.__user === "Valeri" && this.__pwd === "1234") {
+			if (this.__user === "Valeri" && this.__pwd === "1234" || this.__user === "Kai" && this.__pwd === "1234") {
 				// Set up the routing
 				this.routerIntialize();
 
