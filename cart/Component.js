@@ -135,7 +135,7 @@ sap.ui.define([
 					},
 					id: "__userInput",
 					width: "80%"
-				}).addStyleClass("loginDialogLabel"),
+				}).addStyleClass("loginDialogInputUserPosition"),
 				new Label({
 					id: "__pwdLabel",
 					text: "Password:",
