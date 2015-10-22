@@ -91,7 +91,7 @@ sap.ui.define([
 				content: oComponent.getDialogContent(oComponent),
 				beginButton: new Button({
 					text: "Log on",
-					press: function(){oComponent.handleLoginPress()}
+					press: jQuery.proxy(oComponent.handleLoginPress, oComponent)
 				})
 			});
 		},
@@ -103,6 +103,9 @@ sap.ui.define([
 
 				this.__dialog.close()
 				return;
+			}
+			else{
+
 			}
 		},
 
