@@ -90,14 +90,18 @@ sap.ui.define([
 				contentHeight: "28%",
 				content: oComponent.getDialogContent(oComponent),
 				beginButton: new Button({
+					id: "__login",
 					text: "Log on",
 					press: jQuery.proxy(oComponent.handleLoginPress, oComponent)
 				})
 			});
+			sap.ui.getCore().byId('__userInput').$().blur();
 		},
 		
 		handleLoginPress: function(){
-			if (this.__user === "Valeri" && this.__pwd === "1234" || this.__user === "Kai" && this.__pwd === "1234") {
+			if (this.__user === "test" && !this.__pwd) {
+				sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState.None);
+				sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState.None);
 				// Set up the routing
 				this.routerIntialize();
 
@@ -105,7 +109,8 @@ sap.ui.define([
 				return;
 			}
 			else{
-
+				sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState.Error);
+				sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState.Error);
 			}
 		},
 
