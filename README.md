@@ -7,4 +7,4 @@ This project shows a possibility how to implement an application for printer mon
 
 For NON-COMMERCIAL usage
 ==================
-On behalf of HSS-Wiesloch 2015
+On behalf of HSS-Wiesloch 2015©
