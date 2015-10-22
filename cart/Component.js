@@ -100,18 +100,21 @@ sap.ui.define([
 		
 		handleLoginPress: function(){
 			if (this.__user === "test" && !this.__pwd) {
-				sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState.None);
-				sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState.None);
+				this.handleWrongCredentials("None");
 				// Set up the routing
 				this.routerIntialize();
 
 				this.__dialog.close()
 				return;
 			}
-			else{
-				sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState.Error);
-				sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState.Error);
-			}
+
+			this.handleWrongCredentials("Error");
+
+		},
+
+		handleWrongCredentials: function(sState){
+			sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState[sState]);
+			sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState[sState]);
 		},
 
 		__dialog: null,
@@ -206,10 +209,10 @@ sap.ui.define([
 			});
 			oMockServer.simulate(jQuery.sap.getModulePath("model/metadata", ".xml"), jQuery.sap.getModulePath("model", ""));
 			oMockServer.start();
-			var sMsg = "Running in demo mode with mock data.";
-			sap.m.MessageToast.show(sMsg, {
-				duration: 2000
-			});
+			//var sMsg = "Running in demo mode with mock data.";
+			//sap.m.MessageToast.show(sMsg, {
+			//	duration: 4000
+			//});
 
 			var oModel = new ODataModel(sUrl, true, model.Config.getUser(), model.Config.getPwd());
 			//if we do not set this property to false, this would lead to a synchronized request which blocks the ui

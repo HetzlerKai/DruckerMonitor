@@ -106,7 +106,7 @@
 							key="ChartPaper">
 					</IconTabFilter>
 					<IconTabFilter
-							icon="sap-icon://legend"
+							icon="sap-icon://history"
 							iconColor="Positive"
 							count="{product}"
 							tooltip="History about this printer"
