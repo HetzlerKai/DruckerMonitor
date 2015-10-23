@@ -133,10 +133,63 @@ sap.ui.controller("view.Product", {
 	},
 
 	handlePressAddTableEntry: function(){
-		var oDialog;
+		var that = this;
+		if (!this._orderDialog) {
 
-		oDialog = this.createAddEntryDialog();
-		oDialog.open();
+			// create busy dialog
+			var oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			this._orderBusyDialog = new sap.m.BusyDialog({
+				title: oBundle.getText("CART_BUSY_DIALOG_TITLE"),
+				text: oBundle.getText("CART_BUSY_DIALOG_TEXT"),
+				showCancelButton: false,
+				close: function () {
+					sap.m.MessageBox.show(
+						oBundle.getText("CART_ORDER_SUCCESS_MSG"), {
+							title: oBundle.getText("CART_ORDER_SUCCESS_TITLE")
+						});
+				}
+			});
+
+			// create order dialog
+			var oInputView = sap.ui.view({
+				id: "Order",
+				viewName: "view.AddEntryDialog",
+				type: "XML"
+			});
+			this._orderDialog = new Dialog({
+				title: oBundle.getText("CART_ORDER_DIALOG_TITLE"),
+				stretch: Device.system.phone,
+				content: [
+					oInputView
+				],
+				leftButton: new Button({
+					text: oBundle.getText("CART_ORDER_DIALOG_CONFIRM_ACTION"),
+					type: "Accept",
+					press: function () {
+						var bInputValid = oInputView.getController()._checkInput();
+						if (bInputValid) {
+							that._orderDialog.close();
+							var msg = "Your order was placed.";
+							that._resetCart();
+							MessageToast.show(msg, {});
+						}
+					}
+				}),
+				rightButton: new Button({
+					text: oBundle.getText("DIALOG_CANCEL_ACTION"),
+					press: function () {
+						that._orderDialog.close();
+					}
+				})
+			});
+
+			this.getView().addDependent(this._orderDialog);
+		}
+
+		//var oDialog;
+		//
+		//oDialog = this.createAddEntryDialog();
+		//oDialog.open();
 	},
 
 	createAddEntryDialog: function(){

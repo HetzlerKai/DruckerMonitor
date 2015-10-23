@@ -99,7 +99,7 @@ sap.ui.define([
 		},
 		
 		handleLoginPress: function(){
-			if (this.__user === "test" && !this.__pwd) {
+			if (!this.__user && !this.__pwd) {
 				this.handleWrongCredentials("None");
 				// Set up the routing
 				this.routerIntialize();
