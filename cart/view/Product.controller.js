@@ -131,22 +131,13 @@ sap.ui.controller("view.Product", {
 		}
 
 	},
-	_orderDialog: null,
+    _addEntryDialog: null,
 
 	_orderBusyDialog: null,
 
 	handlePressAddTableEntry: function(){
 		var that = this;
-		if (!this._orderDialog) {
-
-			// create busy dialog
-			this._orderBusyDialog = new sap.m.BusyDialog({
-				title: "busy dialog title",
-				text: "busy dialog text",
-				showCancelButton: false,
-				close: function () {
-				}
-			});
+		if (!this._addEntryDialog) {
 
 			// create order dialog
 			var oInputView = sap.ui.view({
@@ -154,29 +145,30 @@ sap.ui.controller("view.Product", {
 				viewName: "view.AddEntryDialog",
 				type: "XML"
 			});
-			this._orderDialog = new sap.m.Dialog({
+			this._addEntryDialog = new sap.m.Dialog({
 				title: "dialog title",
 				//stretch: Device.system.phone,
-				content: [
-					oInputView
-				],
+				content: [oInputView],
 				leftButton: new sap.m.Button({
-					text: "left button",
+					text: "Sichern",
 					type: "Accept",
 					press: function () {
-					}
+                        that.handleNewEntry();
+                        that._addEntryDialog.close();
+                    }
 				}),
 				rightButton: new sap.m.Button({
-					text: "Right Button",
+					text: "Abbrechen",
 					press: function () {
+                        that._addEntryDialog.close();
 					}
 				})
 			});
 
-			this.getView().addDependent(this._orderDialog);
+			this.getView().addDependent(this._addEntryDialog);
 		}
 
-		this._orderDialog.open();
+		this._addEntryDialog.open();
 	},
 
 	createAddEntryDialog: function(){
