@@ -135,12 +135,15 @@ sap.ui.controller("view.Product", {
 
 	_orderBusyDialog: null,
 
+	_dialogView: null,
+
 	handlePressAddTableEntry: function(){
 		var that = this;
 		if (!this._addEntryDialog) {
-
+			var bundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
+			
 			// create order dialog
-			var oInputView = sap.ui.view({
+			this._dialogView= sap.ui.view({
 				id: "AddEntryDialog",
 				viewName: "view.AddEntryDialog",
 				type: "XML"
@@ -148,9 +151,11 @@ sap.ui.controller("view.Product", {
 			this._addEntryDialog = new sap.m.Dialog({
 				title: "dialog title",
 				//stretch: Device.system.phone,
-				content: [oInputView],
+				content: [
+					this._dialogView
+				],
 				leftButton: new sap.m.Button({
-					text: "Sichern",
+					text: bundle.getText('ADD_ENTRY_DIALOG_SAVE_BUTTON_TITLE'),
 					type: "Accept",
 					press: function () {
                         that.handleNewEntry();
@@ -158,17 +163,22 @@ sap.ui.controller("view.Product", {
                     }
 				}),
 				rightButton: new sap.m.Button({
-					text: "Abbrechen",
+					text:  bundle.getText('ADD_ENTRY_DIALOG_CANCEL_BUTTON_TITLE'),
 					press: function () {
-                        that._addEntryDialog.close();
+						that._addEntryDialog.close();
 					}
 				})
 			});
 
 			this.getView().addDependent(this._addEntryDialog);
+			this.setCurrentDateToDatePicker();
 		}
 
 		this._addEntryDialog.open();
+	},
+
+	setCurrentDateToDatePicker: function(){
+		sap.ui.getCore().byId(this._dialogView.getId() + '--DP1').setDateValue(new Date());
 	},
 
 	createAddEntryDialog: function(){
