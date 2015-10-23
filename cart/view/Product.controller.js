@@ -131,54 +131,44 @@ sap.ui.controller("view.Product", {
 		}
 
 	},
+	_orderDialog: null,
+
+	_orderBusyDialog: null,
 
 	handlePressAddTableEntry: function(){
 		var that = this;
 		if (!this._orderDialog) {
 
 			// create busy dialog
-			var oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			this._orderBusyDialog = new sap.m.BusyDialog({
-				title: oBundle.getText("CART_BUSY_DIALOG_TITLE"),
-				text: oBundle.getText("CART_BUSY_DIALOG_TEXT"),
+				title: "busy dialog title",
+				text: "busy dialog text",
 				showCancelButton: false,
 				close: function () {
-					sap.m.MessageBox.show(
-						oBundle.getText("CART_ORDER_SUCCESS_MSG"), {
-							title: oBundle.getText("CART_ORDER_SUCCESS_TITLE")
-						});
 				}
 			});
 
 			// create order dialog
 			var oInputView = sap.ui.view({
-				id: "Order",
+				id: "AddEntryDialog",
 				viewName: "view.AddEntryDialog",
 				type: "XML"
 			});
-			this._orderDialog = new Dialog({
-				title: oBundle.getText("CART_ORDER_DIALOG_TITLE"),
-				stretch: Device.system.phone,
+			this._orderDialog = new sap.m.Dialog({
+				title: "dialog title",
+				//stretch: Device.system.phone,
 				content: [
 					oInputView
 				],
-				leftButton: new Button({
-					text: oBundle.getText("CART_ORDER_DIALOG_CONFIRM_ACTION"),
+				leftButton: new sap.m.Button({
+					text: "left button",
 					type: "Accept",
 					press: function () {
-						var bInputValid = oInputView.getController()._checkInput();
-						if (bInputValid) {
-							that._orderDialog.close();
-							var msg = "Your order was placed.";
-							that._resetCart();
-							MessageToast.show(msg, {});
-						}
 					}
 				}),
-				rightButton: new Button({
-					text: oBundle.getText("DIALOG_CANCEL_ACTION"),
+				rightButton: new sap.m.Button({
+					text: "Right Button",
 					press: function () {
-						that._orderDialog.close();
 					}
 				})
 			});
@@ -186,10 +176,7 @@ sap.ui.controller("view.Product", {
 			this.getView().addDependent(this._orderDialog);
 		}
 
-		//var oDialog;
-		//
-		//oDialog = this.createAddEntryDialog();
-		//oDialog.open();
+		this._orderDialog.open();
 	},
 
 	createAddEntryDialog: function(){
