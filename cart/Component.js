@@ -90,20 +90,31 @@ sap.ui.define([
 				contentHeight: "28%",
 				content: oComponent.getDialogContent(oComponent),
 				beginButton: new Button({
+					id: "__login",
 					text: "Log on",
-					press: function(){oComponent.handleLoginPress()}
+					press: jQuery.proxy(oComponent.handleLoginPress, oComponent)
 				})
 			});
+			sap.ui.getCore().byId('__userInput').$().blur();
 		},
 		
 		handleLoginPress: function(){
-			if (this.__user === "Valeri" && this.__pwd === "1234" || this.__user === "Kai" && this.__pwd === "1234") {
+			if (this.__user === "test" && !this.__pwd) {
+				this.handleWrongCredentials("None");
 				// Set up the routing
 				this.routerIntialize();
 
 				this.__dialog.close()
 				return;
 			}
+
+			this.handleWrongCredentials("Error");
+
+		},
+
+		handleWrongCredentials: function(sState){
+			sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState[sState]);
+			sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState[sState]);
 		},
 
 		__dialog: null,
@@ -124,7 +135,7 @@ sap.ui.define([
 					},
 					id: "__userInput",
 					width: "80%"
-				}).addStyleClass("loginDialogLabel"),
+				}).addStyleClass("loginDialogInputUserPosition"),
 				new Label({
 					id: "__pwdLabel",
 					text: "Password:",
@@ -198,10 +209,10 @@ sap.ui.define([
 			});
 			oMockServer.simulate(jQuery.sap.getModulePath("model/metadata", ".xml"), jQuery.sap.getModulePath("model", ""));
 			oMockServer.start();
-			var sMsg = "Running in demo mode with mock data.";
-			sap.m.MessageToast.show(sMsg, {
-				duration: 2000
-			});
+			//var sMsg = "Running in demo mode with mock data.";
+			//sap.m.MessageToast.show(sMsg, {
+			//	duration: 4000
+			//});
 
 			var oModel = new ODataModel(sUrl, true, model.Config.getUser(), model.Config.getPwd());
 			//if we do not set this property to false, this would lead to a synchronized request which blocks the ui
