@@ -82,8 +82,12 @@ sap.ui.define([
 			this.__dialog = this.createDialog(this).open();
 			this.setDialogContentInvisible();
 		},
+
+		_resourceBundle: null,
 		
 		createDialog: function(oComponent){
+			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
+
 			return new Dialog({
 				title: "Login",
 				contentWidth: "13%",
