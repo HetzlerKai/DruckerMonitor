@@ -80,6 +80,8 @@ sap.ui.define([
 			
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
+
+			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
 			
 			this.__dialog = this.createDialog(this).open();
 			this.setDialogContentInvisible();
@@ -103,8 +105,6 @@ sap.ui.define([
 		_resourceBundle: null,
 		
 		createDialog: function(oComponent){
-			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
-
 			return new Dialog({
 				title: "Login",
 				contentWidth: "13%",
@@ -204,6 +204,9 @@ sap.ui.define([
 		},
 
 		createContent: function () {
+
+			this.__dialog = this.createDialog(this).open();
+			this.setDialogContentInvisible();
 
 			// set i18n model
 			var oI18nModel = new ResourceModel({
