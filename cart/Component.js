@@ -76,11 +76,28 @@ sap.ui.define([
 		},
 
 		init: function () {
+			var oJSONModel = new JSONModel();
+			
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 			
 			this.__dialog = this.createDialog(this).open();
 			this.setDialogContentInvisible();
+			
+			jQuery.ajax({
+		        type : 'POST',
+		        dataType: "json",
+		        url : 'php/services/ajax.php',
+		        data: {
+		            post: 'login',
+		            name: 'admin',
+		            passwort: 'admin'
+		        },
+		        success: function(response){
+		            oDruckerdaten = response;
+		            oJSONModel.setData(oDruckerdaten);
+		        }
+		    });
 		},
 
 		_resourceBundle: null,
