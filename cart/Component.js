@@ -77,6 +77,7 @@ sap.ui.define([
 
 		init: function () {
 			var oJSONModel = new JSONModel();
+			sap.ui.getCore().setModel(oJSONModel, "DruckerData");
 			
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
@@ -117,32 +118,32 @@ sap.ui.define([
 		            passwort: this.__pwd
 		        },
 		        success: function(response){
-		        	if(response === false){
+		        	var oDruckerdaten;
+		        	
+		        	if(!response){
 		        		this.handleWrongCredentials("Error");
 						return;
 		        	}
-		            oDruckerdaten = response;
-		            oJSONModel.setData(oDruckerdaten);
+		            oDruckerdaten = response;           
 		            
-					this.handleWrongCredentials("None");
-					// Set up the routing
-					this.routerIntialize();
+		            // Check if an Array has values
+		            if(oDruckerdaten instanceof Array && oDruckerdaten.length > 0)){
+		            	
+		            	sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
+		            	
+						this.handleWrongCredentials("None");
+						// Set up the routing
+						this.routerIntialize();
 
-					this.__dialog.close();
+						this.__dialog.close();
+						
+		            } else {
+		            	sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + oDruckerdaten);
+		            }
+		            
 		        }
 		    });
 			
-//			if (!this.__user && !this.__pwd) {
-//				this.handleWrongCredentials("None");
-//				// Set up the routing
-//				this.routerIntialize();
-//
-//				this.__dialog.close()
-//				return;
-//			}
-//
-//			this.handleWrongCredentials("Error");
-
 		},
 
 		handleWrongCredentials: function(sState){
