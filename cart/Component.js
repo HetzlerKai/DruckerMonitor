@@ -108,6 +108,8 @@ sap.ui.define([
 
 		handleLoginPress: function () {
 
+			var that = this;
+			
 			jQuery.ajax({
 				type: 'POST',
 				dataType: "json",
@@ -121,7 +123,7 @@ sap.ui.define([
 					var oDruckerdaten;
 
 					if (!response) {
-						this.handleWrongCredentials("Error");
+						that.handleWrongCredentials("Error");
 						return;
 					}
 					oDruckerdaten = response;
@@ -131,14 +133,13 @@ sap.ui.define([
 
 						sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
 
-						this.handleWrongCredentials("None");
+						that.handleWrongCredentials("None");
 						// Set up the routing
-						this.routerIntialize();
+						that.routerIntialize();
 
-						this.__dialog.close();
+						that.__dialog.close();
 
-					}	else
-					{
+					} else {
 						sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + oDruckerdaten);
 					}
 
