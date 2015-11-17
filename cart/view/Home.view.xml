@@ -43,20 +43,16 @@
 				select="handleProductListSelect"
 				noDataText="{i18n>HOME_NO_DATA}"
 				items="{
-					path : '/Products',
-					sorter : {
-						path : 'Name',
-						descending : false
-					}
+					path : 'DruckerData>/'
 				}">
 				<items>
 					<ObjectListItem
 						type="{device>/listItemType}"
-						title="{Name}"
+						title="{DruckerData>/name}"
 						press="handleProductListItemPress"
 						iconDensityAware="false">
 						<attributes>
-							<ObjectAttribute text="{IP}"/>
+							<ObjectAttribute text="{DruckerData>/ip}"/>
 						</attributes>
 						<firstStatus>
 							<ObjectStatus
