@@ -83,21 +83,7 @@ sap.ui.define([
 			
 			this.__dialog = this.createDialog(this).open();
 			this.setDialogContentInvisible();
-			
-			jQuery.ajax({
-		        type : 'POST',
-		        dataType: "json",
-		        url : 'php/services/ajax.php',
-		        data: {
-		            post: 'login',
-		            name: 'admin',
-		            passwort: 'admin'
-		        },
-		        success: function(response){
-		            oDruckerdaten = response;
-		            oJSONModel.setData(oDruckerdaten);
-		        }
-		    });
+
 		},
 
 		_resourceBundle: null,
@@ -120,16 +106,42 @@ sap.ui.define([
 		},
 		
 		handleLoginPress: function(){
-			if (!this.__user && !this.__pwd) {
-				this.handleWrongCredentials("None");
-				// Set up the routing
-				this.routerIntialize();
+			
+			jQuery.ajax({
+		        type : 'POST',
+		        dataType: "json",
+		        url : 'php/services/ajax.php',
+		        data: {
+		            post: 'login',
+		            name: this.__user,
+		            passwort: this.__pwd
+		        },
+		        success: function(response){
+		        	if(response === false){
+		        		this.handleWrongCredentials("Error");
+						return;
+		        	}
+		            oDruckerdaten = response;
+		            oJSONModel.setData(oDruckerdaten);
+		            
+					this.handleWrongCredentials("None");
+					// Set up the routing
+					this.routerIntialize();
 
-				this.__dialog.close()
-				return;
-			}
-
-			this.handleWrongCredentials("Error");
+					this.__dialog.close();
+		        }
+		    });
+			
+//			if (!this.__user && !this.__pwd) {
+//				this.handleWrongCredentials("None");
+//				// Set up the routing
+//				this.routerIntialize();
+//
+//				this.__dialog.close()
+//				return;
+//			}
+//
+//			this.handleWrongCredentials("Error");
 
 		},
 
