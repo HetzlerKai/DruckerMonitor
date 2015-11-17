@@ -78,20 +78,20 @@ sap.ui.define([
 		init: function () {
 			var oJSONModel = new JSONModel();
 			sap.ui.getCore().setModel(oJSONModel, "DruckerData");
-			
+
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 
 			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
-			
+
 			this.__dialog = this.createDialog(this).open();
 			this.setDialogContentInvisible();
 
 		},
 
 		_resourceBundle: null,
-		
-		createDialog: function(oComponent){
+
+		createDialog: function (oComponent) {
 			return new Dialog({
 				title: "Login",
 				contentWidth: "13%",
@@ -105,64 +105,68 @@ sap.ui.define([
 			});
 			sap.ui.getCore().byId('__userInput').$().blur();
 		},
-		
-		handleLoginPress: function(){
-			
+
+		handleLoginPress: function () {
+
 			jQuery.ajax({
-		        type : 'POST',
-		        dataType: "json",
-		        url : 'php/services/ajax.php',
-		        data: {
-		            post: 'login',
-		            name: this.__user,
-		            passwort: this.__pwd
-		        },
-		        success: function(response){
-		        	var oDruckerdaten;
-		        	
-		        	if(!response){
-		        		this.handleWrongCredentials("Error");
+				type: 'POST',
+				dataType: "json",
+				url: 'php/services/ajax.php',
+				data: {
+					post: 'login',
+					name: this.__user,
+					passwort: this.__pwd
+				},
+				success: function (response) {
+					var oDruckerdaten;
+
+					if (!response) {
+						this.handleWrongCredentials("Error");
 						return;
-		        	}
-		            oDruckerdaten = response;           
-		            
-		            // Check if an Array has values
-		            if(oDruckerdaten instanceof Array && oDruckerdaten.length > 0)){
-		            	
-		            	sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
-		            	
+					}
+					oDruckerdaten = response;
+
+					// Check if an Array has values
+					if (oDruckerdaten instanceof Array && oDruckerdaten.length > 0){
+
+						sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
+
 						this.handleWrongCredentials("None");
 						// Set up the routing
 						this.routerIntialize();
 
 						this.__dialog.close();
-						
-		            } else {
-		            	sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + oDruckerdaten);
-		            }
-		            
-		        }
-		    });
-			
+
+					}	else
+					{
+						sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + oDruckerdaten);
+					}
+
+				},
+				error: function(oEvent){
+					debugger;
+				}
+			});
+
 		},
 
-		handleWrongCredentials: function(sState){
+		handleWrongCredentials: function (sState) {
 			sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState[sState]);
 			sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState[sState]);
 		},
 
 		__dialog: null,
-		
+
 		__user: null,
-		
+
 		__pwd: null,
-		
-		getDialogContent: function(oComponent){
+
+		getDialogContent: function (oComponent) {
 			return [
 				new Label({
-				text: "Username:",
-				id: "__userLabel"
-			}).addStyleClass("loginDialogLabel"),
+					text: "Username:",
+					id: "__userLabel"
+				}).addStyleClass("loginDialogLabel"),
 				new Input({
 					liveChange: function (oEvent) {
 						oComponent.__user = oEvent.getParameter('newValue');
@@ -197,8 +201,8 @@ sap.ui.define([
 			// initialize the router
 			this._router.initialize();
 		},
-		
-		setDialogContentInvisible: function(){
+
+		setDialogContentInvisible: function () {
 			// Should avoid flickering while rendering
 			document.getElementById('__pwdLabel').style.visibility = "hidden";
 			document.getElementById('__userInput').style.visibility = "hidden";
@@ -218,8 +222,8 @@ sap.ui.define([
 
 		createContent: function () {
 
-			this.__dialog = this.createDialog(this).open();
-			this.setDialogContentInvisible();
+			//this.__dialog = this.createDialog(this).open();
+			//this.setDialogContentInvisible();
 
 			// set i18n model
 			var oI18nModel = new ResourceModel({
