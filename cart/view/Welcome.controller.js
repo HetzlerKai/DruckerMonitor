@@ -38,5 +38,9 @@ sap.ui.controller("view.Welcome", {
 
 	onExit: function () {
 		clearTimeout(this._iDelay);
+	},
+	
+	onLogoutPressed: function () {
+		location.reload();
 	}
 });
