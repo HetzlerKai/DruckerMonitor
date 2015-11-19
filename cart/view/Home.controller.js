@@ -1,5 +1,4 @@
 jQuery.sap.require("util.Formatter");
-jQuery.sap.require("model.Config");
 
 sap.ui.controller("view.Home", {
 
@@ -66,12 +65,6 @@ sap.ui.controller("view.Home", {
 		oList.attachEventOnce("updateFinished", function() {oList.setNoDataText(sOldNoDataText);});
 	},
 
-/*	handleCategoryListItemPress : function (oEvent) {
-		var oBindContext = oEvent.getSource().getBindingContext();
-		var oModel = oBindContext.getModel();
-		var sCategoryId = oModel.getData(oBindContext.getPath()).Category;
-		this._router.navTo("category", {id: sCategoryId});
-	},*/
 	
 	handleProductListSelect: function (oEvent) {
 		var oItem = oEvent.getParameter("listItem");
@@ -84,10 +77,10 @@ sap.ui.controller("view.Home", {
 	},
 	
 	_showProduct: function (oItem) {
-		var oBindContext = oItem.getBindingContext();
+		var oBindContext = oItem.getBindingContext("DruckerData");
 		var oModel = oBindContext.getModel();
 		var sId = oModel.getData(oBindContext.getPath()).ProductId;
-		this._router.navTo("printerDetails", {productId: sId}, !sap.ui.Device.system.phone);
+		this._router.navTo("printerDetails", {id: sId}, !sap.ui.Device.system.phone);
 	}
 	
 /*	handleCartButtonPress :  function (oEvent) {

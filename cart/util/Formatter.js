@@ -1,5 +1,4 @@
 jQuery.sap.declare("util.Formatter");
-jQuery.sap.require("model.Config");
 
 util.Formatter = {
 		

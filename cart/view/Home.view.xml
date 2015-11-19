@@ -48,11 +48,11 @@
 				<items>
 					<ObjectListItem
 						type="{device>/listItemType}"
-						title="{DruckerData>/name}"
+						title="{DruckerData>name}"
 						press="handleProductListItemPress"
 						iconDensityAware="false">
 						<attributes>
-							<ObjectAttribute text="{DruckerData>/ip}"/>
+							<ObjectAttribute text="{DruckerData>ip}"/>
 						</attributes>
 						<firstStatus>
 							<ObjectStatus
@@ -68,32 +68,6 @@
 					</ObjectListItem>
 				</items>
 			</List>
-			<!-- This list shows the product categories -->
-			<!--<List
-				id="categoryList"
-				headerText="{i18n>HOME_CATEGORY_LIST_HEADER}"
-				mode="None"
-				items="{
-					path : '/ProductCategories',
-					sorter : {
-						path : 'CategoryName',
-						descending: false
-					}
-				}">
-				<items>
-					<StandardListItem
-						title="{CategoryName}"
-						type="Active"
-						counter="{NumberOfProducts}"
-						press="handleCategoryListItemPress" >
-						<customData>
-							<core:CustomData
-								key="id"
-								value="{Category}" />
-						</customData>
-					</StandardListItem>
-				</items>
-			</List>-->
 		</content>
 	</Page>
 </mvc:View>

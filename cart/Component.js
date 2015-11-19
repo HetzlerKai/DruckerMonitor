@@ -76,22 +76,15 @@ sap.ui.define([
 		},
 
 		init: function () {
-			var oJSONModel = new JSONModel();
-			this.setModel(oJSONModel, "DruckerData");
-
-			// call overwritten init (calls createContent)
+						// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 
 			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
-
-			this.__dialog = this.createDialog(this).open();
-			this.setDialogContentInvisible();
-
 		},
 
 		_resourceBundle: null,
 
-		createDialog: function (oComponent) {
+		createDialog: function (oComponent, oView) {
 			return new Dialog({
 				title: "Login",
 				contentWidth: "13%",
@@ -100,13 +93,13 @@ sap.ui.define([
 				beginButton: new Button({
 					id: "__login",
 					text: "Log on",
-					press: jQuery.proxy(oComponent.handleLoginPress, oComponent)
+					press: jQuery.proxy(oComponent.handleLoginPress, oComponent, oView)
 				})
 			});
 			sap.ui.getCore().byId('__userInput').$().blur();
 		},
 
-		handleLoginPress: function () {
+		handleLoginPress: function (oView) {
 
 			var that = this;
 			
@@ -131,8 +124,7 @@ sap.ui.define([
 					// Check if an Array has values
 					if (oDruckerdaten instanceof Array && oDruckerdaten.length > 0){
 
-						that.getModel("DruckerData").setData(oDruckerdaten);
-
+						oView.getModel("DruckerData").setData(oDruckerdaten);
 						that.handleWrongCredentials("None");
 						// Set up the routing
 						that.routerIntialize();
@@ -222,14 +214,13 @@ sap.ui.define([
 		},
 
 		createContent: function () {
-
-			//this.__dialog = this.createDialog(this).open();
-			//this.setDialogContentInvisible();
+			var oJSONModel = new JSONModel();
 
 			// set i18n model
 			var oI18nModel = new ResourceModel({
 				bundleName: "sap.ui.demo.cart.i18n.appTexts"
 			});
+
 			sap.ui.getCore().setModel(oI18nModel, "i18n");
 
 			// create root view
@@ -238,29 +229,13 @@ sap.ui.define([
 				type: "XML"
 			});
 
+			oView.setModel(oJSONModel, "DruckerData");
+
+			this.__dialog = this.createDialog(this, oView).open();
+
+			this.setDialogContentInvisible();
+
 			oView.setModel(oI18nModel, "i18n");
-
-			jQuery.sap.require("model.Config");
-			// set data model
-			var sUrl = model.Config.getServiceUrl();
-
-			// start mock server
-			jQuery.sap.require("sap.ui.core.util.MockServer");
-			var oMockServer = new sap.ui.core.util.MockServer({
-				rootUri: sUrl
-			});
-			oMockServer.simulate(jQuery.sap.getModulePath("model/metadata", ".xml"), jQuery.sap.getModulePath("model", ""));
-			oMockServer.start();
-			//var sMsg = "Running in demo mode with mock data.";
-			//sap.m.MessageToast.show(sMsg, {
-			//	duration: 4000
-			//});
-
-			var oModel = new ODataModel(sUrl, true, model.Config.getUser(), model.Config.getPwd());
-			//if we do not set this property to false, this would lead to a synchronized request which blocks the ui
-			oModel.setCountSupported(false);
-
-			oView.setModel(oModel);
 
 			//create and set cart model
 			var oCartModel = new JSONModel({
