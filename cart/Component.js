@@ -77,7 +77,7 @@ sap.ui.define([
 
 		init: function () {
 			var oJSONModel = new JSONModel();
-			sap.ui.getCore().setModel(oJSONModel, "DruckerData");
+			that.setModel(oJSONModel, "DruckerData");
 
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
@@ -131,7 +131,7 @@ sap.ui.define([
 					// Check if an Array has values
 					if (oDruckerdaten instanceof Array && oDruckerdaten.length > 0){
 
-						sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
+						that.getModel("DruckerData").setData(oDruckerdaten);
 
 						that.handleWrongCredentials("None");
 						// Set up the routing
