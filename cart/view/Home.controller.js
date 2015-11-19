@@ -6,7 +6,6 @@ sap.ui.controller("view.Home", {
 	onInit : function () {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
 		// trigger first search to set visibilities right
-		this.getView().setModel(sap.ui.getCore().getModel("DruckerData"),"DruckerData");
 		this._search();
 	},
 
