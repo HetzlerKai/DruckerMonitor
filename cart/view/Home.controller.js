@@ -79,11 +79,9 @@ sap.ui.controller("view.Home", {
 	_showProduct: function (oItem) {
 		var oBindContext = oItem.getBindingContext("DruckerData");
 		var oModel = oBindContext.getModel();
-		var sId = oModel.getData(oBindContext.getPath()).ProductId;
+		var sId = oModel.getProperty(oBindContext.getPath()).id;
+		sId = (parseInt(sId) - 1).toString();
 		this._router.navTo("printerDetails", {id: sId}, !sap.ui.Device.system.phone);
 	}
-	
-/*	handleCartButtonPress :  function (oEvent) {
-		this._router.navTo("cart");
-	}*/
+
 });

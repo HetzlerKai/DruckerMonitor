@@ -8,7 +8,7 @@
 		xmlns:h="http://www.w3.org/1999/xhtml">
 	<Page
 			id="page"
-			title="{Name}"
+			title="{DruckerData>name}"
 			showNavButton="{device>/isPhone}"
 			navButtonPress="handleNavButtonPress">
 		<headerContent>
@@ -26,11 +26,11 @@
 		</footer>
 		<content>
 			<ObjectHeader
-					title="{Name}"
-					number="{path : 'IP'}">
+					title="{DruckerData>name}"
+					number="{path : 'DruckerData>ip'}">
 				<attributes>
 					<ObjectAttribute
-							text="{SupplierName}"/>
+							text="{DruckerData>hersteller}"/>
 				</attributes>
 				<firstStatus>
 					<ObjectStatus
@@ -44,12 +44,11 @@
 						}"/>
 				</firstStatus>
 			</ObjectHeader>
-			<IconTabBar expandable="false" select="test">
+			<IconTabBar expandable="false" select="showPrinterData">
 				<items>
 					<IconTabFilter
 							icon="sap-icon://legend"
 							iconColor="Positive"
-							count="{product}"
 							tooltip="General information"
 							key="GeneralTab">
 						<f:Form id="FormDisplay"
@@ -71,19 +70,42 @@
 							<f:formContainers>
 								<f:FormContainer>
 									<f:formElements>
-										<f:FormElement label="Name">
+										<f:FormElement label="ID">
 											<f:fields>
-												<Text text="Xyx Drucker" id="nameText"/>
+												<Text text="{DruckerData>id}" id="idText"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Hersteller">
+										<f:FormElement label="Hersteller + Typ">
 											<f:fields>
-												<Text text="HP" id="HerstellerText"/>
+												<Text text="{
+															path : 'DruckerData>name',
+															formatter : 'util.Formatter.supplierText'}"
+													  id="HerstellerText"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Modell">
+										<f:FormElement label="MAC">
 											<f:fields>
-												<Text text="HP 554" id="ModellText"/>
+												<Text text="{DruckerData>mac}" id="MacText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="IP">
+											<f:fields>
+												<Text text="{DruckerData>ip}" id="IPText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Raum">
+											<f:fields>
+												<Text text="{DruckerData>raum}" id="RaumText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Seriennummer">
+											<f:fields>
+												<Text text="{DruckerData>seriennummer}" id="SeriennummerText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Vendor">
+											<f:fields>
+												<Text text="{DruckerData>vendor}" id="VendorText"/>
 											</f:fields>
 										</f:FormElement>
 									</f:formElements>
@@ -94,21 +116,18 @@
 					<IconTabFilter
 							icon="sap-icon://bar-chart"
 							iconColor="Positive"
-							count="{product}"
 							tooltip="Statistic about this printer"
 							key="ChartStatistic">
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://line-chart"
 							iconColor="Positive"
-							count="{product}"
 							tooltip="Paper consumption of this printer"
 							key="ChartPaper">
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://history"
 							iconColor="Positive"
-							count="{product}"
 							tooltip="History about this printer"
 							key="History">
 						<Table>

@@ -10,9 +10,9 @@ sap.ui.controller("view.Product", {
 		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
 
-		// register for events
-		var oBus = sap.ui.getCore().getEventBus();
-		oBus.subscribe("shoppingCart", "updateProduct", this.fnUpdateProduct, this);
+		//// register for events
+		//var oBus = sap.ui.getCore().getEventBus();
+		//oBus.subscribe("shoppingCart", "updateProduct", this.fnUpdateProduct, this);
 	},
 
 	fnOnLogOutPress: function(){
@@ -20,20 +20,15 @@ sap.ui.controller("view.Product", {
 	},
 
 	_routePatternMatched: function(oEvent) {
-		var sId = oEvent.getParameter("arguments").productId,
+		var sId = oEvent.getParameter("arguments").id,
 			oView = this.getView(),
-			sPath = "/Products('" + sId + "')";
+			sPath = "/"+ sId;
 
-		/**
-		 * This is how you would implement deepLinking in your app.
-		 *
-		 * Because the oDataService which we use is not fully implemented, we cannot deep link. This code only workds
-		 * with the mockserver, which can be enabled via URL-parameter "responerOn=true"
-		 */
 		var that = this;
-		var oModel = oView.getModel();
-		var oData = oModel.getData(sPath);
-		oView.bindElement(sPath);
+		var oModel = oView.getModel("DruckerData");
+		var oData = oModel.getProperty(sPath);
+
+		oView.bindElement("DruckerData>" + sPath);
 		//if there is no data the model has to request new data
 		if (!oData) {
 			oView.getElementBinding().attachEventOnce("dataReceived", function() {
@@ -42,15 +37,15 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	fnUpdateProduct: function(sChannel, sEvent, oData) {
-		var sPath = "/Products('" + oData.productId + "')";
-		this.getView().bindElement(sPath);
-		this._checkIfProductAvailable(sPath, oData.productId);
-	},
+	//fnUpdateProduct: function(sChannel, sEvent, oData) {
+	//	var sPath = "/Products('" + oData.productId + "')";
+	//	this.getView().bindElement(sPath);
+	//	this._checkIfProductAvailable(sPath, oData.productId);
+	//},
 
 	_checkIfProductAvailable: function(sPath, sId) {
-		var oModel = this.getView().getModel();
-		var oData = oModel.getData(sPath);
+		var oModel = this.getView().getModel("DruckerData");
+		var oData = oModel.getProperty(sPath);
 
 		// show not found page
 		if (!oData) {
@@ -70,9 +65,10 @@ sap.ui.controller("view.Product", {
 
 	_$content: null,
 
-	test : function(oEvent){
+	showPrinterData : function(oEvent){
 		var oSelectedItem = oEvent.getParameter("selectedItem");
 		var sId = "#" + oEvent.getParameter("id") + "-content";
+
 		if(this._SecondTabContentIsLoaded){
 			this._$content.remove();
 			this._SecondTabContentIsLoaded = false;
@@ -131,7 +127,7 @@ sap.ui.controller("view.Product", {
 		}
 
 	},
-    _addEntryDialog: null,
+	_addEntryDialog: null,
 
 	_orderBusyDialog: null,
 

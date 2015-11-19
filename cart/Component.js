@@ -40,12 +40,12 @@ sap.ui.define([
 						target: "home"
 					},
 					{
-						pattern: "category/product",
+						pattern: "product",
 						name: "product",
 						target: "productView"
 					},
 					{
-						pattern: "product/{productId}",
+						pattern: "product/{id}",
 						name: "printerDetails",
 						target: ["home", "productView"]
 					}

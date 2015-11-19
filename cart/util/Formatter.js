@@ -35,6 +35,17 @@ util.Formatter = {
 		return (util.Formatter._statusStateMap[status]) ? util.Formatter._statusStateMap[status] : "None";
 	},
 
+	supplierText : function (nameText) {
+		if(nameText) {
+			for (var i = 0; i < nameText.length; i++) {
+				if (nameText.substring(i, i + 1) === "-") {
+					return nameText.substring(i+1);
+				}
+			}
+		}
+		return "None";
+	},
+
 	_statusIcon : {
 		"No ink" : "sap-icon://status-error"
 	},
