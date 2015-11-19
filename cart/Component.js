@@ -77,7 +77,7 @@ sap.ui.define([
 
 		init: function () {
 			var oJSONModel = new JSONModel();
-			that.setModel(oJSONModel, "DruckerData");
+			this.setModel(oJSONModel, "DruckerData");
 
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
