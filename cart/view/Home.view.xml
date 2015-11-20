@@ -42,9 +42,7 @@
 				mode="{device>/listMode}"
 				select="handleProductListSelect"
 				noDataText="{i18n>HOME_NO_DATA}"
-				items="{
-					path : 'DruckerData>/'
-				}">
+				items="{path : 'DruckerData>/'}">
 				<items>
 					<ObjectListItem
 						type="{device>/listItemType}"
@@ -55,6 +53,7 @@
 							<ObjectAttribute text="{DruckerData>ip}"/>
 						</attributes>
 						<firstStatus>
+							<!--TODO: Status has to be implemented-->
 							<ObjectStatus
 								state="{
 									path : 'status',

@@ -8,7 +8,7 @@
 		xmlns:h="http://www.w3.org/1999/xhtml">
 	<Page
 			id="page"
-			title="{DruckerData>name}"
+			title="{i18n>SHELL_TITLE}"
 			showNavButton="{device>/isPhone}"
 			navButtonPress="handleNavButtonPress">
 		<headerContent>
@@ -33,6 +33,7 @@
 							text="{DruckerData>hersteller}"/>
 				</attributes>
 				<firstStatus>
+					<!--TODO: Status has to be implemented-->
 					<ObjectStatus
 							text="{
 							path : 'status',
@@ -56,7 +57,7 @@
 								maxContainerCols="2"
 								editable="false">
 							<f:title>
-								<core:Title text="Details"/>
+								<core:Title text="{i18n>DETAILS}"/>
 							</f:title>
 							<f:layout>
 								<f:ResponsiveGridLayout
@@ -75,12 +76,19 @@
 												<Text text="{DruckerData>id}" id="idText"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Hersteller + Typ">
+										<f:FormElement label="Name">
 											<f:fields>
-												<Text text="{
-															path : 'DruckerData>name',
-															formatter : 'util.Formatter.supplierText'}"
-													  id="HerstellerText"/>
+												<Text text="{DruckerData>name}" id="NameText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Hersteller">
+											<f:fields>
+												<Text text="{DruckerData>hersteller}" id="HerstellerText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Typ">
+											<f:fields>
+												<Text text="{DruckerData>typ}" id="TypText"/>
 											</f:fields>
 										</f:FormElement>
 										<f:FormElement label="MAC">
@@ -103,9 +111,24 @@
 												<Text text="{DruckerData>seriennummer}" id="SeriennummerText"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Vendor">
+										<f:FormElement label="Cyan">
 											<f:fields>
-												<Text text="{DruckerData>vendor}" id="VendorText"/>
+												<Text text="{DruckerData>patronentyp_cyan}" id="CyanText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Gelb">
+											<f:fields>
+												<Text text="{DruckerData>toner_gelb}" id="GelbText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Magenta">
+											<f:fields>
+												<Text text="{DruckerData>toner_magenta}" id="MagentaText"/>
+											</f:fields>
+										</f:FormElement>
+										<f:FormElement label="Schwarz">
+											<f:fields>
+												<Text text="{DruckerData>toner_schwarz}" id="SchwarzText"/>
 											</f:fields>
 										</f:FormElement>
 									</f:formElements>

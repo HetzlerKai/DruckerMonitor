@@ -5,47 +5,36 @@ jQuery.sap.require("sap.m.Dialog");
 
 sap.ui.controller("view.Product", {
 
-	onInit : function () {
+	onInit: function () {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
 		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
-
-		//// register for events
-		//var oBus = sap.ui.getCore().getEventBus();
-		//oBus.subscribe("shoppingCart", "updateProduct", this.fnUpdateProduct, this);
 	},
 
-	fnOnLogOutPress: function(){
+	fnOnLogOutPress: function () {
 		location.reload();
 	},
 
-	_routePatternMatched: function(oEvent) {
+	_routePatternMatched: function (oEvent) {
 		var sId = oEvent.getParameter("arguments").id,
 			oView = this.getView(),
-			sPath = "/"+ sId;
-
-		var that = this;
-		var oModel = oView.getModel("DruckerData");
-		var oData = oModel.getProperty(sPath);
+			sPath = "/" + sId,
+			that = this,
+			oModel = oView.getModel("DruckerData"),
+			oData = oModel.getProperty(sPath);
 
 		oView.bindElement("DruckerData>" + sPath);
 		//if there is no data the model has to request new data
 		if (!oData) {
-			oView.getElementBinding().attachEventOnce("dataReceived", function() {
+			oView.getElementBinding().attachEventOnce("dataReceived", function () {
 				that._checkIfProductAvailable(sPath, sId);
 			});
 		}
 	},
 
-	//fnUpdateProduct: function(sChannel, sEvent, oData) {
-	//	var sPath = "/Products('" + oData.productId + "')";
-	//	this.getView().bindElement(sPath);
-	//	this._checkIfProductAvailable(sPath, oData.productId);
-	//},
-
-	_checkIfProductAvailable: function(sPath, sId) {
-		var oModel = this.getView().getModel("DruckerData");
-		var oData = oModel.getProperty(sPath);
+	_checkIfProductAvailable: function (sPath, sId) {
+		var oModel = this.getView().getModel("DruckerData"),
+			oData = oModel.getProperty(sPath);
 
 		// show not found page
 		if (!oData) {
@@ -53,28 +42,28 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	handleDownloadButtonPress : function(oEvent){
+	handleDownloadButtonPress: function (oEvent) {
 		sap.m.MessageToast.show("Download was started");
 	},
 
-	handleNavButtonPress : function (oEvent) {
+	handleNavButtonPress: function (oEvent) {
 		this.getOwnerComponent().myNavBack();
 	},
 
-	_SecondTabContentIsLoaded : false,
+	_SecondTabContentIsLoaded: false,
 
 	_$content: null,
 
-	showPrinterData : function(oEvent){
-		var oSelectedItem = oEvent.getParameter("selectedItem");
-		var sId = "#" + oEvent.getParameter("id") + "-content";
+	showPrinterData: function (oEvent) {
+		var oSelectedItem = oEvent.getParameter("selectedItem"),
+			sId = "#" + oEvent.getParameter("id") + "-content";
 
-		if(this._SecondTabContentIsLoaded){
+		if (this._SecondTabContentIsLoaded) {
 			this._$content.remove();
 			this._SecondTabContentIsLoaded = false;
 		}
 
-		if(oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded){
+		if (oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded) {
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
 					type: 'column'
@@ -92,7 +81,7 @@ sap.ui.controller("view.Product", {
 				},
 				series: [{
 					name: 'Color',
-					data: [1 ]
+					data: [1]
 				}, {
 					name: 'Black',
 					data: [0, 7]
@@ -101,7 +90,7 @@ sap.ui.controller("view.Product", {
 			this._SecondTabContentIsLoaded = true;
 			$(sId).append(this._$content);
 
-		} else if(oSelectedItem.getKey() === "ChartPaper"){
+		} else if (oSelectedItem.getKey() === "ChartPaper") {
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
 					type: 'line'
@@ -133,13 +122,13 @@ sap.ui.controller("view.Product", {
 
 	_dialogView: null,
 
-	handlePressAddTableEntry: function(){
+	handlePressAddTableEntry: function () {
 		var that = this;
 		if (!this._addEntryDialog) {
 			var bundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
-			
+
 			// create order dialog
-			this._dialogView= sap.ui.view({
+			this._dialogView = sap.ui.view({
 				id: "AddEntryDialog",
 				viewName: "view.AddEntryDialog",
 				type: "XML"
@@ -154,12 +143,12 @@ sap.ui.controller("view.Product", {
 					text: bundle.getText('ADD_ENTRY_DIALOG_SAVE_BUTTON_TITLE'),
 					type: "Accept",
 					press: function () {
-                        that.handleNewEntry();
-                        that._addEntryDialog.close();
-                    }
+						that.handleNewEntry();
+						that._addEntryDialog.close();
+					}
 				}),
 				rightButton: new sap.m.Button({
-					text:  bundle.getText('ADD_ENTRY_DIALOG_CANCEL_BUTTON_TITLE'),
+					text: bundle.getText('ADD_ENTRY_DIALOG_CANCEL_BUTTON_TITLE'),
 					press: function () {
 						that._addEntryDialog.close();
 					}
@@ -173,11 +162,11 @@ sap.ui.controller("view.Product", {
 		this._addEntryDialog.open();
 	},
 
-	setCurrentDateToDatePicker: function(){
+	setCurrentDateToDatePicker: function () {
 		sap.ui.getCore().byId(this._dialogView.getId() + '--DP1').setDateValue(new Date());
 	},
 
-	createAddEntryDialog: function(){
+	createAddEntryDialog: function () {
 		var oDialog;
 
 		oDialog = null; // build sap.m.Dialog here
@@ -185,6 +174,7 @@ sap.ui.controller("view.Product", {
 		return oDialog;
 	},
 
-	handleNewEntry: function(){}
+	handleNewEntry: function () {
+	}
 
 });

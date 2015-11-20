@@ -214,10 +214,9 @@ sap.ui.define([
 		},
 
 		createContent: function () {
-			var oJSONModel = new JSONModel();
-
+			var oJSONModel = new JSONModel(),
 			// set i18n model
-			var oI18nModel = new ResourceModel({
+			 oI18nModel = new ResourceModel({
 				bundleName: "sap.ui.demo.cart.i18n.appTexts"
 			});
 

@@ -21,9 +21,9 @@ sap.ui.controller("view.Home", {
 			}, 2000);
 		} else {
 			// trigger search again and hide pullToRefresh when data ready
-			var oProductList = this.getView().byId("productList");
-			var oBinding = oProductList.getBinding("items");
-			var fnHandler = function() {
+			var oProductList = this.getView().byId("productList"),
+			oBinding = oProductList.getBinding("items"),
+			fnHandler = function() {
 				that.getView().byId("pullToRefresh").hide();
 				oBinding.detachDataReceived(fnHandler);
 			};
@@ -33,12 +33,11 @@ sap.ui.controller("view.Home", {
 	},
 
 	_search : function () {
-		var oView = this.getView();
-		var oProductList = oView.byId("productList");
-		var oSearchField = oView.byId("searchField");
-
+		var oView = this.getView(),
+		 oProductList = oView.byId("productList"),
+		 oSearchField = oView.byId("searchField")
 		// switch visibility of lists
-		var bShowSearch = oSearchField.getValue().length !== 0;
+		bShowSearch = oSearchField.getValue().length !== 0;
 		
 		if (bShowSearch) {
 			this._changeNoDataTextToIndicateLoading(oProductList);
@@ -70,16 +69,15 @@ sap.ui.controller("view.Home", {
 		var oItem = oEvent.getParameter("listItem");
 		this._showProduct(oItem);
 	},
-	
 	handleProductListItemPress: function (oEvent) {
 		var oItem = oEvent.getSource();
 		this._showProduct(oItem);
 	},
 	
 	_showProduct: function (oItem) {
-		var oBindContext = oItem.getBindingContext("DruckerData");
-		var oModel = oBindContext.getModel();
-		var sId = oModel.getProperty(oBindContext.getPath()).id;
+		var oBindContext = oItem.getBindingContext("DruckerData")
+		 oModel = oBindContext.getModel(),
+		 sId = oModel.getProperty(oBindContext.getPath()).id;
 		sId = (parseInt(sId) - 1).toString();
 		this._router.navTo("printerDetails", {id: sId}, !sap.ui.Device.system.phone);
 	}
