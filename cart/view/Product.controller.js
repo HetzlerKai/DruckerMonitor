@@ -56,7 +56,9 @@ sap.ui.controller("view.Product", {
 
 	showPrinterData: function (oEvent) {
 		var oSelectedItem = oEvent.getParameter("selectedItem"),
-			sId = "#" + oEvent.getParameter("id") + "-content";
+			sId = "#" + oEvent.getParameter("id") + "-content",
+			sPath = oEvent.getSource().getBindingContext("DruckerData").getPath(),
+			oData = oEvent.getSource().getModel("DruckerData").getProperty(sPath);
 
 		if (this._SecondTabContentIsLoaded) {
 			this._$content.remove();
@@ -64,27 +66,53 @@ sap.ui.controller("view.Product", {
 		}
 
 		if (oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded) {
-			this._$content = $('<div id="test"></div>').highcharts({
+			this._$content = $('<div id="highcharts"></div>').highcharts({
 				chart: {
-					type: 'column'
+					type: 'column',
+					width: ($(sId).width() - 20).toString()
 				},
 				title: {
-					text: 'Ink State'
+					text: 'Tintenstand'
 				},
 				xAxis: {
-					categories: ['Color', 'Black']
+					type: 'category'
 				},
 				yAxis: {
 					title: {
-						text: 'Level'
+						text: 'ml'
 					}
 				},
 				series: [{
-					name: 'Color',
-					data: [1]
-				}, {
 					name: 'Black',
-					data: [0, 7]
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_schwarz) + 10
+					}],
+					color: 'black'
+				},
+				{
+					name: 'Cyan',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_cyan) + 5
+					}],
+					color: "cyan"
+				},
+				{
+					name: 'Magenta',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_magenta) + 15
+					}],
+					color: "magenta"
+				},
+				{
+					name: 'Gelb',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_gelb) + 7.97
+					}],
+					color: "yellow"
 				}]
 			});
 			this._SecondTabContentIsLoaded = true;
@@ -93,7 +121,8 @@ sap.ui.controller("view.Product", {
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
 			this._$content = $('<div id="test"></div>').highcharts({
 				chart: {
-					type: 'line'
+					type: 'line',
+					width: ($(sId).width() - 20).toString()
 				},
 				title: {
 					text: 'Paper Consumption'

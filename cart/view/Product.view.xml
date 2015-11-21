@@ -33,7 +33,7 @@
 							text="{DruckerData>hersteller}"/>
 				</attributes>
 				<firstStatus>
-					<!--TODO: Status has to be implemented-->
+					<!--TODO: State has to be implemented-->
 					<ObjectStatus
 							text="{
 							path : 'status',
@@ -113,7 +113,7 @@
 										</f:FormElement>
 										<f:FormElement label="Cyan">
 											<f:fields>
-												<Text text="{DruckerData>patronentyp_cyan}" id="CyanText"/>
+												<Text text="{DruckerData>toner_cyan}" id="CyanText"/>
 											</f:fields>
 										</f:FormElement>
 										<f:FormElement label="Gelb">
