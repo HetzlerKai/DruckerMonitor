@@ -42,7 +42,10 @@
 				mode="{device>/listMode}"
 				select="handleProductListSelect"
 				noDataText="{i18n>HOME_NO_DATA}"
-				items="{path : 'DruckerData>/'}">
+				items="{path : 'DruckerData>/'}"
+				growing="true"
+				growingThreshold="10"
+				growingScrollToLoad="true">
 				<items>
 					<ObjectListItem
 						type="{device>/listItemType}"
@@ -56,11 +59,11 @@
 							<!--TODO: Status has to be implemented-->
 							<ObjectStatus
 								state="{
-									path : 'status',
+									path : 'DruckerData>status',
 									formatter : 'util.Formatter.statusState'
 								}"
 								icon="{
-									path : 'status',
+									path : 'DruckerData>status',
 									formatter : 'util.Formatter.statusIcon'
 								}"/>
 						</firstStatus>

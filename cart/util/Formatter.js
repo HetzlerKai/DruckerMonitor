@@ -24,6 +24,7 @@ util.Formatter = {
 	},
 	
 	statusText : function (status) {
+		status = status || "Kein Status";
 		return (util.Formatter._statusTextMap[status]) ? util.Formatter._statusTextMap[status] : status;
 	},
 	
@@ -32,7 +33,8 @@ util.Formatter = {
 	},
 	
 	statusState : function (status) {
-		return (util.Formatter._statusStateMap[status]) ? util.Formatter._statusStateMap[status] : "None";
+		status = status || "Warning";
+		return (util.Formatter._statusStateMap[status]) ? util.Formatter._statusStateMap[status] : status;
 	},
 
 	_statusIcon : {
@@ -40,7 +42,8 @@ util.Formatter = {
 	},
 
 	statusIcon : function(status){
-		return (util.Formatter._statusIcon[status]) ? util.Formatter._statusIcon[status] : "";
+		status = status || "sap-icon://question-mark";
+		return (util.Formatter._statusIcon[status]) ? util.Formatter._statusIcon[status] : status;
 	}
 
 };

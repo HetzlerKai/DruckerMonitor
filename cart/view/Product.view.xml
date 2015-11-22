@@ -36,11 +36,11 @@
 					<!--TODO: State has to be implemented-->
 					<ObjectStatus
 							text="{
-							path : 'status',
+							path : 'DruckerData>status',
 							formatter : 'util.Formatter.statusText'
 						}"
 							state="{
-							path : 'status',
+							path : 'DruckerData>status',
 							formatter : 'util.Formatter.statusState'
 						}"/>
 				</firstStatus>
@@ -57,7 +57,7 @@
 								maxContainerCols="2"
 								editable="false">
 							<f:title>
-								<core:Title text="{i18n>DETAILS}"/>
+								<core:Title text="{i18n>GENERAL_TAB_FORM_TITLE}"/>
 							</f:title>
 							<f:layout>
 								<f:ResponsiveGridLayout
@@ -156,13 +156,13 @@
 						<Table>
 							<columns>
 								<Column width="10%">
-									<Text text="Datum"/>
+									<Text text="{i18n>TABLE_COLUMN_DATUM}"/>
 								</Column>
 								<Column width="10%">
-									<Text text="Patrone"/>
+									<Text text="{i18n>TABLE_COLUMN_PATRONE}"/>
 								</Column>
 								<Column width="76%">
-									<Text text="Kommentar"/>
+									<Text text="{i18n>TABLE_COLUMN_KOMMENTAR}"/>
 								</Column>
 								<Column width="4%">
 									<core:Icon src="sap-icon://add" press="handlePressAddTableEntry"></core:Icon>

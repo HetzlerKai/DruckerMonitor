@@ -47,7 +47,7 @@ sap.ui.controller("view.Home", {
 		var oBinding = oProductList.getBinding("items");
 		if (oBinding) {
 			if (bShowSearch) {
-				var oFilter = new sap.ui.model.Filter("Name", sap.ui.model.FilterOperator.Contains, oSearchField.getValue());
+				var oFilter = new sap.ui.model.Filter("name", sap.ui.model.FilterOperator.Contains, oSearchField.getValue());
 				oBinding.filter([oFilter]);
 			} else {
 				oBinding.filter([]);
