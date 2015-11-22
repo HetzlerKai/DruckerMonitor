@@ -86,7 +86,8 @@ sap.ui.controller("view.Product", {
 					name: 'Black',
 					data: [{
 						name: 'Tintenart',
-						y: parseInt(oData.toner_schwarz) + 10
+						//TODO:Please remove random function, is only for testing
+						y: parseInt(oData.toner_schwarz) +  Math.floor((Math.random() * 20) + 0)
 					}],
 					color: 'black'
 				},
@@ -94,7 +95,8 @@ sap.ui.controller("view.Product", {
 					name: 'Cyan',
 					data: [{
 						name: 'Tintenart',
-						y: parseInt(oData.toner_cyan) + 5
+						//TODO:Please remove random function, is only for testing
+						y: parseInt(oData.toner_cyan) +  Math.floor((Math.random() * 20) + 0)
 					}],
 					color: "cyan"
 				},
@@ -102,7 +104,8 @@ sap.ui.controller("view.Product", {
 					name: 'Magenta',
 					data: [{
 						name: 'Tintenart',
-						y: parseInt(oData.toner_magenta) + 15
+						//TODO:Please remove random function, is only for testing
+						y: parseInt(oData.toner_magenta) +  Math.floor((Math.random() * 20) + 0)
 					}],
 					color: "magenta"
 				},
@@ -110,7 +113,8 @@ sap.ui.controller("view.Product", {
 					name: 'Gelb',
 					data: [{
 						name: 'Tintenart',
-						y: parseInt(oData.toner_gelb) + 7.97
+						//TODO:Please remove random function, is only for testing
+						y: parseInt(oData.toner_gelb) +  Math.floor((Math.random() * 20) + 0)
 					}],
 					color: "yellow"
 				}]
@@ -128,16 +132,31 @@ sap.ui.controller("view.Product", {
 					text: 'Paper Consumption'
 				},
 				xAxis: {
-					categories: ['Paper']
+					categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+						'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 				},
 				yAxis: {
 					title: {
-						text: 'Paper used'
+						text: 'Seiten'
 					}
 				},
 				series: [{
-					name: 'Druker X',
-					data: [0, 2, 3, 5, 7, 9, 9, 10, 10, 13]
+					name: oData.name,
+					//TODO:Please remove random function, is only for testing
+					data: [
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1)
+					]
 				}]
 			});
 			this._SecondTabContentIsLoaded = true;

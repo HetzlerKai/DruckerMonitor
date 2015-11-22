@@ -24,7 +24,7 @@ util.Formatter = {
 	},
 	
 	statusText : function (status) {
-		status = status || "Kein Status";
+		status = status || sap.ui.getCore().getModel("i18n").getResourceBundle().getText("NO_STATE");
 		return (util.Formatter._statusTextMap[status]) ? util.Formatter._statusTextMap[status] : status;
 	},
 	

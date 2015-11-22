@@ -42,7 +42,8 @@
 							state="{
 							path : 'DruckerData>status',
 							formatter : 'util.Formatter.statusState'
-						}"/>
+						}"
+							tooltip="{i18n>CURRENT_INK_STATE}"/>
 				</firstStatus>
 			</ObjectHeader>
 			<IconTabBar expandable="false" select="showPrinterData">
