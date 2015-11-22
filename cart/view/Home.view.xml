@@ -65,7 +65,8 @@
 								icon="{
 									path : 'DruckerData>status',
 									formatter : 'util.Formatter.statusIcon'
-								}"/>
+								}"
+								tooltip="{i18n>CURRENT_INK_STATE}"/>
 						</firstStatus>
 					</ObjectListItem>
 				</items>
