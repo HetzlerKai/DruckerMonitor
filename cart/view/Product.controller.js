@@ -192,7 +192,7 @@ sap.ui.controller("view.Product", {
 				type: "XML"
 			});
 			this._addEntryDialog = new sap.m.Dialog({
-				title: "dialog title",
+				title: "Eintrag erstellen",
 				//stretch: Device.system.phone,
 				content: [
 					this._dialogView
