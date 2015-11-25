@@ -154,7 +154,7 @@
 							iconColor="Positive"
 							tooltip="History about this printer"
 							key="History">
-						<Table>
+						<Table items= "{History>/}" >
 							<columns>
 								<Column width="10%">
 									<Text text="{i18n>TABLE_COLUMN_DATUM}"/>
@@ -172,16 +172,9 @@
 							<items>
 								<ColumnListItem>
 									<cells>
-										<Label text="15.10.15"></Label>
-										<Label text="Cyan"></Label>
-										<Label text="Cyan Patrone gewechselt und Filter getauscht"></Label>
-									</cells>
-								</ColumnListItem>
-								<ColumnListItem>
-									<cells>
-										<Label text="15.10.16"></Label>
-										<Label text="Magenta"></Label>
-										<Label text="Magenta Patrone gewechselt"></Label>
+										<Label text="{History>Datum}"></Label>
+										<Label text="{History>Patrone}"></Label>
+										<Label text="{History>Beschreibung}"></Label>
 									</cells>
 								</ColumnListItem>
 							</items>

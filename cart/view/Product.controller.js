@@ -244,16 +244,29 @@ sap.ui.controller("view.Product", {
 	},
 
 	handleNewEntry: function (sPatrone, sText) {
-		console.log("setHistory");
-		console.log("Patrone: ", sPatrone);
-		console.log("Beschreibung: ", sText);
+//		console.log("setHistory");
+//		console.log("Patrone: ", sPatrone);
+//		console.log("Beschreibung: ", sText);
 	},
 	
 	getHistory: function(){
 		
-		console.log("getHistory");
+		var
+		oData, 
+		oHistoryModel;
 		
-//		var oHistoryModel = new sap.ui.model.json.JSONModel("Histroy");
+		oData = [
+			{
+				Datum: "20.11.15",
+				Patrone: "Cyan",
+				Beschreibung: "Text"
+			},{
+				Datum: "25.11.15",
+				Patrone: "Cyan2",
+				Beschreibung: "Text2"
+			},
+		];
+		
 //		
 //		jQuery.ajax({
 //	        type : 'POST',
@@ -263,10 +276,13 @@ sap.ui.controller("view.Product", {
 //	            get: 'getHistorie'
 //	        },
 //	        success: function(response){
-//	        	oHistoryModel.setData(response);
+//	        	oData = response;
 //	        }
 //	    });
+
 		
+		oHistoryModel = new sap.ui.model.json.JSONModel(oData);
+		this.getView().setModel(oHistoryModel, "History");
 	}
 
 });
