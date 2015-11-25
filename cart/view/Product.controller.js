@@ -10,7 +10,7 @@ sap.ui.controller("view.Product", {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
 		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
-		this.getHistory();
+		this.getHistoryModel();
 	},
 
 	fnOnLogOutPress: function () {
@@ -235,39 +235,45 @@ sap.ui.controller("view.Product", {
 		sap.ui.getCore().byId(this._dialogView.getId() + '--DP1').setDateValue(new Date());
 	},
 
-	createAddEntryDialog: function () {
-		var oDialog;
-
-		oDialog = null; // build sap.m.Dialog here
-
-		return oDialog;
-	},
-
 	handleNewEntry: function (sPatrone, sText) {
-//		console.log("setHistory");
-//		console.log("Patrone: ", sPatrone);
-//		console.log("Beschreibung: ", sText);
+		
+//		jQuery.ajax({
+//	        type : 'POST',
+//	        dataType: "json",
+//	        url : 'php/services/ajax.php',
+//	        data: {
+//	            get: 'schreibeHistorie',
+//	            patrone: sPatrone,
+//	            beschreibung: sText
+//	        }
+//	    });
+		
+		this.refreshHistoryData();
 	},
 	
-	getHistory: function(){
+	getHistoryModel: function(){
 		
-		var
-		oData, 
-		oHistoryModel;
+		var	oData, oHistoryModel;
+	
+		oData = this.getHistoryData();
 		
-		oData = [
-			{
-				Datum: "20.11.15",
-				Patrone: "Cyan",
-				Beschreibung: "Text"
-			},{
-				Datum: "25.11.15",
-				Patrone: "Cyan2",
-				Beschreibung: "Text2"
-			},
+		oHistoryModel = new sap.ui.model.json.JSONModel(oData);
+		this.getView().setModel(oHistoryModel, "History");
+	},
+	
+	getHistoryData: function(){
+		var oData = [
+		    {
+		    	Datum: "20.11.15",
+		       	Patrone: "Cyan",
+		       	Beschreibung: "Text"
+		    },{
+		    	Datum: "25.11.15",
+		    	Patrone: "Cyan2",
+		    	Beschreibung: "Text2"
+		    }
 		];
-		
-//		
+			
 //		jQuery.ajax({
 //	        type : 'POST',
 //	        dataType: "json",
@@ -281,8 +287,13 @@ sap.ui.controller("view.Product", {
 //	    });
 
 		
-		oHistoryModel = new sap.ui.model.json.JSONModel(oData);
-		this.getView().setModel(oHistoryModel, "History");
+		return oData;
+	},
+	
+	refreshHistoryData: function(){
+		var oData = this.getHistoryData();
+		
+		this.getView().getModel("History").setData(oData);
 	}
 
 });
