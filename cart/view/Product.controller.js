@@ -2,6 +2,7 @@ jQuery.sap.require("util.Formatter");
 jQuery.sap.require("sap.m.MessageToast");
 jQuery.sap.require("sap.m.MessageBox");
 jQuery.sap.require("sap.m.Dialog");
+jQuery.sap.require("sap.ui.model.json.JSONModel");
 
 sap.ui.controller("view.Product", {
 
@@ -9,6 +10,7 @@ sap.ui.controller("view.Product", {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
 		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
+		this.getHistory();
 	},
 
 	fnOnLogOutPress: function () {
@@ -171,7 +173,15 @@ sap.ui.controller("view.Product", {
 	_dialogView: null,
 
 	handlePressAddTableEntry: function () {
-		var that = this;
+		var 
+		that = this,
+		fnClearInputFields;
+		
+		fnClearInputFields = function(){
+			sap.ui.getCore().byId("AddEntryDialog--Ink_input").setValue("");
+			sap.ui.getCore().byId("AddEntryDialog--inputMail").setValue("");
+		};
+		
 		if (!this._addEntryDialog) {
 			var bundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
 
@@ -190,14 +200,25 @@ sap.ui.controller("view.Product", {
 				leftButton: new sap.m.Button({
 					text: bundle.getText('ADD_ENTRY_DIALOG_SAVE_BUTTON_TITLE'),
 					type: "Accept",
-					press: function () {
-						that.handleNewEntry();
+					press: function (oEvent) {
+						
+						var 
+						sPatrone,
+						sText;
+						
+						sPatrone = sap.ui.getCore().byId("AddEntryDialog--Ink_input").getValue();
+						sText = sap.ui.getCore().byId("AddEntryDialog--inputMail").getValue();
+						
+						fnClearInputFields();
+						
+						that.handleNewEntry(sPatrone, sText);
 						that._addEntryDialog.close();
 					}
 				}),
 				rightButton: new sap.m.Button({
 					text: bundle.getText('ADD_ENTRY_DIALOG_CANCEL_BUTTON_TITLE'),
 					press: function () {
+						fnClearInputFields();
 						that._addEntryDialog.close();
 					}
 				})
@@ -222,7 +243,30 @@ sap.ui.controller("view.Product", {
 		return oDialog;
 	},
 
-	handleNewEntry: function () {
+	handleNewEntry: function (sPatrone, sText) {
+		console.log("setHistory");
+		console.log("Patrone: ", sPatrone);
+		console.log("Beschreibung: ", sText);
+	},
+	
+	getHistory: function(){
+		
+		console.log("getHistory");
+		
+//		var oHistoryModel = new sap.ui.model.json.JSONModel("Histroy");
+//		
+//		jQuery.ajax({
+//	        type : 'POST',
+//	        dataType: "json",
+//	        url : 'php/services/ajax.php',
+//	        data: {
+//	            get: 'getHistorie'
+//	        },
+//	        success: function(response){
+//	        	oHistoryModel.setData(response);
+//	        }
+//	    });
+		
 	}
 
 });
