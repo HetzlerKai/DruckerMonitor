@@ -40,7 +40,7 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	// Ã¼berprÃ¼ft ob ein Drucker mit dieser id existiert
+	// überprüft ob ein Drucker mit dieser id existiert
 	_checkIfProductAvailable: function (sPath, sId) {
 		var oModel = this.getView().getModel("DruckerData"),
 			oData = oModel.getProperty(sPath);
@@ -93,7 +93,7 @@ sap.ui.controller("view.Product", {
 		
 	},
 
-	// zurÃ¼ck navigation
+	// zurück navigation
 	handleNavButtonPress: function (oEvent) {
 		this.getOwnerComponent().myNavBack();
 	},
@@ -101,7 +101,7 @@ sap.ui.controller("view.Product", {
 	_SecondTabContentIsLoaded: false,
 	_$content: null,
 
-	// zeigt die Detailseiten (Tabs) fÃ¼r den Drucker an
+	// zeigt die Detailseiten (Tabs) für den Drucker an
 	showPrinterData: function (oEvent) {
 		var oSelectedItem = oEvent.getParameter("selectedItem"),
 			sId = "#" + oEvent.getParameter("id") + "-content",
