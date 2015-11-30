@@ -4,6 +4,7 @@ jQuery.sap.require("sap.m.MessageBox");
 jQuery.sap.require("sap.m.Dialog");
 jQuery.sap.require("sap.ui.model.json.JSONModel");
 
+// Controller for the Page with the Details for each Printer
 sap.ui.controller("view.Product", {
 
 	onInit: function () {

@@ -1,5 +1,6 @@
 jQuery.sap.require("util.Formatter");
 
+// Controller for the List of all Printers
 sap.ui.controller("view.Home", {
 
 	onInit : function () {
