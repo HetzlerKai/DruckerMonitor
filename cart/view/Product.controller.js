@@ -16,6 +16,8 @@ sap.ui.controller("view.Product", {
 	fnOnLogOutPress: function () {
 		location.reload();
 	},
+	
+	dataPath: "",
 
 	_routePatternMatched: function (oEvent) {
 		var sId = oEvent.getParameter("arguments").id,
@@ -24,6 +26,8 @@ sap.ui.controller("view.Product", {
 			that = this,
 			oModel = oView.getModel("DruckerData"),
 			oData = oModel.getProperty(sPath);
+		
+		this.dataPath = sPath;
 
 		oView.bindElement("DruckerData>" + sPath);
 		//if there is no data the model has to request new data
@@ -43,9 +47,46 @@ sap.ui.controller("view.Product", {
 			this._router.getTargets().display("notFound", sId);
 		}
 	},
+	
+	getDruckerIp: function(){
+		var 
+		oView, oCurrentDrucker,
+		sIp = null;
+		
+		oView = this.getView().getModel("DruckerData");
+		oCurrentDrucker = oView.getProperty(this.dataPath);
+		
+		sIp = oCurrentDrucker.ip;
+		
+		return sIp;
+	},
 
 	handleDownloadButtonPress: function (oEvent) {
+		var that = this;
+		
 		sap.m.MessageToast.show("Download was started");
+		
+		jQuery.ajax({
+	        type : 'POST',
+	        dataType: "json",
+	        url : 'php/services/ajax.php',
+	        data: {
+	            post: 'DruckerAlsPdf',
+	            ip: that.getDruckerIp()
+	        },
+	        success: function(werte){
+	            window.location.href = werte;
+//	            window.open(
+//	                'data:application/pdf,' + encodeURIComponent(werte),
+//	                'Batch Print',
+//	                'width=600,height=600,location=_newtab'
+//	            );
+	        },
+	        error: function(error){
+	        	jQuery.sap.log.error("Download as PDF failed");
+	        }
+	    });
+		
 	},
 
 	handleNavButtonPress: function (oEvent) {
@@ -244,7 +285,8 @@ sap.ui.controller("view.Product", {
 //	        data: {
 //	            get: 'schreibeHistorie',
 //	            patrone: sPatrone,
-//	            beschreibung: sText
+//	            beschreibung: sText,
+//				ip: this.getDruckerIp()
 //	        }
 //	    });
 		
@@ -279,7 +321,8 @@ sap.ui.controller("view.Product", {
 //	        dataType: "json",
 //	        url : 'php/services/ajax.php',
 //	        data: {
-//	            get: 'getHistorie'
+//	            get: 'getHistorie',
+//				ip: this.getDruckerIp()
 //	        },
 //	        success: function(response){
 //	        	oData = response;
