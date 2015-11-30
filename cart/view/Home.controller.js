@@ -55,9 +55,6 @@ sap.ui.controller("view.Home", {
 		}
 	},
 
-	handleFilterButtonPress : function(oEvent){
-	},
-
 	_changeNoDataTextToIndicateLoading: function (oList) {
 		var sOldNoDataText = oList.getNoDataText();
 		oList.setNoDataText("Loading...");
