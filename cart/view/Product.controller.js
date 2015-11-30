@@ -13,6 +13,7 @@ sap.ui.controller("view.Product", {
 		this.getHistoryModel();
 	},
 
+	// Reloads page on Logout
 	fnOnLogOutPress: function () {
 		location.reload();
 	},
@@ -38,6 +39,7 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
+	// überprüft ob ein Drucker mit dieser id existiert
 	_checkIfProductAvailable: function (sPath, sId) {
 		var oModel = this.getView().getModel("DruckerData"),
 			oData = oModel.getProperty(sPath);
@@ -61,6 +63,7 @@ sap.ui.controller("view.Product", {
 		return sIp;
 	},
 
+	// Download Druckerdaten als PDF
 	handleDownloadButtonPress: function (oEvent) {
 		var that = this;
 		
@@ -89,14 +92,15 @@ sap.ui.controller("view.Product", {
 		
 	},
 
+	// zurück navigation
 	handleNavButtonPress: function (oEvent) {
 		this.getOwnerComponent().myNavBack();
 	},
 
 	_SecondTabContentIsLoaded: false,
-
 	_$content: null,
 
+	// zeigt die Detailseiten (Tabs) für den Drucker an
 	showPrinterData: function (oEvent) {
 		var oSelectedItem = oEvent.getParameter("selectedItem"),
 			sId = "#" + oEvent.getParameter("id") + "-content",
@@ -109,111 +113,120 @@ sap.ui.controller("view.Product", {
 		}
 
 		if (oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded) {
-			this._$content = $('<div id="highcharts"></div>').highcharts({
-				chart: {
-					type: 'column',
-					width: ($(sId).width() - 20).toString()
-				},
-				title: {
-					text: 'Tintenstand'
-				},
-				xAxis: {
-					type: 'category'
-				},
-				yAxis: {
-					title: {
-						text: 'ml'
-					}
-				},
-				series: [{
-					name: 'Black',
-					data: [{
-						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_schwarz) +  Math.floor((Math.random() * 20) + 0)
-					}],
-					color: 'black'
-				},
-				{
-					name: 'Cyan',
-					data: [{
-						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_cyan) +  Math.floor((Math.random() * 20) + 0)
-					}],
-					color: "cyan"
-				},
-				{
-					name: 'Magenta',
-					data: [{
-						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_magenta) +  Math.floor((Math.random() * 20) + 0)
-					}],
-					color: "magenta"
-				},
-				{
-					name: 'Gelb',
-					data: [{
-						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_gelb) +  Math.floor((Math.random() * 20) + 0)
-					}],
-					color: "yellow"
-				}]
-			});
-			this._SecondTabContentIsLoaded = true;
-			$(sId).append(this._$content);
-
+			this.showStatisticChart(sId, oData);
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
-			this._$content = $('<div id="test"></div>').highcharts({
-				chart: {
-					type: 'line',
-					width: ($(sId).width() - 20).toString()
-				},
-				title: {
-					text: 'Paper Consumption'
-				},
-				xAxis: {
-					categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-						'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-				},
-				yAxis: {
-					title: {
-						text: 'Seiten'
-					}
-				},
-				series: [{
-					name: oData.name,
-					//TODO:Please remove random function, is only for testing
-					data: [
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
-						parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1)
-					]
-				}]
-			});
-			this._SecondTabContentIsLoaded = true;
-			$(sId).append(this._$content);
+			this.showPaperConsumptionChart(sId, oData);
 		}
 
 	},
+	
+	// Zeigt auf dem UI die Tintenverrauchs Grafik an
+	showStatisticChart: function(sId, oData){
+		this._$content = $('<div id="highcharts"></div>').highcharts({
+			chart: {
+				type: 'column',
+				width: ($(sId).width() - 20).toString()
+			},
+			title: {
+				text: 'Tintenstand'
+			},
+			xAxis: {
+				type: 'category'
+			},
+			yAxis: {
+				title: {
+					text: 'ml'
+				}
+			},
+			series: [{
+				name: 'Black',
+				data: [{
+					name: 'Tintenart',
+					//TODO:Please remove random function, is only for testing
+					y: parseInt(oData.toner_schwarz) +  Math.floor((Math.random() * 20) + 0)
+				}],
+				color: 'black'
+			},
+			{
+				name: 'Cyan',
+				data: [{
+					name: 'Tintenart',
+					//TODO:Please remove random function, is only for testing
+					y: parseInt(oData.toner_cyan) +  Math.floor((Math.random() * 20) + 0)
+				}],
+				color: "cyan"
+			},
+			{
+				name: 'Magenta',
+				data: [{
+					name: 'Tintenart',
+					//TODO:Please remove random function, is only for testing
+					y: parseInt(oData.toner_magenta) +  Math.floor((Math.random() * 20) + 0)
+				}],
+				color: "magenta"
+			},
+			{
+				name: 'Gelb',
+				data: [{
+					name: 'Tintenart',
+					//TODO:Please remove random function, is only for testing
+					y: parseInt(oData.toner_gelb) +  Math.floor((Math.random() * 20) + 0)
+				}],
+				color: "yellow"
+			}]
+		});
+		this._SecondTabContentIsLoaded = true;
+		$(sId).append(this._$content);
+	},
+	
+	// Zeigt auf dem UI die Papierverbrauch Grafik an
+	showPaperConsumptionChart: function(sId, oData){
+		this._$content = $('<div id="test"></div>').highcharts({
+			chart: {
+				type: 'line',
+				width: ($(sId).width() - 20).toString()
+			},
+			title: {
+				text: 'Paper Consumption'
+			},
+			xAxis: {
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+					'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			},
+			yAxis: {
+				title: {
+					text: 'Seiten'
+				}
+			},
+			series: [{
+				name: oData.name,
+				//TODO:Please remove random function, is only for testing
+				data: [
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten)+ Math.floor((Math.random() * 100) + 1)
+				]
+			}]
+		});
+		this._SecondTabContentIsLoaded = true;
+		$(sId).append(this._$content);
+	},
+	
 	_addEntryDialog: null,
-
 	_orderBusyDialog: null,
-
 	_dialogView: null,
 
-	handlePressAddTableEntry: function () {
+	// erzeugt Dialog zum erstellen eines neuen History eintrages 
+	handlePressAddTableEntry: function () {		
 		var 
 		that = this,
 		fnClearInputFields;
@@ -294,7 +307,6 @@ sap.ui.controller("view.Product", {
 	},
 	
 	getHistoryModel: function(){
-		
 		var	oData, oHistoryModel;
 	
 		oData = this.getHistoryData();
