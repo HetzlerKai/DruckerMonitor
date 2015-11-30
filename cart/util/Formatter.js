@@ -2,23 +2,9 @@ jQuery.sap.declare("util.Formatter");
 
 util.Formatter = {
 		
-	price :  function (value) {
-		jQuery.sap.require("sap.ui.core.format.NumberFormat");
-		var numberFormat = sap.ui.core.format.NumberFormat.getFloatInstance({
-			maxFractionDigits: 2,
-			minFractionDigits: 2,
-			groupingEnabled: true,
-			groupingSeparator: ".",
-			decimalSeparator: ","
-		});
-		return numberFormat.format(value);
-	},
+	// Formatiert anhand des Statuswertes (Backend) den Status-Icon und -Text
 	
-	totalPrice : function (value) {
-		var bundle = sap.ui.getCore().getModel("i18n").getResourceBundle();
-		return bundle.getText("CART_TOTAL_PRICE") + ": " + util.Formatter.price(value);
-	},
-	
+	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
 	_statusTextMap : {
 		"No ink" : sap.ui.getCore().getModel("i18n").getResourceBundle().getText("STATUS_D")
 	},
@@ -28,6 +14,7 @@ util.Formatter = {
 		return (util.Formatter._statusTextMap[status]) ? util.Formatter._statusTextMap[status] : status;
 	},
 	
+	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statusfarbe
 	_statusStateMap : {
 		"No ink" : "Error"
 	},
@@ -37,6 +24,7 @@ util.Formatter = {
 		return (util.Formatter._statusStateMap[status]) ? util.Formatter._statusStateMap[status] : status;
 	},
 
+	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statusicon
 	_statusIcon : {
 		"No ink" : "sap-icon://status-error"
 	},

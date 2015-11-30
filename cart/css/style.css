@@ -48,6 +48,7 @@
 	opacity: 0;
 }
 
+/* Elemente unsichtbar machen um flackern zu verhindern für Login Dialog */
 .loginDialogLabel {
 	font-size: large;
 	margin-top: 8%;
