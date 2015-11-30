@@ -221,7 +221,7 @@ sap.ui.controller("view.Product", {
 		fnClearInputFields = function(){
 			sap.ui.getCore().byId("AddEntryDialog--Ink_input").setValue("");
 			sap.ui.getCore().byId("AddEntryDialog--inputMail").setValue("");
-		};
+		}; 
 		
 		if (!this._addEntryDialog) {
 			var bundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
