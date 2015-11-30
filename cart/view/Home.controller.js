@@ -9,10 +9,12 @@ sap.ui.controller("view.Home", {
 		this._search();
 	},
 
+	// Actionlistener for Serach Field change
 	handleSearch : function (oEvent) {
 		this._search();
 	},
 
+	// Actionlistener for Refresh Button press
 	handleRefresh : function (oEvent) {
 		var that = this;
 		if (model.Config.isMock) {
@@ -33,6 +35,7 @@ sap.ui.controller("view.Home", {
 		}
 	},
 
+	// Searchs for the enternd String in all Printer Names
 	_search : function () {
 		var oView = this.getView(),
 		 oProductList = oView.byId("productList"),
@@ -63,16 +66,19 @@ sap.ui.controller("view.Home", {
 		oList.attachEventOnce("updateFinished", function() {oList.setNoDataText(sOldNoDataText);});
 	},
 
-	
+	// Actionlistener for Printer Item select (does same as Item press)
 	handleProductListSelect: function (oEvent) {
 		var oItem = oEvent.getParameter("listItem");
 		this._showProduct(oItem);
 	},
+	
+	// Actionlistener for Printer Item Press (does same as Item select)
 	handleProductListItemPress: function (oEvent) {
 		var oItem = oEvent.getSource();
 		this._showProduct(oItem);
 	},
 	
+	// navigates to Detail Page for the Printer
 	_showProduct: function (oItem) {
 		var oBindContext = oItem.getBindingContext("DruckerData")
 		 oModel = oBindContext.getModel(),
