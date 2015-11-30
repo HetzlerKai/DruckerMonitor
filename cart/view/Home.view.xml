@@ -8,13 +8,6 @@
 		id="page"
 		title="{i18n>HOME_TITLE}"
 		showFooter="{device>/isNoPhone}" >
-		<headerContent>
-			<Button
-				icon="sap-icon://filter"
-				tooltip="{i18n>TO_CART_BUTTON_TOOLTIP}"
-				press="handleFilterButtonPress">
-			</Button>
-		</headerContent>
 		<subHeader>
 			<Toolbar id="searchBar">
 				<SearchField
