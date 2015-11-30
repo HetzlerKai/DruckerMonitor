@@ -53,6 +53,7 @@ sap.ui.controller("view.Home", {
 				oBinding.filter([]);
 			}
 		}
+
 	},
 
 	_changeNoDataTextToIndicateLoading: function (oList) {
