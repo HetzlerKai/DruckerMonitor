@@ -81,7 +81,7 @@ sap.ui.define([
 			UIComponent.prototype.init.apply(this, arguments);
 
 			// i18n-Model wird in einem privaten Objekt für späteren Gebrauch gespreichert
-			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
+			this._resourceBundle = this.getModel('i18n').getResourceBundle();
 		},
 
 		_resourceBundle: null,
@@ -227,7 +227,7 @@ sap.ui.define([
 				oI18nModel = new ResourceModel({
 					bundleName: "sap.ui.demo.cart.i18n.appTexts"
 				});
-			sap.ui.getCore().setModel(oI18nModel, "i18n");
+			this.setModel(oI18nModel, "i18n");
 
 			// Initialisieren und Setzen der stamm=root View
 			var oView = sap.ui.view({

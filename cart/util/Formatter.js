@@ -1,17 +1,22 @@
 jQuery.sap.declare("util.Formatter");
 
+var oModel;
+
 util.Formatter = {
 		
 	// Formatiert anhand des Statuswertes (Backend) den Status-Icon und -Text
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
-	_statusTextMap : {
-		"No ink" : sap.ui.getCore().getModel("i18n").getResourceBundle().getText("STATUS_D")
+	_statusTextMap : function(value) {
+		var object = {
+			"No ink" : oModel.getResourceBundle().getText("STATUS_D")};
+		return object[value];
 	},
 	
-	statusText : function (status) {
-		status = status || sap.ui.getCore().getModel("i18n").getResourceBundle().getText("NO_STATE");
-		return (util.Formatter._statusTextMap[status]) ? util.Formatter._statusTextMap[status] : status;
+	statusText : function (status, noStatus) {
+		oModel = this.getModel("i18n");
+		status = status || noStatus;
+		return util.Formatter._statusTextMap(status) ? util.Formatter._statusTextMap(status) : status;
 	},
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statusfarbe
