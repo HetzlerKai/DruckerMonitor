@@ -6,10 +6,12 @@ sap.ui.controller("view.Welcome", {
 
 	DELAY: 3000,
 
+	// Starten der Animation
 	onInit: function () {
 		this._animate(1, true);
 	},
 
+	// Konfiguration für die Animation
 	_animate: function (iLevel, bForward) {
 
 		if (iLevel === this.ICON_NUMBER + 1) {
@@ -36,10 +38,12 @@ sap.ui.controller("view.Welcome", {
 		}
 	},
 
+	// Timeout reset
 	onExit: function () {
 		clearTimeout(this._iDelay);
 	},
-	
+
+	// Logout handling
 	onLogoutPressed: function () {
 		location.reload();
 	}
