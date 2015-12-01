@@ -223,8 +223,7 @@ sap.ui.controller("view.Product", {
 
 	// erzeugt Dialog zum erstellen eines neuen History eintrages 
 	handlePressAddTableEntry: function () {
-		var
-			that = this,
+		var that = this,
 			fnClearInputFields;
 
 		fnClearInputFields = function () {
@@ -233,7 +232,7 @@ sap.ui.controller("view.Product", {
 		};
 
 		if (!this._addEntryDialog) {
-			var bundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
+			var bundle = this.getView().getModel("i18n").getResourceBundle();
 
 			// create order dialog
 			this._dialogView = sap.ui.view({
@@ -251,9 +250,7 @@ sap.ui.controller("view.Product", {
 					text: bundle.getText('ADD_ENTRY_DIALOG_SAVE_BUTTON_TITLE'),
 					type: "Accept",
 					press: function (oEvent) {
-
-						var
-							sPatrone,
+						var sPatrone,
 							sText;
 
 						sPatrone = sap.ui.getCore().byId("AddEntryDialog--Ink_input").getValue();
