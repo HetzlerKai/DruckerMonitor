@@ -1,42 +1,28 @@
 jQuery.sap.require("util.Formatter");
 
-// Controller for the List of all Printers
+//Controller für die Liste aller Drucker
 sap.ui.controller("view.Home", {
 
-	onInit : function () {
+	onInit: function () {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
+		// trigger first search to set visibilities right
 		this._search();
 	},
 
 	// Actionlistener für Suchfeld
-	handleSearch : function (oEvent) {
+	handleSearch: function (oEvent) {
 		this._search();
 	},
 
-	// Actionlistener für Refresh Button
-	handleRefresh : function (oEvent) {
-		var 
-		that = this, 
-		oProductList = this.getView().byId("productList"),
-		oBinding = oProductList.getBinding("items"),
-		fnHandler = function() {
-			that.getView().byId("pullToRefresh").hide();
-			oBinding.detachDataReceived(fnHandler);
-		};
-			
-		oBinding.attachDataReceived(fnHandler);
-		that._search();
-	},
 
 	// sucht für den eingegeben String in allen Druckernamen
-	_search : function () {
+	_search: function () {
 		var oView = this.getView(),
-		 oProductList = oView.byId("productList"),
-		 oSearchField = oView.byId("searchField")
-		 
+			oProductList = oView.byId("productList"),
+			oSearchField = oView.byId("searchField"),
 		// setzt Sichtbarkeit
 		bShowSearch = oSearchField.getValue().length !== 0;
-		
+
 		if (bShowSearch) {
 			this._changeNoDataTextToIndicateLoading(oProductList);
 		}
@@ -57,7 +43,7 @@ sap.ui.controller("view.Home", {
 	_changeNoDataTextToIndicateLoading: function (oList) {
 		var sOldNoDataText = oList.getNoDataText();
 		oList.setNoDataText("Loading...");
-		oList.attachEventOnce("updateFinished", function() {
+		oList.attachEventOnce("updateFinished", function () {
 			oList.setNoDataText(sOldNoDataText);
 		});
 	},
@@ -66,21 +52,19 @@ sap.ui.controller("view.Home", {
 	handleProductListSelect: function (oEvent) {
 		var oItem = oEvent.getParameter("listItem");
 		this._showProduct(oItem);
-	}, 
-	
+	},
+
 	// Actionlistener für Printer Item Press (gleich zu Item select)
 	handleProductListItemPress: function (oEvent) {
 		var oItem = oEvent.getSource();
 		this._showProduct(oItem);
 	},
-	
+
 	// navigiert zur Drucker Detail seite
 	_showProduct: function (oItem) {
-		var 
-		oBindContext = oItem.getBindingContext("DruckerData"),
+		var oBindContext = oItem.getBindingContext("DruckerData")
 		oModel = oBindContext.getModel(),
-		sId = oModel.getProperty(oBindContext.getPath()).id;
-		
+			sId = oModel.getProperty(oBindContext.getPath()).id;
 		sId = (parseInt(sId) - 1).toString();
 		this._router.navTo("printerDetails", {id: sId}, !sap.ui.Device.system.phone);
 	}
