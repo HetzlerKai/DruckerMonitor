@@ -4,7 +4,7 @@ jQuery.sap.require("sap.m.MessageBox");
 jQuery.sap.require("sap.m.Dialog");
 jQuery.sap.require("sap.ui.model.json.JSONModel");
 
-// Controller for the Page with the Details for each Printer
+// Controller für die Drucker Details Seite
 sap.ui.controller("view.Product", {
 
 	onInit: function () {
@@ -14,7 +14,7 @@ sap.ui.controller("view.Product", {
 		this.getHistoryModel();
 	},
 
-	// Reloads page on Logout
+	// Lädt die Seite neu als Logout
 	fnOnLogOutPress: function () {
 		location.reload();
 	},

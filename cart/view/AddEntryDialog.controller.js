@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 	
-	// Provides an Base Object for every AddDialog
+	// Controller für History Add Entry Dialog
 	return Controller.extend("view.AddEntryDialog", {});
 });
 
