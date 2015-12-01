@@ -20,6 +20,7 @@ sap.ui.define([
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
 
+		// Einstellungen für die Navigation
 		metadata: {
 			includes: ["css/style.css"],
 			routing: {
@@ -76,14 +77,16 @@ sap.ui.define([
 		},
 
 		init: function () {
-						// call overwritten init (calls createContent)
+			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 
+			// i18n-Model wird in einem privaten Objekt für späteren Gebrauch gespreichert
 			this._resourceBundle = sap.ui.getCore().getModel('i18n').getResourceBundle();
 		},
 
 		_resourceBundle: null,
 
+		// Liefert eine neue Dialoginstanz
 		createDialog: function (oComponent, oView) {
 			return new Dialog({
 				title: "Login",
@@ -93,16 +96,18 @@ sap.ui.define([
 				beginButton: new Button({
 					id: "__login",
 					text: "Log on",
+
+					// Mit der Verwendung der Proxy Funktion wird der aktuelle "this" Zeiger übergeben an die handleLoginPress Funktion
 					press: jQuery.proxy(oComponent.handleLoginPress, oComponent, oView)
 				})
 			});
-			sap.ui.getCore().byId('__userInput').$().blur();
+
 		},
 
 		handleLoginPress: function (oView) {
-
 			var that = this;
-			
+
+			// Holen der Daten aus der Datenbank
 			jQuery.ajax({
 				type: 'POST',
 				dataType: "json",
@@ -112,6 +117,7 @@ sap.ui.define([
 					name: this.__user,
 					passwort: this.__pwd
 				},
+				// Beim Erfolg wird success ausgeführt
 				success: function (response) {
 					var oDruckerdaten;
 
@@ -121,29 +127,37 @@ sap.ui.define([
 					}
 					oDruckerdaten = response;
 
-					// Check if an Array has values
-					if (oDruckerdaten instanceof Array && oDruckerdaten.length > 0){
+					// Überprüfung des Arrays auf die Inhaltlänge
+					if (oDruckerdaten instanceof Array && oDruckerdaten.length > 0) {
 
+						// Empfangene Daten werden an das Viewmodel gesetzt
 						oView.getModel("DruckerData").setData(oDruckerdaten);
-						that.handleWrongCredentials("None");
-						// Set up the routing
-						that.routerIntialize();
 
+						// Setzt die Statusfarbe der Anmeldefelder zurück
+						that.handleWrongCredentials("None");
+
+						// Initialisiert das Routing/ die Navigation
+						that.routerInitialize();
+
+						// Dialog wird geschlossen
 						that.__dialog.close();
 
 					} else {
+						// Falls das Array leer ist, sprich keine Daten geliefrt worden sind, wird eine Fehlermeldung ausgegeben
 						sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + oDruckerdaten);
 					}
 
 				},
-				error: function(oEvent){
-					debugger;
+				// Beim Fehler wird eine Nachricht ausgegeben
+				error: function (oEvent) {
+					sap.m.MessageBox.alert("Beim Lesen der Daten ist ein Fehler aufgetreten: " + oEvent);
 				}
 			});
 
 		},
 
 		handleWrongCredentials: function (sState) {
+			// Setzt die Statusfarbe der Anmeldefelder auf einen gewünschten Wert
 			sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState[sState]);
 			sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState[sState]);
 		},
@@ -155,6 +169,8 @@ sap.ui.define([
 		__pwd: null,
 
 		getDialogContent: function (oComponent) {
+
+			// Aufbereitung des UI-Inhaltes für das Anmeldedialog
 			return [
 				new Label({
 					text: "Username:",
@@ -182,83 +198,50 @@ sap.ui.define([
 			];
 		},
 
-		routerIntialize: function () {
-			//extend the router
+		// Routervorbereitungen
+		routerInitialize: function () {
+
+			// Router Instanz wird auf einer privaten Variable gespeichert
 			this._router = this.getRouter();
 
-			//navigate to initial page for !phone
-			if (!sap.ui.Device.system.phone) {
-				this._router.getTargets().display("welcome");
-			}
+			// Darstellung der Startseite
+			this._router.getTargets().display("welcome");
 
-			// initialize the router
+			// Routerinitialisierung
 			this._router.initialize();
 		},
 
 		setDialogContentInvisible: function () {
-			// Should avoid flickering while rendering
+			// Zur Vermeidung des Flackerns beim Starten des Anmeldedialoges
 			document.getElementById('__pwdLabel').style.visibility = "hidden";
 			document.getElementById('__userInput').style.visibility = "hidden";
 			document.getElementById('__userLabel').style.visibility = "hidden";
 			document.getElementById('__pwdInput').style.visibility = "hidden";
 		},
 
-		myNavBack: function () {
-			var oHistory = sap.ui.core.routing.History.getInstance();
-			var oPrevHash = oHistory.getPreviousHash();
-			if (oPrevHash !== undefined) {
-				window.history.go(-1);
-			} else {
-				this._router.navTo("home", {}, true);
-			}
-		},
-
+		// Erstellung des UIComponent Inhaltes, welches dann auf dem Bildschirm erscheint
 		createContent: function () {
 			var oJSONModel = new JSONModel(),
-			// set i18n model
-			 oI18nModel = new ResourceModel({
-				bundleName: "sap.ui.demo.cart.i18n.appTexts"
-			});
 
+			// Initialisieren und Setzen des i18n Models an die Core Komponente
+				oI18nModel = new ResourceModel({
+					bundleName: "sap.ui.demo.cart.i18n.appTexts"
+				});
 			sap.ui.getCore().setModel(oI18nModel, "i18n");
 
-			// create root view
+			// Initialisieren und Setzen der stamm=root View
 			var oView = sap.ui.view({
 				viewName: "view.App",
 				type: "XML"
 			});
-
 			oView.setModel(oJSONModel, "DruckerData");
 
 			this.__dialog = this.createDialog(this, oView).open();
-
 			this.setDialogContentInvisible();
 
+			// Setzen des i18n Models an die View/ Ansicht
 			oView.setModel(oI18nModel, "i18n");
 
-			//create and set cart model
-			var oCartModel = new JSONModel({
-				entries: [],
-				totalPrice: "0",
-				showEditAndProceedButton: false
-			});
-			oView.setModel(oCartModel, "cartProducts");
-
-
-			// set device model
-			var oDeviceModel = new JSONModel({
-				isTouch: sap.ui.Device.support.touch,
-				isNoTouch: !sap.ui.Device.support.touch,
-				isPhone: sap.ui.Device.system.phone,
-				isNoPhone: !sap.ui.Device.system.phone,
-				listMode: (sap.ui.Device.system.phone) ? "None" : "SingleSelectMaster",
-				listItemType: (sap.ui.Device.system.phone) ? "Active" : "Inactive"
-			});
-			oDeviceModel.setDefaultBindingMode("OneWay");
-			oView.setModel(oDeviceModel, "device");
-
-
-			// done
 			return oView;
 		}
 	});
