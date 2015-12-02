@@ -67,6 +67,8 @@ sap.ui.controller("view.Product", {
 	// Download Druckerdaten als PDF
 	handleDownloadButtonPress: function (oEvent) {
 		var that = this;
+		
+		sap.m.MessageToast.show("Download was started");
 
 		jQuery.ajax({
 			type: 'POST',
@@ -76,11 +78,12 @@ sap.ui.controller("view.Product", {
 				post: 'DruckerAlsPdf',
 				ip: that.getDruckerIp()
 			},
-			success: function () {
-				sap.m.MessageToast.show("Download was started");
+			success: function (response) {
+				window.open('/php/services/pdf/Monitoring.pdf');
 			},
 			error: function (error) {
-				jQuery.sap.log.error("Download as PDF failed");
+				//jQuery.sap.log.error("Download as PDF failed");
+				window.open('./php/services/pdf/Monitoring.pdf');
 			}
 		});
 
