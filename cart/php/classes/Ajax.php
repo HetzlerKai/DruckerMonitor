@@ -7,7 +7,7 @@ CLASS AJAX{
 		$this->db = $db;
 	}
 
-	public function doTheShit(){
+	public function DoSomething(){
 		if(isset($_POST['post'])){
 			switch ($_POST['post']) {    
 	/*			case 'holeAlleDruckerDaten':
@@ -18,18 +18,22 @@ CLASS AJAX{
 				break;				*/
 				case 'schreibeHistorie':
 				   return 
-				   $this->schreibeHistorie($_POST['eintrag']);
+				   $this->schreibeHistorie($_POST['kommentar'],$_POST['patrone']);
+				break;						
+				case 'getStatistik':
+				   return 
+				   $this->getStatistik();
 				break;				
-				case 'login':;
+				case 'login':
 				   return $this->login($_POST['name'],$_POST['passwort']);
 				break;				
-				case 'getHistorie':;
+				case 'getHistorie':
 				   return $this->getHistorie();
 				break;				
-				case 'alleDruckerAlsPdf':;
+				case 'alleDruckerAlsPdf':
 				   return $this->DruckerToPdf();
 				break;				
-				case 'DruckerAlsPdf':;
+				case 'DruckerAlsPdf':
 				   return $this->DruckerToPdf($_POST["ip"]);
 				break;
 				default :
@@ -48,8 +52,8 @@ CLASS AJAX{
 			echo "false";
 		}
 	}	
-	private function schreibeHistorie($eintrag){
-		$q = "INSERT INTO `historie` (`eintrag`) VALUES '".$eintrag."'";
+	private function schreibeHistorie($beschr,$patrone){
+		$q = "INSERT INTO `historie` (`Beschreibung`,`Patrone`) VALUES ('".$beschr."','".$patrone."')";
 		$return = $this->db->fuehreAus($q);
 		return $return;
 	}	
@@ -105,7 +109,7 @@ CLASS AJAX{
 	private function DruckerToPdf($druckerip=false){
 
 		require_once("../services/require.php");
-	//	header('Content-type: application/pdf');
+//		$pdf->header('Content-type: application/pdf');
 
 		$pdf=new FPDF();
 		$pdf->AddPage();
@@ -138,12 +142,20 @@ CLASS AJAX{
 				$pdf->Cell(0,5,"",0,1); 	
 		}
 	//	echo $pdf->Output();
-		$handelPDF = fopen("Monitoring.pdf","w+");
-		fwrite($handlePDF,$pdf->Output());
+		$pfad = "././pdf/Monitoring.pdf";	
+	  if(!(is_dir("././pdf/"))){
+		return mkdir ("././pdf/",0777,true); 
+	}
+		$out = $pdf->Output("","S");
+		$handlePDF = fopen($pfad,"w+");
+		fwrite($handlePDF,$out);
 		fclose($handlePDF);
-		
+		return "./services/pdf/Monitoring.pdf";
 	}	
-	
+	private function getStatistik(){
+		$q = "SELECT * FROM `statistik`";	
+		
+	}
 	
 	
 	public function trageEin($ip,$id,$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow){
@@ -157,8 +169,13 @@ CLASS AJAX{
 			
 		";
 		var_dump($q);
-		$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
-		$return = $this->db->fuehreAus($q);
+		$q2 = "
+			INSERT INTO `statistik`(`drucker_id`, `gedruckte_seiten`) VALUES (".$id.",".intval($gedruckteSeiten).")
+			
+		";
+		var_dump($q2);		
+	//	$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
+	//	$return = $this->db->fuehreAus($q);
 	//	echo json_encode($return);	
 	}	
 	

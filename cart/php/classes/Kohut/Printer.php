@@ -83,7 +83,10 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
     public function getTypeOfPrinter()
     {
         $colorCartridgeSlot1 = $this->getSNMPString(self::SNMP_CARTRIDGE_COLOR_SLOT_1);
-        if ($colorCartridgeSlot1 !== false) {
+	//	var_dump($this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_1));
+	//	var_dump($this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_2));
+	//	var_dump($this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_3));
+   //     if ($colorCartridgeSlot1 !== false) {
      //       if (strtolower($colorCartridgeSlot1) === self::CARTRIDGE_COLOR_CYAN) {
             if (strpos(strtolower($colorCartridgeSlot1),self::CARTRIDGE_COLOR_CYAN)  > 0 ) {
                 /**
@@ -97,9 +100,9 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
                  */
                 return self::PRINTER_TYPE_MONO;
             }
-        }
+   //     }
 
-        return false;
+   //     return false;
     }
 
     /**
@@ -259,7 +262,8 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
 		$actual = $this->get($actualValueSNMPSlot);
 		$max = (int)preg_replace("/[^\d]+/","",$max);
 		$actual = (int)preg_replace("/[^\d]+/","",$actual);
-
+		var_dump($max);
+		var_dump($actual);
 
 
         if ($max === false || $actual === false) {
@@ -293,15 +297,18 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
     public function getBlackTonerLevel()
     {
         if ($this->isColorPrinter()) {
+			echo "ike bin farbig";
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
         } elseif ($this->isMonoPrinter()) {
-	//		echo "Ike bin schwarz";
+			echo "Ike bin schwarz";
 	//		var_dump(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1);
 	//		var_dump(self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
         } else {
+			var_dump($this->isColorPrinter());
+			var_dump($this->isMonoPrinter());
             return false;
         }
     }

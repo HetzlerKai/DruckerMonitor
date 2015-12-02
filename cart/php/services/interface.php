@@ -1,6 +1,6 @@
 <?php
 require_once("../services/require.php");
-
+set_time_limit(1200);
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -37,19 +37,21 @@ $patronentyp_yellow = "";
 	$ip = $ips[$i]["ip"];
 	$id = $ips[$i]["id"];
 	$printer = new Kohut_SNMP_Printer($ip);  
+	$printer->setMaxTimeout(600);  
+//	var_dump($printer->getAllSubUnitData());
 	echo "<pre>";
 //	var_dump($printer);
 
-	print_r($output);
 	echo "<br>";
 	echo $printer."<br>";
 	echo "TONERLEVEL :".$printer->getBlackTonerLevel()."!<br>";
 	echo "</pre>";
+	if($printer->getBlackTonerLevel() !== 0){
 		if ($printer->isColorPrinter()){
 			$typ = 'farbdrucker';}
 		elseif ($printer->isMonoPrinter()){ 
 			$typ = 'schwarzweiss';
-		}
+		} 
 		$hersteller = $printer->getFactoryId();
 		$vendor = $printer->getVendorName();
 		$seriennummer = $printer->getSerialNumber(); 
@@ -59,6 +61,7 @@ $patronentyp_yellow = "";
 			$toner_magenta = round($printer->getMagentaTonerLevel(), 2);
 			$toner_yellow = round($printer->getYellowTonerLevel(), 2);
 		}
+		
 		$trommelstand = $printer->getDrumLevel();
 		$gedruckteSeiten = $printer->getNumberOfPrintedPapers();
 			
@@ -68,4 +71,6 @@ $patronentyp_yellow = "";
 		$patronentyp_yellow =  $printer->getYellowCatridgeType();
 
 		$ajax->trageEin($ip,$id,$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow);
+	}
 }
+echo "hello world";
