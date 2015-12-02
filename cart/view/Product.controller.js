@@ -279,6 +279,8 @@ sap.ui.controller("view.Product", {
 	},
 
 	handleNewEntry: function (sPatrone, sText) {
+		
+		var that = this;
 
 		jQuery.ajax({
 	        type : 'POST',
@@ -290,10 +292,15 @@ sap.ui.controller("view.Product", {
 	            kommentar: sText
 //	            ,
 //				ip: this.getDruckerIp()
+	        },
+	        success: function(){
+	        	that.refreshHistoryData();
+	        },
+	        error: function(){
+	        	that.refreshHistoryData();
 	        }
 	    });
 
-		this.refreshHistoryData();
 	},
 
 	getHistoryModel: function () {
