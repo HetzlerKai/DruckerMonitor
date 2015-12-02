@@ -68,8 +68,6 @@ sap.ui.controller("view.Product", {
 	handleDownloadButtonPress: function (oEvent) {
 		var that = this;
 
-		sap.m.MessageToast.show("Download was started");
-
 		jQuery.ajax({
 			type: 'POST',
 			dataType: "json",
@@ -78,13 +76,8 @@ sap.ui.controller("view.Product", {
 				post: 'DruckerAlsPdf',
 				ip: that.getDruckerIp()
 			},
-			success: function (werte) {
-				window.location.href = werte;
-//	            window.open(
-//	                'data:application/pdf,' + encodeURIComponent(werte),
-//	                'Batch Print',
-//	                'width=600,height=600,location=_newtab'
-//	            );
+			success: function () {
+				sap.m.MessageToast.show("Download was started");
 			},
 			error: function (error) {
 				jQuery.sap.log.error("Download as PDF failed");
@@ -96,7 +89,7 @@ sap.ui.controller("view.Product", {
 	_SecondTabContentIsLoaded: false,
 	_$content: null,
 
-	// zeigt die Detailseiten (Tabs) für den Drucker an
+	// zeigt die Detailseiten (Tabs) fuer den Drucker an
 	showPrinterData: function (oEvent) {
 		var oSelectedItem = oEvent.getParameter("selectedItem"),
 			sId = "#" + oEvent.getParameter("id") + "-content",
@@ -284,64 +277,60 @@ sap.ui.controller("view.Product", {
 
 	handleNewEntry: function (sPatrone, sText) {
 
-//		jQuery.ajax({
-//	        type : 'POST',
-//	        dataType: "json",
-//	        url : 'php/services/ajax.php',
-//	        data: {
-//	            get: 'schreibeHistorie',
-//	            patrone: sPatrone,
-//	            beschreibung: sText,
+		jQuery.ajax({
+	        type : 'POST',
+	        dataType: "json",
+	        url : 'php/services/ajax.php',
+	        data: {
+	        	post: 'schreibeHistorie',
+	            patrone: sPatrone,
+	            kommentar: sText
+//	            ,
 //				ip: this.getDruckerIp()
-//	        }
-//	    });
+	        }
+	    });
 
 		this.refreshHistoryData();
 	},
 
 	getHistoryModel: function () {
-		var oData, oHistoryModel;
+		var aData, oHistoryModel;
 
-		oData = this.getHistoryData();
+		aData = this.getHistoryData();
 
-		oHistoryModel = new sap.ui.model.json.JSONModel(oData);
+		oHistoryModel = new sap.ui.model.json.JSONModel(aData);
 		this.getView().setModel(oHistoryModel, "History");
 	},
 
 	getHistoryData: function () {
-		var oData = [
-			{
-				Datum: "20.11.15",
-				Patrone: "Cyan",
-				Beschreibung: "Text"
-			}, {
-				Datum: "25.11.15",
-				Patrone: "Cyan2",
-				Beschreibung: "Text2"
-			}
-		];
+		var aData = [];
 
-//		jQuery.ajax({
-//	        type : 'POST',
-//	        dataType: "json",
-//	        url : 'php/services/ajax.php',
-//	        data: {
-//	            get: 'getHistorie',
+		jQuery.ajax({
+	        type : 'POST',
+	        dataType: "json",
+	        url : 'php/services/ajax.php',
+	        data: {
+	        	post: 'getHistorie'
+//	            	,
 //				ip: this.getDruckerIp()
-//	        },
-//	        success: function(response){
-//	        	oData = response;
-//	        }
-//	    });
+	        },
+	        async: false,
+	        success: function(response){
+	        	aData = response;
+	        },
+	        error: function(e){
+	        	jQuery.sap.log.error("Couldn't retrieve History Data");
+	        }
+	    });
 
 
-		return oData;
+		return aData;
 	},
 
 	refreshHistoryData: function () {
-		var oData = this.getHistoryData();
+		var aData = this.getHistoryData();
 
-		this.getView().getModel("History").setData(oData);
+		this.getView().getModel("History").setData(aData);
 	}
 
 });

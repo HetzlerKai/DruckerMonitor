@@ -157,13 +157,13 @@
 							key="History">
 						<Table headerText="{i18n>TABLE_HEADER_TEXT}" items="{History>/}">
 							<columns>
-								<Column width="10%">
+								<Column width="20%">
 									<Text text="{i18n>TABLE_COLUMN_DATUM}"/>
 								</Column>
 								<Column width="10%">
 									<Text text="{i18n>TABLE_COLUMN_PATRONE}"/>
 								</Column>
-								<Column width="76%">
+								<Column width="66%">
 									<Text text="{i18n>TABLE_COLUMN_KOMMENTAR}"/>
 								</Column>
 								<Column width="4%">

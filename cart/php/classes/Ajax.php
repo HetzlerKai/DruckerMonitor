@@ -17,8 +17,7 @@ CLASS AJAX{
 				   return $this->holeDruckerMitIp($_POST['ip']);
 				break;				*/
 				case 'schreibeHistorie':
-				   return 
-				   $this->schreibeHistorie($_POST['kommentar'],$_POST['patrone']);
+				   return $this->schreibeHistorie($_POST['kommentar'],$_POST['patrone']);
 				break;						
 				case 'getStatistik':
 				   return 
@@ -60,7 +59,7 @@ CLASS AJAX{
 	private function getHistorie(){
 		$q = "SELECT * FROM `historie`";
 		$return = $this->db->getMehrzeilig($q);
-		return $return;
+		echo json_encode($return);
 	}
 	
 	
