@@ -47,13 +47,13 @@
 							<!--TODO: Status has to be implemented-->
 							<ObjectStatus
 									state="{
-									path : 'DruckerData>status',
-									formatter : 'util.Formatter.statusState'
-								}"
+										path : 'DruckerData>id',
+										formatter : 'util.Formatter.statusState'
+									}"
 									icon="{
-									path : 'DruckerData>status',
-									formatter : 'util.Formatter.statusIcon'
-								}"
+										path : 'DruckerData>id',
+										formatter : 'util.Formatter.statusIcon'
+									}"
 									tooltip="{i18n>CURRENT_INK_STATE}"/>
 						</firstStatus>
 					</ObjectListItem>

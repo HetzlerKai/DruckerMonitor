@@ -140,8 +140,7 @@ sap.ui.controller("view.Product", {
 				name: 'Black',
 				data: [{
 					name: 'Tintenart',
-					//TODO:Please remove random function, is only for testing
-					y: parseInt(oData.toner_schwarz) + Math.floor((Math.random() * 20) + 0)
+					y: parseInt(oData.toner_schwarz)
 				}],
 				color: 'black'
 			},
@@ -149,8 +148,7 @@ sap.ui.controller("view.Product", {
 					name: 'Cyan',
 					data: [{
 						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_cyan) + Math.floor((Math.random() * 20) + 0)
+						y: parseInt(oData.toner_cyan)
 					}],
 					color: "cyan"
 				},
@@ -158,8 +156,7 @@ sap.ui.controller("view.Product", {
 					name: 'Magenta',
 					data: [{
 						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_magenta) + Math.floor((Math.random() * 20) + 0)
+						y: parseInt(oData.toner_magenta) 
 					}],
 					color: "magenta"
 				},
@@ -167,8 +164,7 @@ sap.ui.controller("view.Product", {
 					name: 'Gelb',
 					data: [{
 						name: 'Tintenart',
-						//TODO:Please remove random function, is only for testing
-						y: parseInt(oData.toner_gelb) + Math.floor((Math.random() * 20) + 0)
+						y: parseInt(oData.toner_gelb)
 					}],
 					color: "yellow"
 				}]
