@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 15. Nov 2015 um 17:53
+-- Erstellungszeit: 02. Dez 2015 um 21:58
 -- Server Version: 5.6.16
 -- PHP-Version: 5.5.11
 
@@ -137,8 +137,10 @@ INSERT INTO `drucker` (`id`, `ip`, `raum`, `name`, `mac`, `typ`, `hersteller`, `
 
 CREATE TABLE IF NOT EXISTS `historie` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `eintrag` text COLLATE utf8_unicode_ci NOT NULL,
+  `drucker_id` int(10) unsigned NOT NULL,
+  `Beschreibung` text COLLATE utf8_unicode_ci NOT NULL,
   `Datum` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Patrone` varchar(254) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
@@ -188,6 +190,18 @@ INSERT INTO `krit_mail` (`drucker_id`, `schwarz`, `magenta`, `cyan`, `gelb`, `ge
 (23, 15, 15, 15, 15, 0),
 (24, 15, 15, 15, 15, 0),
 (25, 15, 15, 15, 15, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `statistik`
+--
+
+CREATE TABLE IF NOT EXISTS `statistik` (
+  `drucker_id` int(11) NOT NULL,
+  `datum` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gedruckte_seiten` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -17,7 +17,8 @@ CLASS AJAX{
 				   return $this->holeDruckerMitIp($_POST['ip']);
 				break;				*/
 				case 'schreibeHistorie':
-				   return $this->schreibeHistorie($_POST['kommentar'],$_POST['patrone']);
+				   return 
+				   $this->schreibeHistorie($_POST['id'],$_POST['kommentar'],$_POST['patrone']);
 				break;						
 				case 'getStatistik':
 				   return 
@@ -50,12 +51,12 @@ CLASS AJAX{
 		}else{
 			echo "false";
 		}
-	}	
-	private function schreibeHistorie($beschr,$patrone){
-		$q = "INSERT INTO `historie` (`Beschreibung`,`Patrone`) VALUES ('".$beschr."','".$patrone."')";
+	}
+	private function schreibeHistorie($id,$beschr,$patrone){
+		$q = "INSERT INTO `historie` (`drucker_id`,`Beschreibung`,`Patrone`) VALUES ('".$id."','".$beschr."','".$patrone."')";
 		$return = $this->db->fuehreAus($q);
 		return $return;
-	}	
+	}
 	private function getHistorie(){
 		$q = "SELECT * FROM `historie`";
 		$return = $this->db->getMehrzeilig($q);
@@ -67,7 +68,7 @@ CLASS AJAX{
 		$q = "SELECT `ip`,`id` FROM `drucker`";
 		$return = $this->db->getMehrzeilig($q);
 		return $return;
-	}	
+	}
 
 	private function holeAlleDruckerDaten(){
 		$q = "SELECT * FROM `drucker`";
@@ -132,7 +133,7 @@ CLASS AJAX{
 		}else{
 				$drucker = $this->holeDruckerMitIp($druckerip);
 				if($drucker === false){
-					return "IP nicht vergeben";
+					echo "IP nicht vergeben";
 				}
 				foreach($drucker as $key => $value){
 					$string = "".$key.": ".$value;
@@ -149,7 +150,7 @@ CLASS AJAX{
 		$handlePDF = fopen($pfad,"w+");
 		fwrite($handlePDF,$out);
 		fclose($handlePDF);
-		return "./services/pdf/Monitoring.pdf";
+		echo "./services/pdf/Monitoring.pdf";
 	}	
 	private function getStatistik(){
 		$q = "SELECT * FROM `statistik`";	

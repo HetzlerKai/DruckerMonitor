@@ -150,7 +150,7 @@ sap.ui.define([
 				},
 				// Beim Fehler wird eine Nachricht ausgegeben
 				error: function (oEvent) {
-					sap.m.MessageBox.alert("Beim Lesen der Daten ist ein Fehler aufgetreten: " + oEvent);
+					alert("Beim Lesen der Daten ist ein Fehler aufgetreten: " + oEvent);
 				}
 			});
 
