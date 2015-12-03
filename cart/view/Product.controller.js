@@ -11,6 +11,11 @@ sap.ui.controller("view.Product", {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
 		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
+	},
+	
+	onAfterRendering: function(){
+		this.sDataPath = this.getView().getBindingContext("DruckerData").getPath();
+
 		this.getHistoryModel();
 	},
 
@@ -19,7 +24,7 @@ sap.ui.controller("view.Product", {
 		location.reload();
 	},
 
-	dataPath: "",
+	sDataPath: "",
 
 	_routePatternMatched: function (oEvent) {
 		var sId = oEvent.getParameter("arguments").id,
@@ -29,8 +34,9 @@ sap.ui.controller("view.Product", {
 			oModel = oView.getModel("DruckerData"),
 			oData = oModel.getProperty(sPath);
 
-		this.dataPath = sPath;
-
+		this.sDataPath = sPath;
+		this.getHistoryModel();
+		
 		oView.bindElement("DruckerData>" + sPath);
 		//if there is no data the model has to request new data
 		if (!oData) {
@@ -51,17 +57,17 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	getDruckerIp: function () {
+	getDruckerId: function () {
 		var
-			oView, oCurrentDrucker,
-			sIp = null;
+		oModel, oCurrentDrucker,
+		sId = null;
 
-		oView = this.getView().getModel("DruckerData");
-		oCurrentDrucker = oView.getProperty(this.dataPath);
+		oModel = sap.ui.getCore().getModel("DruckerData");
+		oCurrentDrucker = oModel.getProperty(this.sDataPath);
 
-		sIp = oCurrentDrucker.ip;
+		sId = oCurrentDrucker.id;
 
-		return sIp;
+		return sId;
 	},
 
 	// Download Druckerdaten als PDF
@@ -76,7 +82,7 @@ sap.ui.controller("view.Product", {
 			url: 'php/services/ajax.php',
 			data: {
 				post: 'DruckerAlsPdf',
-				ip: that.getDruckerIp()
+				ip: that.getDruckerId()
 			},
 			success: function (response) {
 				window.open('/php/services/pdf/Monitoring.pdf');
@@ -182,8 +188,11 @@ sap.ui.controller("view.Product", {
 				text: 'Paper Consumption'
 			},
 			xAxis: {
-				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-					'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+				categories: ['KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5',
+				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 
+				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 
+				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 
+				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5' ]
 			},
 			yAxis: {
 				title: {
@@ -194,6 +203,42 @@ sap.ui.controller("view.Product", {
 				name: oData.name,
 				//TODO:Please remove random function, is only for testing
 				data: [
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
+					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
 					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
 					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
 					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
@@ -289,9 +334,8 @@ sap.ui.controller("view.Product", {
 	        data: {
 	        	post: 'schreibeHistorie',
 	            patrone: sPatrone,
-	            kommentar: sText
-//	            ,
-//				ip: this.getDruckerIp()
+	            kommentar: sText,
+				id: this.getDruckerId()
 	        },
 	        success: function(){
 	        	that.refreshHistoryData();
@@ -320,9 +364,8 @@ sap.ui.controller("view.Product", {
 	        dataType: "json",
 	        url : 'php/services/ajax.php',
 	        data: {
-	        	post: 'getHistorie'
-//	            	,
-//				ip: this.getDruckerIp()
+	        	post: 'getHistorie',
+				id: this.getDruckerId()
 	        },
 	        async: false,
 	        success: function(response){

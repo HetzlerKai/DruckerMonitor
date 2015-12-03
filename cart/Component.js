@@ -132,6 +132,7 @@ sap.ui.define([
 
 						// Empfangene Daten werden an das Viewmodel gesetzt
 						oView.getModel("DruckerData").setData(oDruckerdaten);
+						sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
 
 						// Setzt die Statusfarbe der Anmeldefelder zurück
 						that.handleWrongCredentials("None");
@@ -235,6 +236,7 @@ sap.ui.define([
 				type: "XML"
 			});
 			oView.setModel(oJSONModel, "DruckerData");
+			sap.ui.getCore().setModel(oJSONModel, "DruckerData");
 
 			this.__dialog = this.createDialog(this, oView).open();
 			this.setDialogContentInvisible();

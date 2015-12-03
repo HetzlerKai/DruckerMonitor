@@ -28,7 +28,7 @@ CLASS AJAX{
 				   return $this->login($_POST['name'],$_POST['passwort']);
 				break;				
 				case 'getHistorie':
-				   return $this->getHistorie();
+				   return $this->getHistorie($_POST['id']);
 				break;				
 				case 'alleDruckerAlsPdf':
 				   return $this->DruckerToPdf();
@@ -57,8 +57,8 @@ CLASS AJAX{
 		$return = $this->db->fuehreAus($q);
 		return $return;
 	}
-	private function getHistorie(){
-		$q = "SELECT * FROM `historie`";
+	private function getHistorie($id){
+		$q = "SELECT * FROM `historie` WHERE `drucker_id` = ".$id."";
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 	}
