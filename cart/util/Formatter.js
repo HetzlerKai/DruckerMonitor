@@ -7,21 +7,11 @@ util.Formatter = {
 	// Formatiert anhand des Statuswertes (Backend) den Status-Icon und -Text
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
-//	_statusTextMap : function(value) {
-//		var object = {
-//			"No ink" : oModel.getResourceBundle().getText("STATUS_D")};
-//		return object[value];
-//	},
-	
 	statusText : function (status, noStatus) {
 		return status;
 	},
 	
-	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statusfarbe
-//	_statusStateMap : {
-//		"No ink" : "Error"
-//	},
-	
+	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Status
 	statusState : function (sId) {
 		var 
 		oCurrData, sStatus, 
@@ -47,14 +37,10 @@ util.Formatter = {
 			sStatus = "None";
 		}
 		
-		return sStatus; //(util.Formatter._statusStateMap[sStatus]) ? util.Formatter._statusStateMap[sStatus] : sStatus;
+		return sStatus;
 	},
 
-	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statusicon
-//	_statusIcon : {
-//		"No ink" : "sap-icon://status-error"
-//	},
-
+	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - StatusIcon
 	statusIcon : function(sId){
 		var 
 		oCurrData, sStatus, 
