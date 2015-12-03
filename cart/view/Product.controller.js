@@ -14,8 +14,8 @@ sap.ui.controller("view.Product", {
 	},
 	
 	onAfterRendering: function(){
+		// Das ist notwendig um einen Aufruf der Seite direkt über die URL zuermöglichen
 		this.sDataPath = this.getView().getBindingContext("DruckerData").getPath();
-
 		this.getHistoryModel();
 	},
 
