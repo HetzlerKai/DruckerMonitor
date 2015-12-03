@@ -69,6 +69,19 @@ sap.ui.controller("view.Product", {
 
 		return sId;
 	},
+	
+	getDruckerIp: function () {
+		var
+		oModel, oCurrentDrucker,
+		sIp = null;
+
+		oModel = sap.ui.getCore().getModel("DruckerData");
+		oCurrentDrucker = oModel.getProperty(this.sDataPath);
+
+		sIp = oCurrentDrucker.ip;
+
+		return sIp;
+	},
 
 	// Download Druckerdaten als PDF
 	handleDownloadButtonPress: function (oEvent) {
@@ -82,7 +95,7 @@ sap.ui.controller("view.Product", {
 			url: 'php/services/ajax.php',
 			data: {
 				post: 'DruckerAlsPdf',
-				ip: that.getDruckerId()
+				ip: that.getDruckerIp()
 			},
 			success: function (response) {
 				window.open('/php/services/pdf/Monitoring.pdf');
