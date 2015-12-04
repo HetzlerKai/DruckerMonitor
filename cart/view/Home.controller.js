@@ -40,7 +40,7 @@ sap.ui.controller("view.Home", {
 		this.aAllItems = aItems;
 		this.aCritItems = aFilterd;
 	},
-
+ 
 	// sucht für den eingegeben String in allen Druckernamen
 	_search: function () {
 		var oView = this.getView(),
