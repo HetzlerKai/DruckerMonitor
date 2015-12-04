@@ -31,7 +31,7 @@ sap.ui.controller("view.Home", {
 				} else {
 					return false;
 				}
-			});		
+			});	
 			
 			this.aAllItems = aItems;
 			this.aCritItems = aFilterd;	
