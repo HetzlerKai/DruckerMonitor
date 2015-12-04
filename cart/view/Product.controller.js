@@ -112,13 +112,11 @@ sap.ui.controller("view.Product", {
 
 	},
 
-	_SecondTabContentIsLoaded: false,
 	_$content: null,
 
 	_removeChartIfLoaded: function () {
-		if (this._SecondTabContentIsLoaded) {
+		if (this._$content) {
 			this._$content.remove();
-			this._SecondTabContentIsLoaded = false;
 		}
 	},
 
@@ -153,7 +151,7 @@ sap.ui.controller("view.Product", {
 		this._removeChartIfLoaded();
 
 		// Auswahl der Charts das geladen soll
-		if (oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded) {
+		if (oSelectedItem.getKey() === "ChartStatistic") {
 			this._updateKeyOfSelectedTab("ChartStatistic");
 
 			this.showStatisticChart(sId, oData);
@@ -323,7 +321,6 @@ sap.ui.controller("view.Product", {
 					color: "yellow"
 				}]
 		});
-		this._SecondTabContentIsLoaded = true;
 		$(sId).append(this._$content);
 	},
 
@@ -350,7 +347,6 @@ sap.ui.controller("view.Product", {
 				data: this._aValuesOfMonthForPaperConsumptionChart
 			}]
 		});
-		this._SecondTabContentIsLoaded = true;
 		$(sId).append(this._$content);
 	},
 
