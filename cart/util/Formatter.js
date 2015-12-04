@@ -8,8 +8,10 @@ util.Formatter = {
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
 	statusText : function (sId) {
+		
 		var 
 		oCurrData, sStatus, 
+		oI18N = this.getModel("i18n").getResourceBundle(),
 		aData = this.getModel("DruckerData").getData();
 
 		aData.filter(function(oData){
@@ -19,7 +21,7 @@ util.Formatter = {
 		});
 		
 		if (!oCurrData){
-			return "Error";
+			return oI18N.getText("NO_STATE");
 		}
 		
 		if (oCurrData.toner_cyan < 10 ||
@@ -27,7 +29,7 @@ util.Formatter = {
 			oCurrData.toner_magenta < 10 ||
 			oCurrData.toner_schwarz < 10){
 			
-			sStatus = "Kritischer Tintenstand";
+			sStatus = oI18N.getText("CRIT_STATE");
 		} else {
 			sStatus = "";
 		}
@@ -77,7 +79,7 @@ util.Formatter = {
 		});
 		
 		if (!oCurrData){
-			return "Error";
+			return "sap-icon://question-mark";
 		}
 		
 		if (oCurrData.toner_cyan < 10 ||
