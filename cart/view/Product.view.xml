@@ -112,22 +112,22 @@
 										</f:FormElement>
 										<f:FormElement label="Cyan">
 											<f:fields>
-												<Text text="{DruckerData>toner_cyan}" id="CyanText"/>
+												<Text text="{DruckerData>patronentyp_cyan}" id="CyanText"/>
 											</f:fields>
 										</f:FormElement>
 										<f:FormElement label="Gelb">
 											<f:fields>
-												<Text text="{DruckerData>toner_gelb}" id="GelbText"/>
+												<Text text="{DruckerData>patronentyp_gelb}" id="GelbText"/>
 											</f:fields>
 										</f:FormElement>
 										<f:FormElement label="Magenta">
 											<f:fields>
-												<Text text="{DruckerData>toner_magenta}" id="MagentaText"/>
+												<Text text="{DruckerData>patronentyp_magenta}" id="MagentaText"/>
 											</f:fields>
 										</f:FormElement>
 										<f:FormElement label="Schwarz">
 											<f:fields>
-												<Text text="{DruckerData>toner_schwarz}" id="SchwarzText"/>
+												<Text text="{DruckerData>patronentyp_schwarz}" id="SchwarzText"/>
 											</f:fields>
 										</f:FormElement>
 									</f:formElements>
