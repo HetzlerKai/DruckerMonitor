@@ -10,7 +10,7 @@
 			id="page"
 			title="{i18n>SHELL_TITLE}">
 		<headerContent>
-			<Button icon="sap-icon://log" press="fnOnLogOutPress"/>
+			<Button icon="sap-icon://log" press="_fnOnLogOutPress"/>
 		</headerContent>
 		<footer>
 			<Toolbar>
