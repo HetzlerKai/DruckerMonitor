@@ -13,43 +13,29 @@ sap.ui.controller("view.Home", {
 		this._search();
 	},
 	
-	aAllItems: [],
-	aCritItems: [],
-	
 	// Handle Filter fuer kritischen Status
 	handleFilterButtonPress : function(oEvent){
-		var 
-		aFilterd, i,
-		oView = this.getView(),
-		aItems = oView.byId("productList").getItems();
+		var oFilter, oBinding, oProductList, oView;
 		
-		if (this.aCritItems.length === 0 || this.aAllItems.length === 0){
-			
-			aFilterd = aItems.filter(function(data){
-				if (data.getFirstStatus().getState() === "Error"){
-					return true;
-				} else {
-					return false;
-				}
-			});	
-			
-			this.aAllItems = aItems;
-			this.aCritItems = aFilterd;	
-		}
-	
-		oView.byId("productList").removeAllItems();
+		oView = this.getView();
+		oProductList = oView.byId("productList");
+		oBinding = oProductList.getBinding("items");
 		
-		if (oEvent.getSource().getColor() === "#cc1919"){
-			oEvent.getSource().setColor("#666666");
-			for (i = 0; i <= this.aAllItems.length; i++){
-				oView.byId("productList").addItem(this.aAllItems[i]);			
+		if (oBinding) {
+			
+			if (oEvent.getSource().getColor() === "#cc1919"){
+				oEvent.getSource().setColor("#666666");
+				oBinding.filter([]);
+			} else {
+				oEvent.getSource().setColor("#cc1919");
+				oFilter = new sap.ui.model.Filter(
+						"isCritical", 
+						sap.ui.model.FilterOperator.EQ, 
+						true
+				);
+				oBinding.filter([oFilter]);
 			}
-		} else {
-			oEvent.getSource().setColor("#cc1919");
-			for (i = 0; i <= this.aCritItems.length; i++){
-				oView.byId("productList").addItem(this.aCritItems[i]);			
-			}
-		}
+		}	
 		
 	},
  
@@ -58,18 +44,18 @@ sap.ui.controller("view.Home", {
 		var oView = this.getView(),
 			oProductList = oView.byId("productList"),
 			oSearchField = oView.byId("searchField"),
-		// setzt Sichtbarkeit
-		bShowSearch = oSearchField.getValue().length !== 0;
+			oBinding, oFilter,
+			bShowSearch = oSearchField.getValue().length !== 0; // setzt Sichtbarkeit
 
 		if (bShowSearch) {
 			this._changeNoDataTextToIndicateLoading(oProductList);
 		}
 
 		// filtert produkt liste
-		var oBinding = oProductList.getBinding("items");
+		oBinding = oProductList.getBinding("items");
 		if (oBinding) {
 			if (bShowSearch) {
-				var oFilter = new sap.ui.model.Filter("name", sap.ui.model.FilterOperator.Contains, oSearchField.getValue());
+				oFilter = new sap.ui.model.Filter("name", sap.ui.model.FilterOperator.Contains, oSearchField.getValue());
 				oBinding.filter([oFilter]);
 			} else {
 				oBinding.filter([]);
