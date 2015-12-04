@@ -158,13 +158,18 @@ sap.ui.define([
 		},
 
 		_setCriticalFlagToResponseData: function(aData){
-			for(var count = 0; aData.length > count; count++){
+			var count;
+			
+			for(count = 0; aData.length > count; count++){
 				aData[count].isCritical = false;
 				if (aData[count].toner_cyan < 10 ||
 					aData[count].toner_gelb < 10 ||
 					aData[count].toner_magenta < 10 ||
 					aData[count].toner_schwarz < 10) {
+					
 					aData[count].isCritical = true;
+				}else {
+					aData[count].isCritical = false;
 				}
 			}
 			return aData;

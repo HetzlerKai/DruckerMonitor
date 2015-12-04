@@ -7,28 +7,11 @@ util.Formatter = {
 	// Formatiert anhand des Statuswertes (Backend) den Status-Icon und -Text
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
-	statusText : function (sId) {
+	statusText : function (bIsCrit) {		
+		var sStatus,
+		oI18N = this.getModel("i18n").getResourceBundle();
 		
-		var 
-		oCurrData, sStatus, 
-		oI18N = this.getModel("i18n").getResourceBundle(),
-		aData = this.getModel("DruckerData").getData();
-
-		aData.filter(function(oData){
-			if (oData.id === sId){
-				oCurrData =  oData;
-			}
-		});
-		
-		if (!oCurrData){
-			return oI18N.getText("NO_STATE");
-		}
-		
-		if (oCurrData.toner_cyan < 10 ||
-			oCurrData.toner_gelb < 10 ||
-			oCurrData.toner_magenta < 10 ||
-			oCurrData.toner_schwarz < 10){
-			
+		if (bIsCrit){
 			sStatus = oI18N.getText("CRIT_STATE");
 		} else {
 			sStatus = "";
@@ -38,26 +21,10 @@ util.Formatter = {
 	},
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Status
-	statusState : function (sId) {
-		var 
-		oCurrData, sStatus, 
-		aData = this.getModel("DruckerData").getData();
-
-		aData.filter(function(oData){
-			if (oData.id === sId){
-				oCurrData =  oData;
-			}
-		});
+	statusState : function (bIsCrit) {
+		var sStatus;
 		
-		if (!oCurrData){
-			return "Error";
-		}
-		
-		if (oCurrData.toner_cyan < 10 ||
-			oCurrData.toner_gelb < 10 ||
-			oCurrData.toner_magenta < 10 ||
-			oCurrData.toner_schwarz < 10){
-			
+		if (bIsCrit){
 			sStatus = "Error";
 		} else {
 			sStatus = "None";
@@ -67,26 +34,10 @@ util.Formatter = {
 	},
 
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - StatusIcon
-	statusIcon : function(sId){
-		var 
-		oCurrData, sStatus, 
-		aData = this.getModel("DruckerData").getData();
-
-		aData.filter(function(oData){
-			if (oData.id === sId){
-				oCurrData =  oData;
-			}
-		});
+	statusIcon : function(bIsCrit){
+		var sStatus;
 		
-		if (!oCurrData){
-			return "sap-icon://question-mark";
-		}
-		
-		if (oCurrData.toner_cyan < 10 ||
-			oCurrData.toner_gelb < 10 ||
-			oCurrData.toner_magenta < 10 ||
-			oCurrData.toner_schwarz < 10){
-			
+		if (bIsCrit){			
 			sStatus = "sap-icon://message-error";
 		} else {
 			sStatus = "";
