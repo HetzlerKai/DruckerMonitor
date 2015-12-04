@@ -14,6 +14,7 @@ sap.ui.controller("view.Product", {
 
 		// Wenn ein neuer Drucker aus der Liste auf dem UI ausgewaehlt wurde, wird das Model automatisch aktualisiert
 		this._router.getRoute("printerDetails").attachPatternMatched(this._setPaperConsumptionModel, this);
+		this._router.getRoute("printerDetails").attachPatternMatched(this._refreshInkChart, this);
 	},
 
 	onAfterRendering: function () {
@@ -23,7 +24,7 @@ sap.ui.controller("view.Product", {
 	},
 
 	// Laedt die Seite neu als Logout
-	fnOnLogOutPress: function () {
+	_fnOnLogOutPress: function () {
 		location.reload();
 	},
 
@@ -156,6 +157,14 @@ sap.ui.controller("view.Product", {
 
 	},
 
+	_refreshInkChart: function(){
+		if (this._selecetedTabKey === "ChartStatistic") {
+			this._removeChartIfLoaded();
+			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+			this.showStatisticChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
+		}
+	},
+
 
 	_setPaperConsumptionModel: function () {
 
@@ -183,7 +192,7 @@ sap.ui.controller("view.Product", {
 					// Datenaufbereitung für das Papierverbrauchdiagramm
 					that._analyzePaperConsumptionData();
 					that._removeChartIfLoaded();
-					sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+					var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
 					that._showPaperConsumptionChart(that._getIdOfTabToPlaceChartInto(sTabId), that.getView().getModel("DruckerData").getProperty(that.sDataPath));
 
 				},
@@ -279,7 +288,7 @@ sap.ui.controller("view.Product", {
 					name: 'Magenta',
 					data: [{
 						name: 'Tintenart',
-						y: parseInt(oData.toner_magenta) 
+						y: parseInt(oData.toner_magenta)
 					}],
 					color: "magenta"
 				},
