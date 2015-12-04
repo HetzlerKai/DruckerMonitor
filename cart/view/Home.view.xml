@@ -18,6 +18,11 @@
 						tooltip="{i18n>HOME_SEARCH_TOOLTIP}"
 						width="100%">
 				</SearchField>
+				<Button
+					icon="sap-icon://filter"
+					tooltip="{i18n>TO_CART_BUTTON_TOOLTIP}"
+					press="handleFilterButtonPress">
+				</Button>
 			</Toolbar>
 		</subHeader>
 		<footer>
@@ -31,7 +36,7 @@
 					select="handleProductListSelect"
 					noDataText="{i18n>HOME_NO_DATA}"
 					items="{path : 'DruckerData>/'}"
-					growing="true"
+					growing="false"
 					growingThreshold="10"
 					growingScrollToLoad="true">
 				<items>

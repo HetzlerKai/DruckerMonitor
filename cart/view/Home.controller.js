@@ -12,7 +12,34 @@ sap.ui.controller("view.Home", {
 	handleSearch: function (oEvent) {
 		this._search();
 	},
-
+	
+	aAllItems: [],
+	aCritItems: [],
+	
+	// Handle Filter fuer kritischen Status
+	handleFilterButtonPress : function(oEvent){
+		var 
+		aFilterd, i,
+		oView = this.getView(),
+		aItems = oView.byId("productList").getItems();
+		
+		aFilterd = aItems.filter(function(data){
+			if (data.getFirstStatus().getState() === "Error"){
+				return true;
+			} else {
+				return false;
+			}
+		});
+		
+		oView.byId("productList").removeAllItems();
+		
+		for (i = 0; i <= aFilterd.length; i++){
+			oView.byId("productList").addItem(aFilterd[i]);			
+		}
+		
+		this.aAllItems = aItems;
+		this.aCritItems = aFilterd;
+	},
 
 	// sucht für den eingegeben String in allen Druckernamen
 	_search: function () {
