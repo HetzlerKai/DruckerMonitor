@@ -7,8 +7,32 @@ util.Formatter = {
 	// Formatiert anhand des Statuswertes (Backend) den Status-Icon und -Text
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
-	statusText : function (status, noStatus) {
-		return status;
+	statusText : function (sId) {
+		var 
+		oCurrData, sStatus, 
+		aData = this.getModel("DruckerData").getData();
+
+		aData.filter(function(oData){
+			if (oData.id === sId){
+				oCurrData =  oData;
+			}
+		});
+		
+		if (!oCurrData){
+			return "Error";
+		}
+		
+		if (oCurrData.toner_cyan < 10 ||
+			oCurrData.toner_gelb < 10 ||
+			oCurrData.toner_magenta < 10 ||
+			oCurrData.toner_schwarz < 10){
+			
+			sStatus = "Kritischer Tintenstand";
+		} else {
+			sStatus = "";
+		}
+		
+		return sStatus;
 	},
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Status
@@ -51,6 +75,10 @@ util.Formatter = {
 				oCurrData =  oData;
 			}
 		});
+		
+		if (!oCurrData){
+			return "Error";
+		}
 		
 		if (oCurrData.toner_cyan < 10 ||
 			oCurrData.toner_gelb < 10 ||

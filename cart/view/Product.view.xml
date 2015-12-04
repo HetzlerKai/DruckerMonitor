@@ -34,16 +34,13 @@
 					<!--TODO: State has to be implemented-->
 					<ObjectStatus
 							text="{
-								parts : [
-									{path : 'DruckerData>status'},
-									{path : 'i18n>NO_STATE'}
-								],
-								formatter : 'util.Formatter.statusText'
+									path : 'DruckerData>id',
+									formatter : 'util.Formatter.statusText'
 							}"
 							state="{
-							path : 'DruckerData>status',
-							formatter : 'util.Formatter.statusState'
-						}"
+								path : 'DruckerData>id',
+								formatter : 'util.Formatter.statusState'
+							}"
 							tooltip="{i18n>CURRENT_INK_STATE}"/>
 				</firstStatus>
 			</ObjectHeader>
