@@ -4,22 +4,25 @@ jQuery.sap.require("sap.m.MessageBox");
 jQuery.sap.require("sap.m.Dialog");
 jQuery.sap.require("sap.ui.model.json.JSONModel");
 
-// Controller fÃ¼r die Drucker Details Seite
+// Controller fuer die Drucker Details Seite
 sap.ui.controller("view.Product", {
 
 	onInit: function () {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
 		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
+
+		// Wenn ein neuer Drucker aus der Liste auf dem UI ausgewaehlt wurde, wird das Model automatisch aktualisiert
+		this._router.getRoute("printerDetails").attachPatternMatched(this._setPaperConsumptionModel, this);
 	},
-	
-	onAfterRendering: function(){
-		// Das ist notwendig um einen Aufruf der Seite direkt Ã¼ber die URL zuermÃ¶glichen
+
+	onAfterRendering: function () {
+		// Das ist notwendig um einen Aufruf der Seite direkt ueber die URL zuermÃ¶glichen
 		this.sDataPath = this.getView().getBindingContext("DruckerData").getPath();
 		this.getHistoryModel();
 	},
 
-	// LÃ¤dt die Seite neu als Logout
+	// Laedt die Seite neu als Logout
 	fnOnLogOutPress: function () {
 		location.reload();
 	},
@@ -36,9 +39,9 @@ sap.ui.controller("view.Product", {
 
 		this.sDataPath = sPath;
 		this.getHistoryModel();
-		
+
 		oView.bindElement("DruckerData>" + sPath);
-		//if there is no data the model has to request new data
+
 		if (!oData) {
 			oView.getElementBinding().attachEventOnce("dataReceived", function () {
 				that._checkIfPrinterAvailable(sPath, sId);
@@ -46,7 +49,7 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	// ueberprueft ob ein Drucker mit dieser id existiert
+	// Ueberprueft ob ein Drucker mit dieser id existiert
 	_checkIfPrinterAvailable: function (sPath, sId) {
 		var oModel = this.getView().getModel("DruckerData"),
 			oData = oModel.getProperty(sPath);
@@ -57,10 +60,10 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
+	// Liefert die IP des aktuel ausgewählten Druckers
 	getDruckerId: function () {
-		var
-		oModel, oCurrentDrucker,
-		sId = null;
+		var oModel, oCurrentDrucker,
+			sId = null;
 
 		oModel = sap.ui.getCore().getModel("DruckerData");
 		oCurrentDrucker = oModel.getProperty(this.sDataPath);
@@ -86,7 +89,7 @@ sap.ui.controller("view.Product", {
 	// Download Druckerdaten als PDF
 	handleDownloadButtonPress: function (oEvent) {
 		var that = this;
-		
+
 		sap.m.MessageToast.show("Download was started");
 
 		jQuery.ajax({
@@ -110,28 +113,135 @@ sap.ui.controller("view.Product", {
 
 	_SecondTabContentIsLoaded: false,
 	_$content: null,
+	_selecetedTabKey: null,
 
-	// zeigt die Detailseiten (Tabs) fuer den Drucker an
-	showPrinterData: function (oEvent) {
-		var oSelectedItem = oEvent.getParameter("selectedItem"),
-			sId = "#" + oEvent.getParameter("id") + "-content",
-			sPath = oEvent.getSource().getBindingContext("DruckerData").getPath(),
-			oData = oEvent.getSource().getModel("DruckerData").getProperty(sPath);
-
+	_removeChartIfLoaded: function () {
 		if (this._SecondTabContentIsLoaded) {
 			this._$content.remove();
 			this._SecondTabContentIsLoaded = false;
 		}
+	},
 
+	_getIdOfTabToPlaceChartInto: function (sId) {
+		return "#" + sId + "-content";
+	},
+
+	// Wird aus der XML View getriggert
+	// zeigt die Detailseiten (Tabs) fuer den Drucker an
+	showPrinterData: function (oEvent) {
+		var oSelectedItem = oEvent.getParameter("selectedItem"),
+			sId = this._getIdOfTabToPlaceChartInto(oEvent.getParameter("id")),
+			sPath = oEvent.getSource().getBindingContext("DruckerData").getPath(),
+			oData = oEvent.getSource().getModel("DruckerData").getProperty(sPath);
+
+		this._removeChartIfLoaded();
+
+		// Auswahl der Charts das geladen soll
 		if (oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded) {
+			this._selecetedTabKey = "ChartStatistic";
+
 			this.showStatisticChart(sId, oData);
+
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
-			this.showPaperConsumptionChart(sId, oData);
+			this._selecetedTabKey = "ChartPaper";
+
+			this._setPaperConsumptionModel();
+
+			// Datenaufbereitung für das Papierverbrauch Diagramm
+			this._analyzePaperConsumptionData();
+
+			// Diagramm wird initialisiert und auf das UI platziert
+			this._showPaperConsumptionChart(sId, oData);
 		}
 
 	},
 
-	// Zeigt auf dem UI die Tintenverrauchs Grafik an
+
+	_setPaperConsumptionModel: function () {
+
+		if (this._selecetedTabKey === "ChartPaper") {
+
+			var oJSONModel = new sap.ui.model.json.JSONModel(),
+				that = this,
+				oView = this.getView();
+
+			// Daten für das Papierdiagramm werden angefordert
+			jQuery.ajax({
+				type: 'POST',
+				dataType: "json",
+				url: 'php/services/ajax.php',
+				data: {
+					post: 'getStatistik',
+					id: this.getDruckerId()
+				},
+				success: function (aPaperConsumption) {
+
+					// Daten fuer das Papierdiagramm werden an die View gehaengt
+					oView.setModel(oJSONModel, "PapierVerbrauch");
+					oView.getModel("PapierVerbrauch").setData(aPaperConsumption);
+
+					// Datenaufbereitung für das Papierverbrauchdiagramm
+					that._analyzePaperConsumptionData();
+					that._removeChartIfLoaded();
+					sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+					that._showPaperConsumptionChart(that._getIdOfTabToPlaceChartInto(sTabId), that.getView().getModel("DruckerData").getProperty(that.sDataPath));
+
+				},
+				error: function (oError) {
+					jQuery.sap.log.error("Fehler beim Zugriff auf die Statistikdaten: " + oError);
+				}
+			});
+		}
+
+	},
+
+	_aValuesOfMonthForPaperConsumptionChart: new Array(),
+
+	_getRequiredModelAsArray: function(sName){
+		return (this.getView().getModel(sName)) ? this.getView().getModel(sName).getData() : [];
+	},
+
+	_analyzePaperConsumptionData: function () {
+		var aData = this._getRequiredModelAsArray("PapierVerbrauch");
+
+		this._aValuesOfMonthForPaperConsumptionChart.length = 0;
+
+		if (aData.length > 1) {
+			for (var count = 0; aData.length > count; count++) {
+				if (this._isReceivedYearSameAsCurrent(aData, count)) {
+					this._analyzeMonthValues(aData, count);
+				}
+			}
+		} else if (aData.length === 1) {
+			this._analyzeMonthValues(aData, aData.length - 1);
+		}
+
+		// Initialisiere 0 in leere Arrays
+		this._fillEmptyArrayWithZero();
+	},
+
+	_fillEmptyArrayWithZero: function () {
+		for (var count = 0; 12 > count; count++) {
+			if (!this._aValuesOfMonthForPaperConsumptionChart[count]) {
+				this._aValuesOfMonthForPaperConsumptionChart[count] = 0;
+			}
+		}
+	},
+
+	_analyzeMonthValues: function (aData, count) {
+		if (this._aValuesOfMonthForPaperConsumptionChart[parseInt(new Date(aData[count].datum).getMonth())]) {
+			this._aValuesOfMonthForPaperConsumptionChart[parseInt(new Date(aData[count].datum).getMonth())] += parseInt(aData[count].gedruckte_seiten);
+		}
+		else {
+			this._aValuesOfMonthForPaperConsumptionChart[parseInt(new Date(aData[count].datum).getMonth())] = parseInt(aData[count].gedruckte_seiten);
+		}
+	},
+
+	_isReceivedYearSameAsCurrent: function (aData, iArrayPosition) {
+		return new Date().getFullYear() === new Date(aData[iArrayPosition].datum).getFullYear();
+	},
+
+	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
 	showStatisticChart: function (sId, oData) {
 		this._$content = $('<div id="highcharts"></div>').highcharts({
 			chart: {
@@ -186,8 +296,8 @@ sap.ui.controller("view.Product", {
 		$(sId).append(this._$content);
 	},
 
-	// Zeigt auf dem UI die Papierverbrauch Grafik an
-	showPaperConsumptionChart: function (sId, oData) {
+	// Zeigt auf dem UI die Papierverbrauchdiagramm an
+	_showPaperConsumptionChart: function (sId, oData) {
 		this._$content = $('<div id="test"></div>').highcharts({
 			chart: {
 				type: 'line',
@@ -197,11 +307,7 @@ sap.ui.controller("view.Product", {
 				text: 'Paper Consumption'
 			},
 			xAxis: {
-				categories: ['KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5',
-				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 
-				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 
-				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 
-				             'KW1', 'KW2', 'KW3', 'KW4', 'KW5', 'KW1', 'KW2', 'KW3', 'KW4', 'KW5' ]
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 			},
 			yAxis: {
 				title: {
@@ -209,58 +315,8 @@ sap.ui.controller("view.Product", {
 				}
 			},
 			series: [{
-				name: oData.name,
-				//TODO:Please remove random function, is only for testing
-				data: [
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1),
-					parseInt(oData.gedruckteSeiten) + Math.floor((Math.random() * 100) + 1)
-				]
+				name: oData.name || "Kein Druckername vorhanden",
+				data: this._aValuesOfMonthForPaperConsumptionChart
 			}]
 		});
 		this._SecondTabContentIsLoaded = true;
@@ -271,7 +327,7 @@ sap.ui.controller("view.Product", {
 	_orderBusyDialog: null,
 	_dialogView: null,
 
-	// erzeugt Dialog zum erstellen eines neuen History eintrages 
+	// Erzeugt Dialog zum erstellen eines neuen History eintrages
 	handlePressAddTableEntry: function () {
 		var that = this,
 			fnClearInputFields;
@@ -333,26 +389,26 @@ sap.ui.controller("view.Product", {
 	},
 
 	handleNewEntry: function (sPatrone, sText) {
-		
+
 		var that = this;
 
 		jQuery.ajax({
-	        type : 'POST',
-	        dataType: "json",
-	        url : 'php/services/ajax.php',
-	        data: {
-	        	post: 'schreibeHistorie',
-	            patrone: sPatrone,
-	            kommentar: sText,
+			type: 'POST',
+			dataType: "json",
+			url: 'php/services/ajax.php',
+			data: {
+				post: 'schreibeHistorie',
+				patrone: sPatrone,
+				kommentar: sText,
 				id: this.getDruckerId()
-	        },
-	        success: function(){
-	        	that.refreshHistoryData();
-	        },
-	        error: function(){
-	        	that.refreshHistoryData();
-	        }
-	    });
+			},
+			success: function () {
+				that.refreshHistoryData();
+			},
+			error: function () {
+				that.refreshHistoryData();
+			}
+		});
 
 	},
 
@@ -369,22 +425,21 @@ sap.ui.controller("view.Product", {
 		var aData = [];
 
 		jQuery.ajax({
-	        type : 'POST',
-	        dataType: "json",
-	        url : 'php/services/ajax.php',
-	        data: {
-	        	post: 'getHistorie',
+			type: 'POST',
+			dataType: "json",
+			url: 'php/services/ajax.php',
+			data: {
+				post: 'getHistorie',
 				id: this.getDruckerId()
-	        },
-	        async: false,
-	        success: function(response){
-	        	aData = response;
-	        },
-	        error: function(e){
-	        	jQuery.sap.log.error("Couldn't retrieve History Data");
-	        }
-	    });
-
+			},
+			async: false,
+			success: function (response) {
+				aData = response;
+			},
+			error: function (e) {
+				jQuery.sap.log.error("Couldn't retrieve History Data");
+			}
+		});
 
 		return aData;
 	},

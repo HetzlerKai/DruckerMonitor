@@ -22,7 +22,7 @@ CLASS AJAX{
 				break;						
 				case 'getStatistik':
 				   return 
-				   $this->getStatistik();
+				   $this->getStatistik($_POST['id']);
 				break;				
 				case 'login':
 				   return $this->login($_POST['name'],$_POST['passwort']);
@@ -152,8 +152,11 @@ CLASS AJAX{
 		fclose($handlePDF);
 		echo "./services/pdf/Monitoring.pdf";
 	}	
-	private function getStatistik(){
-		$q = "SELECT * FROM `statistik`";	
+	private function getStatistik($id){
+		$q = "SELECT * FROM `statistik` WHERE `drucker_id` = ".$id."";
+		$return = $this->db->getMehrzeilig($q);
+		echo json_encode($return);
+		return $return;	
 		
 	}
 	
