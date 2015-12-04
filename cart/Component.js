@@ -168,8 +168,6 @@ sap.ui.define([
 					aData[count].toner_schwarz < 10) {
 					
 					aData[count].isCritical = true;
-				}else {
-					aData[count].isCritical = false;
 				}
 			}
 			return aData;
