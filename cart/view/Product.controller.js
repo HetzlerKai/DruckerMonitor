@@ -114,7 +114,6 @@ sap.ui.controller("view.Product", {
 
 	_SecondTabContentIsLoaded: false,
 	_$content: null,
-	_selecetedTabKey: null,
 
 	_removeChartIfLoaded: function () {
 		if (this._SecondTabContentIsLoaded) {
@@ -125,6 +124,22 @@ sap.ui.controller("view.Product", {
 
 	_getIdOfTabToPlaceChartInto: function (sId) {
 		return "#" + sId + "-content";
+	},
+
+	_mSelectedTab: {
+		"History": false,
+		"ChartStatistic": false,
+		"ChartPaper": false,
+		"GeneralTab": false
+	},
+
+	_updateKeyOfSelectedTab: function(sTabName){
+		this._mSelectedTab["ChartStatistic"] = false;
+		this._mSelectedTab["History"] = false;
+		this._mSelectedTab["ChartPaper"] = false;
+		this._mSelectedTab["GeneralTab"] = false;
+
+		this._mSelectedTab[sTabName] = true;
 	},
 
 	// Wird aus der XML View getriggert
@@ -139,12 +154,12 @@ sap.ui.controller("view.Product", {
 
 		// Auswahl der Charts das geladen soll
 		if (oSelectedItem.getKey() === "ChartStatistic" && !this._SecondTabContentIsLoaded) {
-			this._selecetedTabKey = "ChartStatistic";
+			this._updateKeyOfSelectedTab("ChartStatistic");
 
 			this.showStatisticChart(sId, oData);
 
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
-			this._selecetedTabKey = "ChartPaper";
+			this._updateKeyOfSelectedTab("ChartPaper");
 
 			this._setPaperConsumptionModel();
 
@@ -153,12 +168,19 @@ sap.ui.controller("view.Product", {
 
 			// Diagramm wird initialisiert und auf das UI platziert
 			this._showPaperConsumptionChart(sId, oData);
+
+		} else if(oSelectedItem.getKey() === "GeneralTab"){
+			this._updateKeyOfSelectedTab("GeneralTab");
+
+		} else if(oSelectedItem.getKey() === "History"){
+			this._updateKeyOfSelectedTab("History");
+
 		}
 
 	},
 
 	_refreshInkChart: function(){
-		if (this._selecetedTabKey === "ChartStatistic") {
+		if (this._mSelectedTab["ChartStatistic"]) {
 			this._removeChartIfLoaded();
 			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
 			this.showStatisticChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
@@ -168,7 +190,7 @@ sap.ui.controller("view.Product", {
 
 	_setPaperConsumptionModel: function () {
 
-		if (this._selecetedTabKey === "ChartPaper") {
+		if (this._mSelectedTab["ChartPaper"]) {
 
 			var oJSONModel = new sap.ui.model.json.JSONModel(),
 				that = this,
