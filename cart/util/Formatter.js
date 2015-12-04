@@ -87,7 +87,7 @@ util.Formatter = {
 			oCurrData.toner_magenta < 10 ||
 			oCurrData.toner_schwarz < 10){
 			
-			sStatus = "sap-icon://status-error";
+			sStatus = "sap-icon://message-error";
 		} else {
 			sStatus = "";
 		}

@@ -23,22 +23,34 @@ sap.ui.controller("view.Home", {
 		oView = this.getView(),
 		aItems = oView.byId("productList").getItems();
 		
-		aFilterd = aItems.filter(function(data){
-			if (data.getFirstStatus().getState() === "Error"){
-				return true;
-			} else {
-				return false;
-			}
-		});
-		
+		if (this.aCritItems.length === 0 || this.aAllItems.length === 0){
+			
+			aFilterd = aItems.filter(function(data){
+				if (data.getFirstStatus().getState() === "Error"){
+					return true;
+				} else {
+					return false;
+				}
+			});		
+			
+			this.aAllItems = aItems;
+			this.aCritItems = aFilterd;	
+		}
+	
 		oView.byId("productList").removeAllItems();
 		
-		for (i = 0; i <= aFilterd.length; i++){
-			oView.byId("productList").addItem(aFilterd[i]);			
+		if (oEvent.getSource().getColor() === "#cc1919"){
+			oEvent.getSource().setColor("#666666");
+			for (i = 0; i <= this.aAllItems.length; i++){
+				oView.byId("productList").addItem(this.aAllItems[i]);			
+			}
+		} else {
+			oEvent.getSource().setColor("#cc1919");
+			for (i = 0; i <= this.aCritItems.length; i++){
+				oView.byId("productList").addItem(this.aCritItems[i]);			
+			}
 		}
 		
-		this.aAllItems = aItems;
-		this.aCritItems = aFilterd;
 	},
  
 	// sucht für den eingegeben String in allen Druckernamen

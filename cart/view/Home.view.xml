@@ -18,11 +18,10 @@
 						tooltip="{i18n>HOME_SEARCH_TOOLTIP}"
 						width="100%">
 				</SearchField>
-				<Button
-					icon="sap-icon://filter"
-					tooltip="{i18n>TO_CART_BUTTON_TOOLTIP}"
-					press="handleFilterButtonPress">
-				</Button>
+				<core:Icon 
+					src="sap-icon://message-error" 
+					press="handleFilterButtonPress" 
+					size="1.5rem"/>
 			</Toolbar>
 		</subHeader>
 		<footer>
