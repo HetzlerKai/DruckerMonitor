@@ -20,7 +20,7 @@ sap.ui.define([
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
 
-		// Einstellungen für die Navigation
+		// Einstellungen fuer die Navigation
 		metadata: {
 			includes: ["css/style.css"],
 			routing: {
@@ -80,7 +80,7 @@ sap.ui.define([
 			// call overwritten init (calls createContent)
 			UIComponent.prototype.init.apply(this, arguments);
 
-			// i18n-Model wird in einem privaten Objekt für späteren Gebrauch gespreichert
+			// i18n-Model wird in einem privaten Objekt fuer spaeteren Gebrauch gespreichert
 			this._resourceBundle = this.getModel('i18n').getResourceBundle();
 		},
 
@@ -97,7 +97,7 @@ sap.ui.define([
 					id: "__login",
 					text: "Log on",
 
-					// Mit der Verwendung der Proxy Funktion wird der aktuelle "this" Zeiger übergeben an die handleLoginPress Funktion
+					// Mit der Verwendung der Proxy Funktion wird der aktuelle "this" Zeiger Aufbergeben an die handleLoginPress Funktion
 					press: jQuery.proxy(oComponent.handleLoginPress, oComponent, oView)
 				})
 			});
@@ -117,22 +117,22 @@ sap.ui.define([
 					name: this.__user,
 					passwort: this.__pwd
 				},
-				// Beim Erfolg wird success ausgeführt
+				// Beim Erfolg wird success ausgefuehrt
 				success: function (response) {
-					var oDruckerdaten;
 
 					if (!response) {
 						that.handleWrongCredentials("Error");
 						return;
 					}
-					oDruckerdaten = response;
 
-					// Überprüfung des Arrays auf die Inhaltlänge
-					if (oDruckerdaten instanceof Array && oDruckerdaten.length > 0) {
+					response = that._setCriticalFlagToResponseData(response);
+
+					// Ueberpruefung des Arrays auf die Inhaltlaenge
+					if (response instanceof Array && response.length > 0) {
 
 						// Empfangene Daten werden an das Viewmodel gesetzt
-						oView.getModel("DruckerData").setData(oDruckerdaten);
-						sap.ui.getCore().getModel("DruckerData").setData(oDruckerdaten);
+						oView.getModel("DruckerData").setData(response);
+						sap.ui.getCore().getModel("DruckerData").setData(response);
 
 						// Setzt die Statusfarbe der Anmeldefelder zurück
 						that.handleWrongCredentials("None");
@@ -145,7 +145,7 @@ sap.ui.define([
 
 					} else {
 						// Falls das Array leer ist, sprich keine Daten geliefrt worden sind, wird eine Fehlermeldung ausgegeben
-						sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + oDruckerdaten);
+						sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + response);
 					}
 
 				},
@@ -157,8 +157,21 @@ sap.ui.define([
 
 		},
 
+		_setCriticalFlagToResponseData: function(aData){
+			for(var count = 0; aData.length > count; count++){
+				aData[count].isCritical = false;
+				if (aData[count].toner_cyan < 10 ||
+					aData[count].toner_gelb < 10 ||
+					aData[count].toner_magenta < 10 ||
+					aData[count].toner_schwarz < 10) {
+					aData[count].isCritical = true;
+				}
+			}
+			return aData;
+		},
+
 		handleWrongCredentials: function (sState) {
-			// Setzt die Statusfarbe der Anmeldefelder auf einen gewünschten Wert
+			// Setzt die Statusfarbe der Anmeldefelder auf einen gewuenschten Wert
 			sap.ui.getCore().byId('__userInput').setValueState(sap.ui.core.ValueState[sState]);
 			sap.ui.getCore().byId('__pwdInput').setValueState(sap.ui.core.ValueState[sState]);
 		},
@@ -171,7 +184,7 @@ sap.ui.define([
 
 		getDialogContent: function (oComponent) {
 
-			// Aufbereitung des UI-Inhaltes für das Anmeldedialog
+			// Aufbereitung des UI-Inhaltes fuer das Anmeldedialog
 			return [
 				new Label({
 					text: "Username:",
