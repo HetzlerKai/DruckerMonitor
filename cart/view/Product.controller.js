@@ -32,6 +32,7 @@ sap.ui.controller("view.Product", {
 
 	_routePatternMatched: function (oEvent) {
 		var sId = oEvent.getParameter("arguments").id,
+			sDruckerId = oEvent.getParameter("arguments").druckerId,
 			oView = this.getView(),
 			sPath = "/" + sId,
 			that = this,
@@ -200,7 +201,7 @@ sap.ui.controller("view.Product", {
 				url: 'php/services/ajax.php',
 				data: {
 					post: 'getStatistik',
-					id: this.getDruckerId()
+					drucker_id: this.getDruckerId()
 				},
 				success: function (aPaperConsumption) {
 

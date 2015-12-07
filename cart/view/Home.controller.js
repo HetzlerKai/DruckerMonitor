@@ -119,9 +119,12 @@ sap.ui.controller("view.Home", {
 	_showProduct: function (oItem) {
 		var oBindContext = oItem.getBindingContext("DruckerData")
 		oModel = oBindContext.getModel(),
-			sId = oModel.getProperty(oBindContext.getPath()).id;
-		sId = (parseInt(sId) - 1).toString();
-		this._router.navTo("printerDetails", {id: sId}, !sap.ui.Device.system.phone);
+		sDruckerId = oModel.getProperty(oBindContext.getPath()).id,
+		oList = oItem.getParent();
+		
+//		sId = (parseInt(sId) - 1).toString();
+		sId = oList.indexOfItem(oItem);
+		this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);
 	}
 
 });
