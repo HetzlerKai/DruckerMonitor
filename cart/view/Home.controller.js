@@ -13,6 +13,8 @@ sap.ui.controller("view.Home", {
 		this._search();
 	},
 	
+	isFiltered: false,
+	
 	// Handle Filter fuer kritischen Status
 	handleFilterButtonPress : function(oEvent){
 		var oFilter, oBinding, oProductList, oView;
@@ -25,9 +27,11 @@ sap.ui.controller("view.Home", {
 			
 			if (oEvent.getSource().getColor() === "#cc1919"){
 				oEvent.getSource().setColor("#666666");
+				this.isFiltered = false;
 				oBinding.filter([]);
 			} else {
 				oEvent.getSource().setColor("#cc1919");
+				this.isFiltered = true;
 				oFilter = new sap.ui.model.Filter(
 						"isCritical", 
 						sap.ui.model.FilterOperator.EQ, 
@@ -44,7 +48,7 @@ sap.ui.controller("view.Home", {
 		var oView = this.getView(),
 			oProductList = oView.byId("productList"),
 			oSearchField = oView.byId("searchField"),
-			oBinding, oFilter,
+			oBinding, oFilter, oCritFilter,
 			bShowSearch = oSearchField.getValue().length !== 0; // setzt Sichtbarkeit
 
 		if (bShowSearch) {
@@ -55,10 +59,37 @@ sap.ui.controller("view.Home", {
 		oBinding = oProductList.getBinding("items");
 		if (oBinding) {
 			if (bShowSearch) {
-				oFilter = new sap.ui.model.Filter("name", sap.ui.model.FilterOperator.Contains, oSearchField.getValue());
-				oBinding.filter([oFilter]);
+				oFilter = new sap.ui.model.Filter(
+					"name", 
+					sap.ui.model.FilterOperator.Contains, 
+					oSearchField.getValue()
+				);
+				
+				if (this.isFiltered){
+					
+					oCritFilter = new sap.ui.model.Filter(
+						"isCritical", 
+						sap.ui.model.FilterOperator.EQ, 
+						true
+					);
+					
+					oBinding.filter([oFilter, oCritFilter]);
+				} else {
+					oBinding.filter([oFilter]);
+				}
+				
 			} else {
-				oBinding.filter([]);
+				if (this.isFiltered) {
+					oFilter = new sap.ui.model.Filter(
+						"isCritical", 
+						sap.ui.model.FilterOperator.EQ, 
+						true
+					);
+					
+					oBinding.filter([oFilter]);
+				} else {
+					oBinding.filter([]);				
+				}	
 			}
 		}
 
