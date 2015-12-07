@@ -28,7 +28,7 @@
 					number="{path : 'DruckerData>ip'}">
 				<attributes>
 					<ObjectAttribute
-							text="{DruckerData>hersteller}"/>
+							text="{DruckerData>typ}"/>
 				</attributes>
 				<firstStatus>
 					<!--TODO: State has to be implemented-->
