@@ -61,7 +61,7 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	// Liefert die IP des aktuel ausgewählten Druckers
+	// Liefert die IP des aktuel ausgewï¿½hlten Druckers
 	getDruckerId: function () {
 		var oModel, oCurrentDrucker,
 			sId = null;
@@ -102,11 +102,10 @@ sap.ui.controller("view.Product", {
 				ip: that.getDruckerIp()
 			},
 			success: function (response) {
-				window.open('/php/services/pdf/Monitoring.pdf');
+				window.open('./php/services/pdf/Monitoring.pdf');
 			},
 			error: function (error) {
-				//jQuery.sap.log.error("Download as PDF failed");
-				window.open('./php/services/pdf/Monitoring.pdf');
+				jQuery.sap.log.error("Download as PDF failed");
 			}
 		});
 
@@ -161,7 +160,7 @@ sap.ui.controller("view.Product", {
 
 			this._setPaperConsumptionModel();
 
-			// Datenaufbereitung für das Papierverbrauch Diagramm
+			// Datenaufbereitung fï¿½r das Papierverbrauch Diagramm
 			this._analyzePaperConsumptionData();
 
 			// Diagramm wird initialisiert und auf das UI platziert
@@ -194,7 +193,7 @@ sap.ui.controller("view.Product", {
 				that = this,
 				oView = this.getView();
 
-			// Daten für das Papierdiagramm werden angefordert
+			// Daten fuer das Papierdiagramm werden angefordert
 			jQuery.ajax({
 				type: 'POST',
 				dataType: "json",
@@ -209,7 +208,7 @@ sap.ui.controller("view.Product", {
 					oView.setModel(oJSONModel, "PapierVerbrauch");
 					oView.getModel("PapierVerbrauch").setData(aPaperConsumption);
 
-					// Datenaufbereitung für das Papierverbrauchdiagramm
+					// Datenaufbereitung fï¿½r das Papierverbrauchdiagramm
 					that._analyzePaperConsumptionData();
 					that._removeChartIfLoaded();
 					var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
@@ -421,7 +420,7 @@ sap.ui.controller("view.Product", {
 
 		jQuery.ajax({
 			type: 'POST',
-			dataType: "json",
+			dataType: "html",
 			url: 'php/services/ajax.php',
 			data: {
 				post: 'schreibeHistorie',
@@ -429,11 +428,11 @@ sap.ui.controller("view.Product", {
 				kommentar: sText,
 				id: this.getDruckerId()
 			},
-			success: function () {
+			success: function (response) {
 				that.refreshHistoryData();
 			},
-			error: function () {
-				that.refreshHistoryData();
+			error: function (response) {
+				jQuery.sap.log.error("Couldn't write new History Entry");
 			}
 		});
 
