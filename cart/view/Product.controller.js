@@ -95,7 +95,7 @@ sap.ui.controller("view.Product", {
 
 		jQuery.ajax({
 			type: 'POST',
-			dataType: "json",
+			dataType: "html",
 			url: 'php/services/ajax.php',
 			data: {
 				post: 'DruckerAlsPdf',
