@@ -37,14 +37,14 @@ $patronentyp_yellow = "";
 	$ip = $ips[$i]["ip"];
 	$id = $ips[$i]["id"];
 	$printer = new Kohut_SNMP_Printer($ip);  
-	$printer->setMaxTimeout(600);  
+	$printer->setMaxTimeout(60);  
 //	var_dump($printer->getAllSubUnitData());
 	echo "<pre>";
 //	var_dump($printer);
 
 	echo "<br>";
 	echo $printer."<br>";
-	echo "TONERLEVEL :".$printer->getBlackTonerLevel()."!<br>";
+//	echo "TONERLEVEL :".$printer->getBlackTonerLevel()."!<br>";
 	echo "</pre>";
 	if($printer->getBlackTonerLevel() !== 0){
 		if ($printer->isColorPrinter()){

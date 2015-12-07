@@ -22,7 +22,7 @@ CLASS AJAX{
 				break;						
 				case 'getStatistik':
 				   return 
-				   $this->getStatistik($_POST['id']);
+				   $this->getStatistik();
 				break;				
 				case 'login':
 				   return $this->login($_POST['name'],$_POST['passwort']);
@@ -53,12 +53,12 @@ CLASS AJAX{
 		}
 	}
 	private function schreibeHistorie($id,$beschr,$patrone){
-		$q = "INSERT INTO `historie` (`drucker_id`,`Beschreibung`,`Patrone`) VALUES ('".$id."','".$beschr."','".$patrone."')";
+		$q = "INSERT INTO `historie` (`id`,`kommentar`,`Patrone`) VALUES ('".$id."','".$beschr."','".$patrone."')";
 		$return = $this->db->fuehreAus($q);
 		return $return;
 	}
 	private function getHistorie($id){
-		$q = "SELECT * FROM `historie` WHERE `drucker_id` = ".$id."";
+		$q = "SELECT * FROM `historie` WHERE `id` = ".$id."";
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 	}
@@ -71,7 +71,7 @@ CLASS AJAX{
 	}
 
 	private function holeAlleDruckerDaten(){
-		$q = "SELECT * FROM `drucker`";
+		$q = "SELECT * FROM `drucker` WHERE `typ` != ''";
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 	}
@@ -90,13 +90,13 @@ CLASS AJAX{
 	private function pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow){
 		$q = "SELECT * FROM `krit_mail` WHERE `ip` = '".$id."'";
 		$critArray = $this->db->getEinzeilig($q);		
-		if($typ === "farbdrucker"){
+		if($typ === "CO"){
 			if($toner_schwarz < $critArray["schwarz"] || $toner_magenta < $critArray["magenta"] || $toner_cyan < $critArray["cyan"] || $toner_yellow < $critArray["gelb"] && $critArray["gesendet"] === 0){
 				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `id` = ".$id."";
 				$this->db->fuehreAus($q);		
 				require_once("../services/sendMail.php");
 			}
-		}elseif($typ === "schwarzweiss"){
+		}elseif($typ === "SW"){
 			if($toner_schwarz < $critArray["schwarz"] && $critArray["gesendet"] === 0){
 				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `id` = ".$id."";
 				$this->db->fuehreAus($q);	
@@ -143,21 +143,17 @@ CLASS AJAX{
 		}
 	//	echo $pdf->Output();
 		$pfad = "././pdf/Monitoring.pdf";	
-	  if(!(is_dir("././pdf/"))){
-		return mkdir ("././pdf/",0777,true); 
-	}
+		if(!(is_dir("././pdf/"))){
+			mkdir ("././pdf/",0777,true); 
+		}
 		$out = $pdf->Output("","S");
 		$handlePDF = fopen($pfad,"w+");
 		fwrite($handlePDF,$out);
 		fclose($handlePDF);
 		echo "./services/pdf/Monitoring.pdf";
 	}	
-	private function getStatistik($id){
-		$q = "SELECT * FROM `statistik` WHERE `drucker_id` = ".$id."";
-		$return = $this->db->getMehrzeilig($q);
-		echo json_encode($return);
-		return $return;	
-		
+	private function getStatistik(){
+		$q = "SELECT * FROM `statistik` ORDER BY `datum` DESC LIMIT 12";		
 	}
 	
 	
@@ -166,20 +162,28 @@ CLASS AJAX{
 			UPDATE 
 				`drucker`
 			SET
-				`ip` = '".$ip."', `typ` = '".$typ."', `hersteller` = '".$hersteller."', `vendor` = '".$vendor."', `seriennummer` = '".$seriennummer."', `toner_schwarz` = ".$toner_schwarz.", `toner_cyan` = ".$toner_cyan.", `toner_magenta` = ".$toner_magenta.", `toner_gelb` = ".$toner_yellow.", `trommelstatus` = ".intval($trommelstand).", `gedruckteSeiten` = ".intval($gedruckteSeiten).", `patronentyp_schwarz` = '".$patronentyp_schwarz."', `patronentyp_cyan` = '".$patronentyp_cyan."',`patronentyp_magenta` = '".$patronentyp_magenta."',`patronentyp_gelb` = '".$patronentyp_yellow."',
+				`ip` = '".$ip."', `typ` = '".$typ."', `hersteller` = '".trim(str_replace("STRING:","",$hersteller))."', 
+				`vendor` = '".trim(str_replace("STRING:","",$vendor))."', `seriennummer` = '".trim(str_replace("STRING:","",$seriennummer))."', `toner_schwarz` = ".$toner_schwarz.", 
+				`toner_cyan` = ".$toner_cyan.", `toner_magenta` = ".$toner_magenta.", `toner_gelb` = ".$toner_yellow.", 
+				`trommelstand` = ".intval($trommelstand).", `gedruckteSeiten` = ".intval($gedruckteSeiten).", 
+				`patronentyp_schwarz` = '".trim(str_replace("STRING:","",$patronentyp_schwarz))."', `patronentyp_cyan` = '".trim(str_replace("STRING:","",$patronentyp_cyan))."',
+				`patronentyp_magenta` = '".trim(str_replace("STRING:","",$patronentyp_magenta))."',`patronentyp_gelb` = '".trim(str_replace("STRING:","",$patronentyp_yellow))."'
 			WHERE 
 				`id` = ".$id."
 			
 		";
-		var_dump($q);
-		$q2 = "
-			INSERT INTO `statistik`(`drucker_id`, `gedruckte_seiten`) VALUES (".$id.",".intval($gedruckteSeiten).")
+	//	var_dump($q);
+		$q2 = "DELETE FROM `statistik` WHERE MONTH(NOW()) AND `drucker_id` = ".$id."";
+		$q3 = "INSERT INTO `statistik`(`drucker_id`, `gedruckte_seiten`) VALUES (".$id.",".intval($gedruckteSeiten).")
 			
 		";
-		var_dump($q2);		
+	//	var_dump($q2);		
 	//	$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
-	//	$return = $this->db->fuehreAus($q);
+		$this->db->fuehreAus($q);
+		$this->db->fuehreAus($q2);
+		$this->db->fuehreAus($q3);
 	//	echo json_encode($return);	
 	}	
+	
 	
 }	

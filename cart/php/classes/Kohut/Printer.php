@@ -267,7 +267,7 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
 
 
         if ($max === false || $actual === false) {
-			echo "MaxUndAktLeer!";
+		//	echo "MaxUndAktLeer!";
             return false;
         }
 
@@ -282,7 +282,7 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
             /**
              * Counting result in percent format
              */
-			 echo "in3";
+		//	 echo "in3";
             return ($actual / ($max / 100));
         }
     }
@@ -297,11 +297,11 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
     public function getBlackTonerLevel()
     {
         if ($this->isColorPrinter()) {
-			echo "ike bin farbig";
+	//		echo "ike bin farbig";
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
         } elseif ($this->isMonoPrinter()) {
-			echo "Ike bin schwarz";
+	//		echo "Ike bin schwarz";
 	//		var_dump(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1);
 	//		var_dump(self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1
