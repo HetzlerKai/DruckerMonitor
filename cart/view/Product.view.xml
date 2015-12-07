@@ -172,7 +172,7 @@
 									<cells>
 										<Label text="{History>Datum}"></Label>
 										<Label text="{History>Patrone}"></Label>
-										<Label text="{History>Beschreibung}"></Label>
+										<Label text="{History>kommentar}"></Label>
 									</cells>
 								</ColumnListItem>
 							</items>

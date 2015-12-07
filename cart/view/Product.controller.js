@@ -450,7 +450,7 @@ sap.ui.controller("view.Product", {
 
 		jQuery.ajax({
 			type: 'POST',
-			dataType: "html",
+			dataType: "json",
 			url: 'php/services/ajax.php',
 			data: {
 				post: 'schreibeHistorie',
@@ -463,6 +463,7 @@ sap.ui.controller("view.Product", {
 			},
 			error: function (response) {
 				jQuery.sap.log.error("Couldn't write new History Entry");
+				that.refreshHistoryData();
 			}
 		});
 
