@@ -162,13 +162,26 @@ sap.ui.define([
 			
 			for(count = 0; aData.length > count; count++){
 				aData[count].isCritical = false;
-				if (aData[count].toner_cyan < 10 ||
-					aData[count].toner_gelb < 10 ||
-					aData[count].toner_magenta < 10 ||
-					aData[count].toner_schwarz < 10) {
+				
+				switch(aData[count].typ){
+					case "SW":
+						if (aData[count].toner_schwarz < 10) {
+							aData[count].isCritical = true;
+						}
+					break;
 					
-					aData[count].isCritical = true;
+					case "CO":
+						if (aData[count].toner_cyan < 10 ||
+							aData[count].toner_gelb < 10 ||
+							aData[count].toner_magenta < 10 ||
+							aData[count].toner_schwarz < 10) {
+								
+							aData[count].isCritical = true;
+						}
+					break;
 				}
+				
+
 			}
 			return aData;
 		},
