@@ -271,55 +271,85 @@ sap.ui.controller("view.Product", {
 
 	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
 	showStatisticChart: function (sId, oData) {
-		this._$content = $('<div id="highcharts"></div>').highcharts({
-			chart: {
-				type: 'column',
-				width: ($(sId).width() - 20).toString()
-			},
-			title: {
-				text: 'Tintenstand'
-			},
-			xAxis: {
-				type: 'category'
-			},
-			yAxis: {
+		
+		if (oData.typ = "schwarzweiss"){
+			this._$content = $('<div id="highcharts"></div>').highcharts({
+				chart: {
+					type: 'column',
+					width: ($(sId).width() - 20).toString()
+				},
 				title: {
-					text: 'ml'
-				}
-			},
-			series: [{
-				name: 'Black',
-				data: [{
-					name: 'Tintenart',
-					y: parseInt(oData.toner_schwarz)
-				}],
-				color: 'black'
-			},
-				{
-					name: 'Cyan',
-					data: [{
-						name: 'Tintenart',
-						y: parseInt(oData.toner_cyan)
-					}],
-					color: "cyan"
+					text: 'Tintenstand'
 				},
-				{
-					name: 'Magenta',
-					data: [{
-						name: 'Tintenart',
-						y: parseInt(oData.toner_magenta)
-					}],
-					color: "magenta"
+				xAxis: {
+					type: 'category'
 				},
-				{
-					name: 'Gelb',
+				yAxis: {
+					title: {
+						text: '%'
+					}
+				},
+				series: [{
+					name: 'Black',
 					data: [{
 						name: 'Tintenart',
-						y: parseInt(oData.toner_gelb)
+						y: parseInt(oData.toner_schwarz)
 					}],
-					color: "yellow"
+					color: 'black'
 				}]
-		});
+			});
+		} else {
+	
+			this._$content = $('<div id="highcharts"></div>').highcharts({
+				chart: {
+					type: 'column',
+					width: ($(sId).width() - 20).toString()
+				},
+				title: {
+					text: 'Tintenstand'
+				},
+				xAxis: {
+					type: 'category'
+				},
+				yAxis: {
+					title: {
+						text: '%'
+					}
+				},
+				series: [{
+					name: 'Black',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_schwarz)
+					}],
+					color: 'black'
+				},
+					{
+						name: 'Cyan',
+						data: [{
+							name: 'Tintenart',
+							y: parseInt(oData.toner_cyan)
+						}],
+						color: "cyan"
+					},
+					{
+						name: 'Magenta',
+						data: [{
+							name: 'Tintenart',
+							y: parseInt(oData.toner_magenta)
+						}],
+						color: "magenta"
+					},
+					{
+						name: 'Gelb',
+						data: [{
+							name: 'Tintenart',
+							y: parseInt(oData.toner_gelb)
+						}],
+						color: "yellow"
+					}]
+			});
+		}	
 		$(sId).append(this._$content);
 	},
 
