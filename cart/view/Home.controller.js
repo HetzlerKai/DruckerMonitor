@@ -103,13 +103,13 @@ sap.ui.controller("view.Home", {
 		});
 	},
 
-	// Actionlistener für Printer Item select (gleich zu Item press)
+	// Actionlistener fuer Printer Item select (gleich zu Item press)
 	handleProductListSelect: function (oEvent) {
 		var oItem = oEvent.getParameter("listItem");
 		this._showProduct(oItem);
 	},
 
-	// Actionlistener für Printer Item Press (gleich zu Item select)
+	// Actionlistener fuer Printer Item Press (gleich zu Item select)
 	handleProductListItemPress: function (oEvent) {
 		var oItem = oEvent.getSource();
 		this._showProduct(oItem);
