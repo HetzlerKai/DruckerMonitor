@@ -156,6 +156,12 @@ sap.ui.define([
 			});
 
 		},
+		
+		_aCriticalEntryMap: [],
+		
+		_setCriticalEntriesIntoArray: function(i){
+			this._aCriticalEntryMap.push(i);
+		},
 
 		_setCriticalFlagToResponseData: function(aData){
 			var count;
@@ -166,7 +172,9 @@ sap.ui.define([
 				switch(aData[count].typ){
 					case "SW":
 						if (aData[count].toner_schwarz < 10) {
+							
 							aData[count].isCritical = true;
+							this._setCriticalEntriesIntoArray(count);
 						}
 					break;
 					
@@ -177,6 +185,7 @@ sap.ui.define([
 							aData[count].toner_schwarz < 10) {
 								
 							aData[count].isCritical = true;
+							this._setCriticalEntriesIntoArray(count);
 						}
 					break;
 				}

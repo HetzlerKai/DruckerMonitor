@@ -17,12 +17,10 @@ CLASS AJAX{
 				   return $this->holeDruckerMitIp($_POST['ip']);
 				break;				*/
 				case 'schreibeHistorie':
-				   return 
-				   $this->schreibeHistorie($_POST['id'],$_POST['kommentar'],$_POST['patrone']);
+				   return $this->schreibeHistorie($_POST['id'],$_POST['kommentar'],$_POST['patrone']);
 				break;						
 				case 'getStatistik':
-				   return 
-				   $this->getStatistik($_POST['drucker_id']);
+				   return $this->getStatistik($_POST['drucker_id']);
 				break;				
 				case 'login':
 				   return $this->login($_POST['name'],$_POST['passwort']);
@@ -156,7 +154,6 @@ CLASS AJAX{
 		$q = "SELECT * FROM `statistik` WHERE 'drucker_id' = ".$drucker_id." ORDER BY `datum` DESC LIMIT 12";		
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
-		
 	}
 	
 	

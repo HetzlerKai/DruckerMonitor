@@ -117,14 +117,25 @@ sap.ui.controller("view.Home", {
 
 	// navigiert zur Drucker Detail seite
 	_showProduct: function (oItem) {
-		var oBindContext = oItem.getBindingContext("DruckerData")
+		var 
+		oBindContext = oItem.getBindingContext("DruckerData"),
 		oModel = oBindContext.getModel(),
 		sDruckerId = oModel.getProperty(oBindContext.getPath()).id,
-		oList = oItem.getParent();
+		oList = oItem.getParent(),
+		oComponent = this.getOwnerComponent(),
+		sPosInList;
+		
+		if (this.isFiltered){
+			sPosInList = oList.indexOfItem(oItem);
+			sId = oComponent._aCriticalEntryMap[sPosInList];
+			
+			this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);
+		} else {
+			sId = oList.indexOfItem(oItem);
+			this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);			
+		}
 		
 //		sId = (parseInt(sId) - 1).toString();
-		sId = oList.indexOfItem(oItem);
-		this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);
 	}
 
 });
