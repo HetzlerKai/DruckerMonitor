@@ -147,10 +147,9 @@ sap.ui.controller("view.Product", {
 			sPath = oEvent.getSource().getBindingContext("DruckerData").getPath(),
 			oData = oEvent.getSource().getModel("DruckerData").getProperty(sPath);
 
-		this._removeChartIfLoaded();
-
 		// Auswahl der Charts das geladen soll
 		if (oSelectedItem.getKey() === "ChartStatistic") {
+			this._removeChartIfLoaded();
 			this._updateKeyOfSelectedTab("ChartStatistic");
 
 			this.showStatisticChart(sId, oData);

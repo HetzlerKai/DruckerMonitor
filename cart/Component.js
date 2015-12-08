@@ -172,7 +172,7 @@ sap.ui.define([
 				aData[count].isCritical = false;
 				
 				switch(aData[count].typ){
-					case "SW":
+					case "schwarzweiss":
 						if (aData[count].toner_schwarz < 10) {
 							
 							aData[count].isCritical = true;
