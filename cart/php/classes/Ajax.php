@@ -153,7 +153,7 @@ CLASS AJAX{
 		echo "./services/pdf/Monitoring.pdf";
 	}	
 	private function getStatistik($drucker_id){
-		$q = "SELECT * FROM `statistik` WHERE 'drucker_id' = ".$drucker_id." ORDER BY `datum` DESC LIMIT 12";		
+		$q = "SELECT * FROM `statistik` WHERE `drucker_id` = '".$drucker_id."' ORDER BY `datum` DESC LIMIT 12";
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 		
