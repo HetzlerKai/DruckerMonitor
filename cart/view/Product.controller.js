@@ -323,7 +323,7 @@ sap.ui.controller("view.Product", {
 				},
 				title: {
 					text: 'Tintenstand'
-				},
+				}, 
 				xAxis: {
 					type: 'category'
 				},
