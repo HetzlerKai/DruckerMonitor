@@ -405,7 +405,7 @@ sap.ui.controller("view.Product", {
 				width: ($(sId).width() - 20).toString()
 			},
 			title: {
-				text: 'Paper Consumption'
+				text: 'Papierverbrauch'
 			},
 			xAxis: {
 				categories: this._MonthArrayForPaperConsumptionChart
