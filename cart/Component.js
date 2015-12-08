@@ -19,7 +19,7 @@ sap.ui.define([
              Button) {
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
-
+ 
 		// Einstellungen fuer die Navigation
 		metadata: {
 			includes: ["css/style.css"],
