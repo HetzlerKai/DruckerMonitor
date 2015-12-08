@@ -7,7 +7,8 @@ sap.ui.define([
 	'sap/m/Dialog',
 	'sap/m/Label',
 	'sap/m/Input',
-	'sap/m/Button'
+	'sap/m/Button',
+	'sap/m/MessageBox'
 ], function (UIComponent,
              Router,
              ResourceModel,
@@ -16,7 +17,8 @@ sap.ui.define([
              Dialog,
              Label,
              Input,
-             Button) {
+             Button,
+             MessageBox) {
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
  
@@ -145,7 +147,7 @@ sap.ui.define([
 
 					} else {
 						// Falls das Array leer ist, sprich keine Daten geliefrt worden sind, wird eine Fehlermeldung ausgegeben
-						sap.m.MessageBox.alert("Datenbank liefert falshe Daten: " + response);
+						MessageBox.alert("Datenbank liefert falshe Daten: " + response);
 					}
 
 				},
