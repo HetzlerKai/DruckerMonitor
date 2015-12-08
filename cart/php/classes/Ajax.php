@@ -22,7 +22,7 @@ CLASS AJAX{
 				break;						
 				case 'getStatistik':
 				   return 
-				   $this->getStatistik($_POST['id']);
+				   $this->getStatistik($_POST['drucker_id']);
 				break;				
 				case 'login':
 				   return $this->login($_POST['name'],$_POST['passwort']);
@@ -152,8 +152,8 @@ CLASS AJAX{
 		fclose($handlePDF);
 		echo "./services/pdf/Monitoring.pdf";
 	}	
-	private function getStatistik(){
-		$q = "SELECT * FROM `statistik` ORDER BY `datum` DESC LIMIT 12";		
+	private function getStatistik($drucker_id){
+		$q = "SELECT * FROM `statistik` WHERE 'drucker_id' = ".$drucker_id." ORDER BY `datum` DESC LIMIT 12";		
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 		
