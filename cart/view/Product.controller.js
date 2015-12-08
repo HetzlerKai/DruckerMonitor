@@ -62,7 +62,7 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	// Liefert die IP des aktuel ausgew�hlten Druckers
+	// Liefert die IP des aktuel ausgewählten Druckers
 	getDruckerId: function () {
 		var oModel, oCurrentDrucker,
 			sId = null;
@@ -74,11 +74,10 @@ sap.ui.controller("view.Product", {
 
 		return sId;
 	},
-	
+
 	getDruckerIp: function () {
-		var
-		oModel, oCurrentDrucker,
-		sIp = null;
+		var	oModel, oCurrentDrucker,
+			sIp = null;
 
 		oModel = sap.ui.getCore().getModel("DruckerData");
 		oCurrentDrucker = oModel.getProperty(this.sDataPath);
@@ -131,7 +130,7 @@ sap.ui.controller("view.Product", {
 		"GeneralTab": false
 	},
 
-	_updateKeyOfSelectedTab: function(sTabName){
+	_updateKeyOfSelectedTab: function (sTabName) {
 		this._mSelectedTab["ChartStatistic"] = false;
 		this._mSelectedTab["History"] = false;
 		this._mSelectedTab["ChartPaper"] = false;
@@ -161,23 +160,17 @@ sap.ui.controller("view.Product", {
 
 			this._setPaperConsumptionModel();
 
-			// Datenaufbereitung f�r das Papierverbrauch Diagramm
-			this._analyzePaperConsumptionData();
-
-			// Diagramm wird initialisiert und auf das UI platziert
-			this._showPaperConsumptionChart(sId, oData);
-
-		} else if(oSelectedItem.getKey() === "GeneralTab"){
+		} else if (oSelectedItem.getKey() === "GeneralTab") {
 			this._updateKeyOfSelectedTab("GeneralTab");
 
-		} else if(oSelectedItem.getKey() === "History"){
+		} else if (oSelectedItem.getKey() === "History") {
 			this._updateKeyOfSelectedTab("History");
 
 		}
 
 	},
 
-	_refreshInkChart: function(){
+	_refreshInkChart: function () {
 		if (this._mSelectedTab["ChartStatistic"]) {
 			this._removeChartIfLoaded();
 			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
@@ -209,9 +202,13 @@ sap.ui.controller("view.Product", {
 					oView.setModel(oJSONModel, "PapierVerbrauch");
 					oView.getModel("PapierVerbrauch").setData(aPaperConsumption);
 
-					// Datenaufbereitung f�r das Papierverbrauchdiagramm
-					that._analyzePaperConsumptionData();
+					// Diagramm wird entfernt falls vorhanden
 					that._removeChartIfLoaded();
+
+					// Intialisierung der beiden Arrays mit Namen der letzten 12 Monaten und den dazugehörigen Werten
+					that._setMonthValuesForPaperConsumptionChart();
+					that._setMonthArrayForPaperConsumptionChart();
+
 					var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
 					that._showPaperConsumptionChart(that._getIdOfTabToPlaceChartInto(sTabId), that.getView().getModel("DruckerData").getProperty(that.sDataPath));
 
@@ -224,50 +221,95 @@ sap.ui.controller("view.Product", {
 
 	},
 
-	_aValuesOfMonthForPaperConsumptionChart: new Array(),
+	_aMonthValuesForPaperConsumptionChart: new Array(),
 
-	_getRequiredModelAsArray: function(sName){
+	_getRequiredModelAsArray: function (sName) {
 		return (this.getView().getModel(sName)) ? this.getView().getModel(sName).getData() : [];
 	},
 
-	_analyzePaperConsumptionData: function () {
+	_setMonthValuesForPaperConsumptionChart: function () {
 		var aData = this._getRequiredModelAsArray("PapierVerbrauch");
 
-		this._aValuesOfMonthForPaperConsumptionChart.length = 0;
+		this._aMonthValuesForPaperConsumptionChart.length = 0;
 
-		if (aData.length > 1) {
-			for (var count = 0; aData.length > count; count++) {
-				if (this._isReceivedYearSameAsCurrent(aData, count)) {
-					this._analyzeMonthValues(aData, count);
-				}
+		var iHighestMonth = this._getHighestMonth(this._getRequiredModelAsArray("PapierVerbrauch"));
+
+		for (var count = 0; aData.length > count; count++) {
+
+			// Initialisiere das Array mit den Werten aus dem Vorjahr
+			if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iHighestMonth) {
+				this._aMonthValuesForPaperConsumptionChart[new Date(aData[count].datum).getMonth() - iHighestMonth] = parseInt(aData[count].gedruckte_seiten);
 			}
-		} else if (aData.length === 1) {
-			this._analyzeMonthValues(aData, aData.length - 1);
+
+			// Initialisiere das Array mit den Werten aus diesem Jahr
+			else if (parseInt(new Date(aData[count].datum).getMonth()) + 1 <= iHighestMonth) {
+				this._aMonthValuesForPaperConsumptionChart[this._getLengthDifferenceBetweenAllAndRecievedMonths() + new Date(aData[count].datum).getMonth()] = parseInt(aData[count].gedruckte_seiten);
+			}
+
 		}
 
-		// Initialisiere 0 in leere Arrays
+		// Initialisiere Eintraege im Array die keine Daten vom Backend bekommen haben
 		this._fillEmptyArrayWithZero();
+	},
+
+	_getHighestMonth: function (aData) {
+		var iMonth = 0;
+		var iYear = 0;
+
+		for (var count = 0; aData.length > count; count++) {
+
+			if (parseInt(new Date(aData[count].datum).getFullYear()) > iYear) {
+				iYear = parseInt(new Date(aData[count].datum).getFullYear());
+				iMonth = 0;
+			}
+
+			if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iMonth) {
+				iMonth = parseInt(new Date(aData[count].datum).getMonth()) + 1;
+			}
+			
+		}
+
+		return iMonth;
+	},
+
+	_MonthArrayForPaperConsumptionChart: new Array(12),
+
+	_setMonthArrayForPaperConsumptionChart: function () {
+		var indexForLastTwelveMonthsArray = 0,
+			aMonthArrayForPaperConsumptionChart = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			iDifference = this._getLengthDifferenceBetweenAllAndRecievedMonths();
+
+		if (iDifference > 0) {
+
+			// Initialisierung des Arrays mit den Monaten aus dem Vorjahr
+			for (var count = aMonthArrayForPaperConsumptionChart.length - iDifference; aMonthArrayForPaperConsumptionChart.length - 1 >= count; count++) {
+				this._MonthArrayForPaperConsumptionChart[indexForLastTwelveMonthsArray] = aMonthArrayForPaperConsumptionChart[count];
+				indexForLastTwelveMonthsArray++;
+
+			}
+
+			// Initialisierung des Arrays mit den Monaten aus dem aktuellen Jahr
+			for (count = 0; aMonthArrayForPaperConsumptionChart.length > indexForLastTwelveMonthsArray; count++) {
+				this._MonthArrayForPaperConsumptionChart[indexForLastTwelveMonthsArray] = aMonthArrayForPaperConsumptionChart[count];
+				indexForLastTwelveMonthsArray++;
+			}
+			return
+		}
+
+		this._MonthArrayForPaperConsumptionChart = aMonthArrayForPaperConsumptionChart;
+
+	},
+
+	_getLengthDifferenceBetweenAllAndRecievedMonths: function () {
+		return this._MonthArrayForPaperConsumptionChart.length - this._getHighestMonth(this._getRequiredModelAsArray("PapierVerbrauch"));
 	},
 
 	_fillEmptyArrayWithZero: function () {
 		for (var count = 0; 12 > count; count++) {
-			if (!this._aValuesOfMonthForPaperConsumptionChart[count]) {
-				this._aValuesOfMonthForPaperConsumptionChart[count] = 0;
+			if (!this._aMonthValuesForPaperConsumptionChart[count]) {
+				this._aMonthValuesForPaperConsumptionChart[count] = 0;
 			}
 		}
-	},
-
-	_analyzeMonthValues: function (aData, count) {
-		if (this._aValuesOfMonthForPaperConsumptionChart[parseInt(new Date(aData[count].datum).getMonth())]) {
-			this._aValuesOfMonthForPaperConsumptionChart[parseInt(new Date(aData[count].datum).getMonth())] += parseInt(aData[count].gedruckte_seiten);
-		}
-		else {
-			this._aValuesOfMonthForPaperConsumptionChart[parseInt(new Date(aData[count].datum).getMonth())] = parseInt(aData[count].gedruckte_seiten);
-		}
-	},
-
-	_isReceivedYearSameAsCurrent: function (aData, iArrayPosition) {
-		return new Date().getFullYear() === new Date(aData[iArrayPosition].datum).getFullYear();
 	},
 
 	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
@@ -356,6 +398,7 @@ sap.ui.controller("view.Product", {
 
 	// Zeigt auf dem UI die Papierverbrauchdiagramm an
 	_showPaperConsumptionChart: function (sId, oData) {
+
 		this._$content = $('<div id="test"></div>').highcharts({
 			chart: {
 				type: 'line',
@@ -365,7 +408,7 @@ sap.ui.controller("view.Product", {
 				text: 'Paper Consumption'
 			},
 			xAxis: {
-				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+				categories: this._MonthArrayForPaperConsumptionChart
 			},
 			yAxis: {
 				title: {
@@ -374,7 +417,7 @@ sap.ui.controller("view.Product", {
 			},
 			series: [{
 				name: oData.name || "Kein Druckername vorhanden",
-				data: this._aValuesOfMonthForPaperConsumptionChart
+				data: this._aMonthValuesForPaperConsumptionChart
 			}]
 		});
 		$(sId).append(this._$content);
