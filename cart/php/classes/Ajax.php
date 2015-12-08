@@ -55,7 +55,7 @@ CLASS AJAX{
 	private function schreibeHistorie($id,$beschr,$patrone){
 		$q = "INSERT INTO `historie` (`id`,`kommentar`,`Patrone`) VALUES ('".$id."','".$beschr."','".$patrone."')";
 		$return = $this->db->fuehreAus($q);
-		return $return;
+		echo json_encode($return);
 	}
 	private function getHistorie($id){
 		$q = "SELECT * FROM `historie` WHERE `id` = ".$id."";
