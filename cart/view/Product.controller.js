@@ -62,7 +62,7 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	// Liefert die IP des aktuel ausgew�hlten Druckers
+	// Liefert die IP des aktuel ausgewählten Druckers
 	getDruckerId: function () {
 		var oModel, oCurrentDrucker,
 			sId = null;
@@ -205,7 +205,7 @@ sap.ui.controller("view.Product", {
 					// Diagramm wird entfernt falls vorhanden
 					that._removeChartIfLoaded();
 
-					// Intialisierung der beiden Arrays mit Namen der letzten 12 Monaten und den dazugeh�rigen Werten
+					// Intialisierung der beiden Arrays mit Namen der letzten 12 Monaten und den dazugehörigen Werten
 					that._setMonthValuesForPaperConsumptionChart();
 					that._setMonthArrayForPaperConsumptionChart();
 
@@ -232,28 +232,30 @@ sap.ui.controller("view.Product", {
 
 		this._aMonthValuesForPaperConsumptionChart.length = 0;
 
-			var iHighestMonth = this._getHighestMonth(this._getRequiredModelAsArray("PapierVerbrauch"));
+		var iHighestMonth = this._getHighestMonth(this._getRequiredModelAsArray("PapierVerbrauch"));
 
-			for (var count = 0; aData.length > count; count++) {
+		for (var count = 0; aData.length > count; count++) {
 
-				// Initialisiere das Array mit den Werten aus dem Vorjahr
-				if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iHighestMonth) {
-					this._aMonthValuesForPaperConsumptionChart[new Date(aData[count].datum).getMonth() - iHighestMonth] = parseInt(aData[count].gedruckte_seiten);
-				}
-
-				// Initialisiere das Array mit den Werten aus diesem Jahr
-				else if (parseInt(new Date(aData[count].datum).getMonth()) + 1 <= iHighestMonth) {
-					this._aMonthValuesForPaperConsumptionChart[this._getLengthDifferenceBetweenAllAndRecievedMonths() + new Date(aData[count].datum).getMonth()] = parseInt(aData[count].gedruckte_seiten);
-				}
-
+			// Initialisiere das Array mit den Werten aus dem Vorjahr
+			if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iHighestMonth) {
+				this._aMonthValuesForPaperConsumptionChart[new Date(aData[count].datum).getMonth() - iHighestMonth] = parseInt(aData[count].gedruckte_seiten);
 			}
-		// Initialisiere Eintr�ge im Array die keine Daten vom Backend bekommen haben
+
+			// Initialisiere das Array mit den Werten aus diesem Jahr
+			else if (parseInt(new Date(aData[count].datum).getMonth()) + 1 <= iHighestMonth) {
+				this._aMonthValuesForPaperConsumptionChart[this._getLengthDifferenceBetweenAllAndRecievedMonths() + new Date(aData[count].datum).getMonth()] = parseInt(aData[count].gedruckte_seiten);
+			}
+
+		}
+
+		// Initialisiere Eintraege im Array die keine Daten vom Backend bekommen haben
 		this._fillEmptyArrayWithZero();
 	},
 
 	_getHighestMonth: function (aData) {
 		var iMonth = 0;
 		var iYear = 0;
+
 		for (var count = 0; aData.length > count; count++) {
 
 			if (parseInt(new Date(aData[count].datum).getFullYear()) > iYear) {
@@ -261,10 +263,10 @@ sap.ui.controller("view.Product", {
 				iMonth = 0;
 			}
 
-				if(parseInt(new Date(aData[count].datum).getMonth()) + 1 > iMonth){
-					iMonth = parseInt(new Date(aData[count].datum).getMonth()) + 1;
-				}
-
+			if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iMonth) {
+				iMonth = parseInt(new Date(aData[count].datum).getMonth()) + 1;
+			}
+			
 		}
 
 		return iMonth;
