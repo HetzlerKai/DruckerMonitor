@@ -357,6 +357,7 @@ sap.ui.controller("view.Product", {
 					type: 'category'
 				},
 				yAxis: {
+					max: 100,
 					title: {
 						text: '%'
 					}
