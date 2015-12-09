@@ -335,7 +335,7 @@ sap.ui.controller("view.Product", {
 					}
 				},
 				series: [{
-					name: 'Black',
+					name: 'Schwarz',
 					data: [{
 						name: 'Tintenart',
 						y: parseInt(oData.toner_schwarz)
@@ -362,7 +362,7 @@ sap.ui.controller("view.Product", {
 					}
 				},
 				series: [{
-					name: 'Black',
+					name: 'Schwarz',
 					data: [{
 						name: 'Tintenart',
 						y: parseInt(oData.toner_schwarz)

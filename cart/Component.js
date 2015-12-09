@@ -91,13 +91,13 @@ sap.ui.define([
 		// Liefert eine neue Dialoginstanz
 		createDialog: function (oComponent, oView) {
 			return new Dialog({
-				title: "Login",
+				title: "Anmeldung",
 				contentWidth: "13%",
 				contentHeight: "28%",
 				content: oComponent.getDialogContent(oComponent),
 				beginButton: new Button({
 					id: "__login",
-					text: "Log on",
+					text: "Anmelden",
 
 					// Mit der Verwendung der Proxy Funktion wird der aktuelle "this" Zeiger Aufbergeben an die handleLoginPress Funktion
 					press: jQuery.proxy(oComponent.handleLoginPress, oComponent, oView)
@@ -214,7 +214,7 @@ sap.ui.define([
 			// Aufbereitung des UI-Inhaltes fuer das Anmeldedialog
 			return [
 				new Label({
-					text: "Username:",
+					text: "Benutzername:",
 					id: "__userLabel"
 				}).addStyleClass("loginDialogLabel"),
 				new Input({
@@ -226,7 +226,7 @@ sap.ui.define([
 				}).addStyleClass("loginDialogInputUserPosition"),
 				new Label({
 					id: "__pwdLabel",
-					text: "Password:",
+					text: "Passwort:",
 				}).addStyleClass("loginDialogLabel"),
 				new Input({
 					liveChange: function (oEvent) {

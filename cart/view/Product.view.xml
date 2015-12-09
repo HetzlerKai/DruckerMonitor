@@ -49,7 +49,7 @@
 					<IconTabFilter
 							icon="sap-icon://legend"
 							iconColor="Positive"
-							tooltip="General information"
+							tooltip="{i18n>GENERAL_INFO}"
 							key="GeneralTab">
 						<f:Form id="FormDisplay"
 								minWidth="1024"
@@ -138,19 +138,19 @@
 					<IconTabFilter
 							icon="sap-icon://bar-chart"
 							iconColor="Positive"
-							tooltip="Statistic about this printer"
+							tooltip="{i18n>STATS_FOR_PRINTER}"
 							key="ChartStatistic">
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://line-chart"
 							iconColor="Positive"
-							tooltip="Paper consumption of this printer"
+							tooltip="{i18n>PAPER_CONSUMPTION_TAB}"
 							key="ChartPaper">
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://history"
 							iconColor="Positive"
-							tooltip="History about this printer"
+							tooltip="{i18n>HISTORY_FOR_PRINTER}"
 							key="History">
 						<Table headerText="{i18n>TABLE_HEADER_TEXT}" items="{History>/}">
 							<columns>
