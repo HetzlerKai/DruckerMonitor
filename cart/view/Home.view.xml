@@ -20,6 +20,7 @@
 				<core:Icon 
 					src="sap-icon://message-error" 
 					press="handleFilterButtonPress" 
+					tooltip="{i18n>FILTER_CRIT}"
 					size="1.5rem"/>
 			</Toolbar>
 		</subHeader>
