@@ -11,16 +11,16 @@ sap.ui.controller("view.Welcome", {
 		this._animate(1, true);
 	},
 
-	// Konfiguration für die Animation
+	// Konfiguration fuer die Animation
 	_animate: function (iLevel, bForward) {
 
 		if (iLevel === this.ICON_NUMBER + 1) {
 
-			// end of recursion: fade them all
-			for (var i = 0; i < this.ICON_NUMBER; i++) {
-				var oIcon = this.getView().byId("icon" + (i + 1));
-				oIcon.addStyleClass("welcomeIconFade");
-			}
+//			// end of recursion: fade them all
+//			for (var i = 0; i < this.ICON_NUMBER; i++) {
+//				var oIcon = this.getView().byId("icon" + (i + 1));
+//				oIcon.addStyleClass("welcomeIconFade");
+//			}
 
 		} else {
 
