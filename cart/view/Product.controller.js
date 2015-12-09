@@ -161,9 +161,11 @@ sap.ui.controller("view.Product", {
 
 		} else if (oSelectedItem.getKey() === "GeneralTab") {
 			this._updateKeyOfSelectedTab("GeneralTab");
+			this._removeChartIfLoaded();
 
 		} else if (oSelectedItem.getKey() === "History") {
 			this._updateKeyOfSelectedTab("History");
+			this._removeChartIfLoaded();
 
 		}
 
@@ -213,7 +215,7 @@ sap.ui.controller("view.Product", {
 
 				},
 				error: function (oError) {
-					jQuery.sap.log.error("Fehler beim Zugriff auf die Statistikdaten: " + oError);
+					jQuery.sap.log.error("Fehler beim Zugriff auf die Statistikdaten: \n" + oError.responseText);
 				}
 			});
 		}

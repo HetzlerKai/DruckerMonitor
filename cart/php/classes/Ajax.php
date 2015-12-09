@@ -17,10 +17,12 @@ CLASS AJAX{
 				   return $this->holeDruckerMitIp($_POST['ip']);
 				break;				*/
 				case 'schreibeHistorie':
-				   return $this->schreibeHistorie($_POST['id'],$_POST['kommentar'],$_POST['patrone']);
+				   return 
+				   $this->schreibeHistorie($_POST['id'],$_POST['kommentar'],$_POST['patrone']);
 				break;						
 				case 'getStatistik':
-				   return $this->getStatistik($_POST['drucker_id']);
+				   return 
+				   $this->getStatistik($_POST['drucker_id']);
 				break;				
 				case 'login':
 				   return $this->login($_POST['name'],$_POST['passwort']);
@@ -86,20 +88,60 @@ CLASS AJAX{
 	}
 	
 	private function pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow){
-		$q = "SELECT * FROM `krit_mail` WHERE `ip` = '".$id."'";
-		$critArray = $this->db->getEinzeilig($q);		
+		$q = "SELECT * FROM `krit_mail` WHERE `drucker_id` = '".$id."'";
+		$critArray = $this->db->getEinzeilig($q);	
+		$krit = false;
 		if($typ === "CO"){
 			if($toner_schwarz < $critArray["schwarz"] || $toner_magenta < $critArray["magenta"] || $toner_cyan < $critArray["cyan"] || $toner_yellow < $critArray["gelb"] && $critArray["gesendet"] === 0){
-				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `id` = ".$id."";
+				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `drucker_id` = ".$id."";
 				$this->db->fuehreAus($q);		
-				require_once("../services/sendMail.php");
+				$krit = true;
 			}
 		}elseif($typ === "SW"){
 			if($toner_schwarz < $critArray["schwarz"] && $critArray["gesendet"] === 0){
-				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `id` = ".$id."";
+				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `drucker_id` = ".$id."";
 				$this->db->fuehreAus($q);	
-				require_once("../services/sendMail.php");				
-			}		
+				$krit = true;
+			}	
+		}
+		if($krit){
+			set_time_limit(120);
+			require '../classes/PHPMailer-master/class.phpmailer.php';
+			require '../classes/PHPMailer-master/PHPMailerAutoload.php';
+			require '../classes/PHPMailer-master/class.smtp.php'; // Optional, wenn du SMTP benutzen möchtest
+			require '../classes/PHPMailer-master/language/phpmailer.lang-de.php'; // Optional, wenn du deutsche Fehlermeldungen ausgeben möchtest
+			require_once("require.php");
+			$mail = new PHPMailer;
+			$config = $this->db->getEinzeilig("SELECT * FROM `config_mail`");
+			//var_dump($config);
+			echo "<pre>";
+			$mail->IsSMTP(); 
+			$mail->SMTPDebug  = 5;
+			$mail->Host = $config["host"];
+		//	$mail->Port = $config["Port"]; 
+			$mail->Port = 587; 
+			$mail->SMTPSecure = $config["SMTPSecure"];
+			$mail->Username = $config["Username"];
+			$mail->Password = $config["Password"];
+			$mail->SMTPAuth = true;
+			$mail->Timeout =   120;
+			#$mail->SMTPKeepAlive = true;
+			$mail->SMTPAutoTLS = false;
+
+			$mail->From = $config["From"];
+			$mail->FromName = $config["FromName"];
+			$mail->addAddress($config["addAddress"]);    // Der Name ist dabei optional	 
+			$mail->isHTML(true);                                  // Mail als HTML versenden
+			$mail->Subject = $config["Subject"];
+			$mail->Body    = $config["Body"];
+			$mail->AltBody = $config["AltBody"];
+			if(!$mail->send()) {
+				echo 'Mail wurde nicht abgesendet';
+				echo 'Fehlermeldung: ' . $mail->ErrorInfo;
+			} else {
+				echo 'Nachricht wurde abgesendet.';
+			}
+			$mail->SmtpClose();				
 		}
 		return;
 	}
@@ -150,10 +192,11 @@ CLASS AJAX{
 		fclose($handlePDF);
 		echo "./services/pdf/Monitoring.pdf";
 	}	
-	private function getStatistik($drucker_id){
-		$q = "SELECT * FROM `statistik` WHERE `drucker_id` = '".$drucker_id."' ORDER BY `datum` DESC LIMIT 12";
+	private function getStatistik($id){
+		$q = "SELECT * FROM `statistik` ORDER BY `datum` DESC LIMIT 12 WHERE `drucker_id` = ".$id."";	
 		$return = $this->db->getMehrzeilig($q);
-		echo json_encode($return);
+		echo json_encode($return);		
+		
 	}
 	
 	
@@ -178,11 +221,12 @@ CLASS AJAX{
 			
 		";
 	//	var_dump($q2);		
-	//	$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
+		$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
 		$this->db->fuehreAus($q);
 		$this->db->fuehreAus($q2);
 		$this->db->fuehreAus($q3);
 	//	echo json_encode($return);	
 	}	
+	
 	
 }	
