@@ -42,6 +42,25 @@ sap.ui.controller("view.Home", {
 		}	
 		
 	},
+	
+	handleDownloadAllButtonPress: function(){
+		sap.m.MessageToast.show("Download wurde gestarted");
+
+		jQuery.ajax({
+			type: 'POST',
+			dataType: "html",
+			url: 'php/services/ajax.php',
+			data: {
+				post: 'alleDruckerAlsPdf'
+			},
+			success: function (response) {
+				window.open('./php/services/pdf/Monitoring.pdf');
+			},
+			error: function (error) {
+				jQuery.sap.log.error("Download as PDF failed");
+			}
+		});
+	},
  
 	// sucht für den eingegeben String in allen Druckernamen
 	_search: function () {

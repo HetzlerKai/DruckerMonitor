@@ -91,7 +91,7 @@ sap.ui.controller("view.Product", {
 	handleDownloadButtonPress: function (oEvent) {
 		var that = this;
 
-		sap.m.MessageToast.show("Download was started");
+		sap.m.MessageToast.show("Download wurde gestarted");
 
 		jQuery.ajax({
 			type: 'POST',
