@@ -316,7 +316,7 @@ sap.ui.controller("view.Product", {
 	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
 	showStatisticChart: function (sId, oData) {
 		
-		if (oData.typ = "SW"){
+		if (oData.typ === "SW"){
 			this._$content = $('<div id="highcharts"></div>').highcharts({
 				chart: {
 					type: 'column',
