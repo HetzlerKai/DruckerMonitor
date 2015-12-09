@@ -7,7 +7,7 @@
 		title="{i18n>WELCOME_TITLE}"
 		enableScrolling="false">
 		<headerContent>
-			<Button icon="sap-icon://log" press="onLogoutPressed"/>
+			<Button icon="sap-icon://log" press="onLogoutPressed" tooltip="{i18n>LOGOUT}"/>
 		</headerContent>
 		<footer>
 			<Toolbar>
