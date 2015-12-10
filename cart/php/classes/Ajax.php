@@ -114,7 +114,9 @@ CLASS AJAX{
 		$pdf->SetFont('Arial','B',16);
 		$pdf->Cell(0,0,'HSS DRUCKER MONITORING',0,1,'C');
 		$pdf->Cell(0,10,"",0,1);
-		$pdf->SetFont('Arial','B',8);
+		$pdf->Cell(0,1,"",1,1);
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(0,5,"",0,1);
 		if($druckerip === false){	
 			
 			$ips = $this->holeAlleIPs();
@@ -124,7 +126,11 @@ CLASS AJAX{
 				foreach($drucker as $key => $value){
 					$string = "".$key.": ".$value;
 				//	var_dump($string);
-					$pdf->Cell(0,5,$string,0,1);
+					$pdf->Cell(0,5,$key,0,1);
+					$pdf->SetFont('Arial','B',8);
+					$pdf->Cell(0,5,$value,0,1);
+					$pdf->SetFont('Arial','',8);
+					$pdf->Cell(0,3,"",0,1); 
 				}
 				$pdf->Cell(0,5,"",0,1); 
 			}
@@ -134,8 +140,18 @@ CLASS AJAX{
 					echo "IP nicht vergeben";
 				}
 				foreach($drucker as $key => $value){
+					if($value === ""){
+						$value = "-";
+					}
 					$string = "".$key.": ".$value;
-					$pdf->Cell(0,5,$string,0,1);
+				//	var_dump($string);
+					$pdf->Cell(0,5,$key,0,1);
+					$pdf->SetFont('Arial','B',8);
+					$pdf->Cell(0,5,$value,0,1);
+					$pdf->SetFont('Arial','',8);
+					$pdf->Cell(0,3,"",0,1); 
+//					$string = "".$key.": ".$value;
+//					$pdf->Cell(0,5,$string,0,1);
 				}
 				$pdf->Cell(0,5,"",0,1); 	
 		}
