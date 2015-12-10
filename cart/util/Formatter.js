@@ -63,7 +63,6 @@ util.Formatter = {
 			return true;
 		}
 		return false;
-		debugger;
 	}
 
 };
