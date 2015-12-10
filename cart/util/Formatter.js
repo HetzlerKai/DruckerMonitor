@@ -45,17 +45,24 @@ util.Formatter = {
 		
 		return sStatus;
 	},
-	
+
 	formatSwAndCoToFulltext: function(sType){
 
 		var oI18N = this.getModel("i18n").getResourceBundle();
-		
+
 		switch(sType){
 		case "SW":
 			return oI18N.getText("SW_PRINTER");
 		case "CO":
 			return oI18N.getText("CO_PRINTER");
 		}
+	},
+
+	handlePrinterDataFields : function(sText){
+		if(sText){
+			return true;
+		}
+		return false;
 	}
 
 };
