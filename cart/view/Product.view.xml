@@ -72,65 +72,102 @@
 							</f:layout>
 							<f:formContainers>
 								<f:FormContainer>
-									<f:formElements>
-										<f:FormElement label="ID">
+									<f:formElements id="test">
+										<f:FormElement label="ID" visible="{
+												path: 'DruckerData>id',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>id}" id="idText"/>
+												<Text text="{DruckerData>id}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Name">
+										<f:FormElement label="Name" visible="{
+												path: 'DruckerData>name',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>name}" id="NameText"/>
+												<Text text="{DruckerData>name}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Hersteller">
+										<f:FormElement label="Hersteller" visible="{
+												path: 'DruckerData>hersteller',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>hersteller}" id="HerstellerText"/>
+												<Text id = "HerstellerText" text="{
+												path: 'DruckerData>hersteller'}" />
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Typ">
+										<f:FormElement label="Typ" visible="{
+												path: 'DruckerData>typ',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>typ}" id="TypText"/>
+												<Text text="{DruckerData>typ}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="MAC">
+										<f:FormElement label="MAC" visible="{
+												path: 'DruckerData>mac',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>mac}" id="MacText"/>
+												<Text text="{DruckerData>mac}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="IP">
+										<f:FormElement label="IP" visible="{
+												path: 'DruckerData>ip',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>ip}" id="IPText"/>
+												<Text text="{DruckerData>ip}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Raum">
+										<f:FormElement label="Raum" visible="{
+												path: 'DruckerData>raum',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>raum}" id="RaumText"/>
+												<Text text="{DruckerData>raum}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Seriennummer">
+										<f:FormElement label="Seriennummer" visible="{
+												path: 'DruckerData>seriennummer',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>seriennummer}" id="SeriennummerText"/>
+												<Text text="{DruckerData>seriennummer}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Cyan">
+										<f:FormElement label="Cyan" visible="{
+												path: 'DruckerData>patronentyp_cyan',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>patronentyp_cyan}" id="CyanText"/>
+												<Text text="{DruckerData>patronentyp_cyan}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Gelb">
+										<f:FormElement label="Gelb" visible="{
+												path: 'DruckerData>patronentyp_gelb',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>patronentyp_gelb}" id="GelbText"/>
+												<Text text="{DruckerData>patronentyp_gelb}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Magenta">
+										<f:FormElement label="Magenta" visible="{
+												path: 'DruckerData>patronentyp_magenta',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>patronentyp_magenta}" id="MagentaText"/>
+												<Text text="{DruckerData>patronentyp_magenta}"/>
 											</f:fields>
 										</f:FormElement>
-										<f:FormElement label="Schwarz">
+										<f:FormElement label="Schwarz" visible="{
+												path: 'DruckerData>patronentyp_schwarz',
+												formatter: 'util.Formatter.handlePrinterDataFields'
+												}">
 											<f:fields>
-												<Text text="{DruckerData>patronentyp_schwarz}" id="SchwarzText"/>
+												<Text text="{DruckerData>patronentyp_schwarz}"/>
 											</f:fields>
 										</f:FormElement>
 									</f:formElements>
