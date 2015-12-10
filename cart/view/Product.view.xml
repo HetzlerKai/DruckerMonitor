@@ -28,7 +28,10 @@
 					number="{path : 'DruckerData>ip'}">
 				<attributes>
 					<ObjectAttribute
-							text="{DruckerData>typ}"/>
+							text="{
+								path: 'DruckerData>typ',
+								formatter: 'util.Formatter.formatSwAndCoToFulltext'
+							}"/>
 				</attributes>
 				<firstStatus>
 					<!--TODO: State has to be implemented-->
