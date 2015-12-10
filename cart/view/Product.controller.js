@@ -238,13 +238,13 @@ sap.ui.controller("view.Product", {
 		for (var count = 0; aData.length > count; count++) {
 
 			// Initialisiere das Array mit den Werten aus dem Vorjahr
-			if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iHighestMonth) {
-				this._aMonthValuesForPaperConsumptionChart[new Date(aData[count].datum).getMonth() - iHighestMonth] = parseInt(aData[count].gedruckte_seiten);
+			if (parseInt(new Date(parseInt(aData[count].datum)).getMonth()) + 1 > iHighestMonth) {
+				this._aMonthValuesForPaperConsumptionChart[new Date(parseInt(aData[count].datum)).getMonth() - iHighestMonth] = parseInt(aData[count].gedruckte_seiten);
 			}
 
 			// Initialisiere das Array mit den Werten aus diesem Jahr
-			else if (parseInt(new Date(aData[count].datum).getMonth()) + 1 <= iHighestMonth) {
-				this._aMonthValuesForPaperConsumptionChart[this._getLengthDifferenceBetweenAllAndRecievedMonths() + new Date(aData[count].datum).getMonth()] = parseInt(aData[count].gedruckte_seiten);
+			else if (parseInt(new Date(parseInt(aData[count].datum)).getMonth()) + 1 <= iHighestMonth) {
+				this._aMonthValuesForPaperConsumptionChart[this._getLengthDifferenceBetweenAllAndRecievedMonths() + new Date(parseInt(aData[count].datum)).getMonth()] = parseInt(aData[count].gedruckte_seiten);
 			}
 
 		}
@@ -258,14 +258,15 @@ sap.ui.controller("view.Product", {
 		var iYear = 0;
 
 		for (var count = 0; aData.length > count; count++) {
+			//var unixTimestamp = new Date(parseInt(aData[count].datum)).getTime();
 
-			if (parseInt(new Date(aData[count].datum).getFullYear()) > iYear) {
-				iYear = parseInt(new Date(aData[count].datum).getFullYear());
+			if (parseInt(new Date(parseInt(aData[count].datum)).getFullYear()) > iYear) {
+				iYear = parseInt(new Date(parseInt(aData[count].datum)).getFullYear());
 				iMonth = 0;
 			}
 
-			if (parseInt(new Date(aData[count].datum).getMonth()) + 1 > iMonth) {
-				iMonth = parseInt(new Date(aData[count].datum).getMonth()) + 1;
+			if (parseInt(new Date(parseInt(aData[count].datum)).getMonth()) + 1 > iMonth) {
+				iMonth = parseInt(new Date(parseInt(aData[count].datum)).getMonth()) + 1;
 			}
 			
 		}
