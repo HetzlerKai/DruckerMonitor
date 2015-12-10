@@ -124,6 +124,9 @@ CLASS AJAX{
 				$drucker = $this->holeDruckerMitIp($ips[$i]['ip']);
 			//	var_dump($drucker);
 				foreach($drucker as $key => $value){
+					if($value === ""){
+						$value = "-";
+					}
 					$string = "".$key.": ".$value;
 				//	var_dump($string);
 					$pdf->Cell(0,5,$key,0,1);
@@ -132,7 +135,8 @@ CLASS AJAX{
 					$pdf->SetFont('Arial','',8);
 					$pdf->Cell(0,3,"",0,1); 
 				}
-				$pdf->Cell(0,5,"",0,1); 
+				$pdf->Cell(0,10,"",0,1); 
+				$pdf->Cell(0,1,"",1,1);
 			}
 		}else{
 				$drucker = $this->holeDruckerMitIp($druckerip);
@@ -153,7 +157,7 @@ CLASS AJAX{
 //					$string = "".$key.": ".$value;
 //					$pdf->Cell(0,5,$string,0,1);
 				}
-				$pdf->Cell(0,5,"",0,1); 	
+				//$pdf->Cell(0,5,"",0,1); 	
 		}
 	//	echo $pdf->Output();
 		$pfad = "././pdf/Monitoring.pdf";	
