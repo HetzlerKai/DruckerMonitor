@@ -22,8 +22,8 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
     /**
      * Printer types
      */
-    const PRINTER_TYPE_MONO  = 'mono printer';
-    const PRINTER_TYPE_COLOR = 'color printer';
+    const PRINTER_TYPE_MONO  = 'SW';
+    const PRINTER_TYPE_COLOR = 'CO';
 
     /**
      * Printer colors
@@ -44,7 +44,7 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      * SNMP printer object ids
      */
     const SNMP_PRINTER_FACTORY_ID                     = '.1.3.6.1.2.1.1.1.0';
-    const SNMP_PRINTER_RUNNING_TIME                   = '.1.3.6.1.2.1.1.3.0';   // TODO: Create function to handle this
+    const SNMP_PRINTER_RUNNING_TIME                   = '.1.3.6.1.2.1.1.3.0';  
     const SNMP_PRINTER_SERIAL_NUMBER                  = '.1.3.6.1.2.1.43.5.1.1.17.1';
     const SNMP_PRINTER_VENDOR_NAME                    = '.1.3.6.1.2.1.43.9.2.1.8.1.1';
     const SNMP_NUMBER_OF_PRINTED_PAPERS               = '.1.3.6.1.2.1.43.10.2.1.4.1.1';
@@ -69,10 +69,17 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
     const SNMP_SUB_UNIT_TYPE_SLOT_3                   = '.1.3.6.1.2.1.43.11.1.1.6.1.3';
     const SNMP_SUB_UNIT_TYPE_SLOT_4                   = '.1.3.6.1.2.1.43.11.1.1.6.1.4';
 
+	
+	// gibt den Typen des SLOTS zurück
     const SNMP_CARTRIDGE_COLOR_SLOT_1                 = '.1.3.6.1.2.1.43.12.1.1.4.1.1';
     const SNMP_CARTRIDGE_COLOR_SLOT_2                 = '.1.3.6.1.2.1.43.12.1.1.4.1.2';
     const SNMP_CARTRIDGE_COLOR_SLOT_3                 = '.1.3.6.1.2.1.43.12.1.1.4.1.3';
     const SNMP_CARTRIDGE_COLOR_SLOT_4                 = '.1.3.6.1.2.1.43.12.1.1.4.1.4';
+	
+	public $blackslot;
+	public $magentaslot;
+	public $cyanslot;
+	public $yellowslot;
 
     /**
      * Function gets and return what type of printer we are working with,
@@ -80,26 +87,40 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      *
      * @return string Type of printer (PRINTER_TYPE_MONO|PRINTER_TYPE_COLOR)
      */
-    public function getTypeOfPrinter()
-    {
+    public function getTypeOfPrinter(){
         $colorCartridgeSlot1 = $this->getSNMPString(self::SNMP_CARTRIDGE_COLOR_SLOT_1);
-	//	var_dump($this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_1));
-	//	var_dump($this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_2));
-	//	var_dump($this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_3));
-   //     if ($colorCartridgeSlot1 !== false) {
-     //       if (strtolower($colorCartridgeSlot1) === self::CARTRIDGE_COLOR_CYAN) {
-            if (strpos(strtolower($colorCartridgeSlot1),self::CARTRIDGE_COLOR_CYAN)  > 0 ) {
-                /**
-                 * We found CYAN color catridge in slot1 so it is color printer
-                 */
-                return self::PRINTER_TYPE_COLOR;
-            } else {
+        $colorCartridgeSlot2 = $this->getSNMPString(self::SNMP_CARTRIDGE_COLOR_SLOT_2);
+        $colorCartridgeSlot3 = $this->getSNMPString(self::SNMP_CARTRIDGE_COLOR_SLOT_3);
+        $colorCartridgeSlot4 = $this->getSNMPString(self::SNMP_CARTRIDGE_COLOR_SLOT_4);
+		$getColorslots = array($colorCartridgeSlot1,$colorCartridgeSlot2,$colorCartridgeSlot3,$colorCartridgeSlot4);
 
-                 /**
-                 * else it is mono printer
-                 */
-                return self::PRINTER_TYPE_MONO;
-            }
+		foreach($getColorslots as $index => $colorstring){
+			if(strpos(strtolower($colorstring),self::CARTRIDGE_COLOR_BLACK) > 1 ){
+			//	echo $index; echo $colorstring;
+				$this->blackslot = "SLOT_".($index+1);
+			}			
+			if(strpos(strtolower($colorstring),self::CARTRIDGE_COLOR_CYAN) > 1 ){
+			//	echo $index; echo $colorstring;
+				$this->cyanslot = "SLOT_".($index+1);
+			}			
+			if(strpos(strtolower($colorstring),self::CARTRIDGE_COLOR_MAGENTA) > 1 ){
+			//	echo $index; echo $colorstring;
+				$this->magentaslot = "SLOT_".($index+1);
+			}			
+			if(strpos(strtolower($colorstring),self::CARTRIDGE_COLOR_YELLOW) > 1 ){
+			//	echo $index; echo $colorstring;
+				$this->yellowslot = "SLOT_".($index+1);
+			}
+	
+		}
+		if(!isset($this->blackslot)){
+          return "unerreichbar";
+		}
+        if(!isset($this->cyanslot)) {
+          return self::PRINTER_TYPE_MONO;
+       } else {
+           return self::PRINTER_TYPE_COLOR;
+        }
    //     }
 
    //     return false;
@@ -189,6 +210,11 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      */
     public function getBlackCatridgeType()
     {
+	//	var_dump($this->blackslot);
+	//	var_dump($$this->blackslot);
+	//	echo $$this->blackslot;
+	//	var_dump($this->getSNMPString(self::$$this->blackslot));
+		
         if ($this->isColorPrinter()) {
             return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_4);
         } elseif ($this->isMonoPrinter()) {
@@ -196,6 +222,7 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
         } else {
             return false;
         }
+		
     }
 
     /**
@@ -206,11 +233,30 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      */
     public function getCyanCatridgeType()
     {
+		switch ($this->cyanslot) {
+			case "SLOT_1":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}
+	/*	
         if ($this->isColorPrinter()) {
             return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_1);
         } else {
             return false;
         }
+	*/
     }
 
     /**
@@ -221,11 +267,30 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      */
     public function getMagentaCatridgeType()
     {
+		switch ($this->magentaslot) {
+			case "SLOT_1":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}	
+	/*
         if ($this->isColorPrinter()) {
             return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_2);
         } else {
             return false;
         }
+	*/
     }
 
     /**
@@ -234,13 +299,31 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      *
      * @return string|boolean
      */
-    public function getYellowCatridgeType()
-    {
-        if ($this->isColorPrinter()) {
+    public function getYellowCatridgeType(){
+		switch ($this->yellowslot) {
+			case "SLOT_1":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}	
+	
+  /*      if ($this->isColorPrinter()) {
             return $this->getSNMPString(self::SNMP_SUB_UNIT_TYPE_SLOT_3);
         } else {
             return false;
         }
+*/
     }
 
     /**
@@ -256,18 +339,12 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      * @param string $actualValueSNMPSlot SNMP object id
      * @return int|float|boolean
      */
-    protected function getSubUnitPercentageLevel($maxValueSNMPSlot, $actualValueSNMPSlot)
-    {
+    protected function getSubUnitPercentageLevel($maxValueSNMPSlot, $actualValueSNMPSlot){
 		$max = $this->get($maxValueSNMPSlot);
 		$actual = $this->get($actualValueSNMPSlot);
 		$max = (int)preg_replace("/[^\d]+/","",$max);
 		$actual = (int)preg_replace("/[^\d]+/","",$actual);
-		var_dump($max);
-		var_dump($actual);
-
-
         if ($max === false || $actual === false) {
-		//	echo "MaxUndAktLeer!";
             return false;
         }
 
@@ -294,12 +371,29 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      * @see getSubUnitPercentageLevel
      * @return int|float|boolean
      */
-    public function getBlackTonerLevel()
-    {
+    public function getBlackTonerLevel(){
+	
+		switch ($this->blackslot) {
+			case "SLOT_1":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_2,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_3,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}	
+	/*
         if ($this->isColorPrinter()) {
 	//		echo "ike bin farbig";
-            return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4
-                                                   ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
+            return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
         } elseif ($this->isMonoPrinter()) {
 	//		echo "Ike bin schwarz";
 	//		var_dump(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1);
@@ -307,10 +401,10 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
         } else {
-			var_dump($this->isColorPrinter());
-			var_dump($this->isMonoPrinter());
             return false;
         }
+	*/	
+		
     }
 
     /**
@@ -320,14 +414,31 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      * @see getSubUnitPercentageLevel
      * @return int|float|boolean
      */
-    public function getCyanTonerLevel()
-    {
-        if ($this->isColorPrinter()) {
+    public function getCyanTonerLevel(){
+		switch ($this->cyanslot) {
+			case "SLOT_1":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_2,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_3,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}		
+    /*    if ($this->isColorPrinter()) {
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
         } else {
             return false;
         }
+	*/	
     }
 
     /**
@@ -337,14 +448,33 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      * @see getSubUnitPercentageLevel
      * @return int|float|boolean
      */
-    public function getMagentaTonerLevel()
-    {
-        if ($this->isColorPrinter()) {
+    public function getMagentaTonerLevel(){
+		switch ($this->magentaslot) {
+			case "SLOT_1":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_2,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_3,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}	
+	
+  /*      if ($this->isColorPrinter()) {
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_2
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_2);
         } else {
             return false;
         }
+		
+	*/
     }
 
     /**
@@ -354,14 +484,32 @@ class Kohut_SNMP_Printer extends Kohut_SNMP_Abstract
      * @see getSubUnitPercentageLevel
      * @return int|float|boolean
      */
-    public function getYellowTonerLevel()
-    {
-        if ($this->isColorPrinter()) {
+    public function getYellowTonerLevel(){
+		switch ($this->yellowslot) {
+			case "SLOT_1":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_1,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_1);
+				break;
+			case "SLOT_2":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_2,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_2);
+				break;
+			case "SLOT_3":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_3,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_3);
+				break;			
+			case "SLOT_4":
+				return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_4,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_4);
+				break;
+			default:
+				return false;
+				break;
+		}	
+	
+   /*     if ($this->isColorPrinter()) {
             return $this->getSubUnitPercentageLevel(self::SNMP_MARKER_SUPPLIES_MAX_CAPACITY_SLOT_3
                                                    ,self::SNMP_MARKER_SUPPLIES_ACTUAL_CAPACITY_SLOT_3);
         } else {
             return false;
         }
+	*/
     }
 
     /**

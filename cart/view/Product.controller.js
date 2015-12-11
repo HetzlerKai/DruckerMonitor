@@ -76,7 +76,7 @@ sap.ui.controller("view.Product", {
 	},
 
 	getDruckerIp: function () {
-		var	oModel, oCurrentDrucker,
+		var oModel, oCurrentDrucker,
 			sIp = null;
 
 		oModel = sap.ui.getCore().getModel("DruckerData");
@@ -112,11 +112,16 @@ sap.ui.controller("view.Product", {
 	},
 
 	_$content: null,
+	_content: null,
 
 	_removeChartIfLoaded: function () {
 		if (this._$content) {
 			this._$content.remove();
 		}
+		//if(this._content){
+		//	$("#" + this._content.getId()).remove();
+		//	this._content = null;
+		//}
 	},
 
 	_getIdOfTabToPlaceChartInto: function (sId) {
@@ -152,7 +157,7 @@ sap.ui.controller("view.Product", {
 			this._removeChartIfLoaded();
 			this._updateKeyOfSelectedTab("ChartStatistic");
 
-			this.showStatisticChart(sId, oData);
+			this.showStatisticChart(sId, oData, oEvent);
 
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
 			this._updateKeyOfSelectedTab("ChartPaper");
@@ -258,7 +263,6 @@ sap.ui.controller("view.Product", {
 		var iYear = 0;
 
 		for (var count = 0; aData.length > count; count++) {
-			//var unixTimestamp = new Date(parseInt(aData[count].datum)).getTime();
 
 			if (parseInt(new Date(parseInt(aData[count].datum)).getFullYear()) > iYear) {
 				iYear = parseInt(new Date(parseInt(aData[count].datum)).getFullYear());
@@ -268,7 +272,7 @@ sap.ui.controller("view.Product", {
 			if (parseInt(new Date(parseInt(aData[count].datum)).getMonth()) + 1 > iMonth) {
 				iMonth = parseInt(new Date(parseInt(aData[count].datum)).getMonth()) + 1;
 			}
-			
+
 		}
 
 		return iMonth;
@@ -315,95 +319,149 @@ sap.ui.controller("view.Product", {
 	},
 
 	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
-	showStatisticChart: function (sId, oData) {
-		
-		if (oData.typ === "SW"){
-			this._$content = $('<div id="highcharts"></div>').highcharts({
+	showStatisticChart: function (sId, oData, oSelectedTab) {
+		//var sId = oSelectedTab.getParameter("id")
+		//sap.ui.getCore().byId(sId).destroyContent();
+
+		if (oData.error.noInkData) {
+			debugger;
+
+		} else if (oData.error.allCartridgesEmpty) {
+			//var sID = oSelectedTab.getParameter("id");
+			//var oText = new sap.m.Text().setText(oData.error.inkErrorText);
+
+			this._$content = $('<div id="sw_ink_chart" ></div>').highcharts({
+				lang: {
+					noData: oData.error.inkErrorText},
 				chart: {
 					type: 'column',
 					width: ($(sId).width() - 20).toString()
 				},
 				title: {
 					text: 'Tintenstand'
-				}, 
+				},
 				xAxis: {
 					type: 'category'
 				},
 				yAxis: {
-					max: 100,
 					title: {
 						text: '%'
 					}
 				},
 				series: [{
 					name: 'Schwarz',
-					data: [{
-						name: 'Tintenart',
-						y: parseInt(oData.toner_schwarz)
-					}],
+					data: [],
 					color: 'black'
+				},{
+					name: 'Gelb',
+					data: [],
+					color: 'yellow'
+				},{
+					name: 'Magenta',
+					data: [],
+					color: 'Magenta'
+				},{
+					name: 'Cyan',
+					data: [],
+					color: 'Cyan'
 				}]
 			});
+			//sap.ui.getCore().byId(sID).addContent(this._content);
+
 		} else {
-	
-			this._$content = $('<div id="highcharts"></div>').highcharts({
-				chart: {
-					type: 'column',
-					width: ($(sId).width() - 20).toString()
-				},
-				title: {
-					text: 'Tintenstand'
-				},
-				xAxis: {
-					type: 'category'
-				},
-				yAxis: {
-					max: 100,
-					title: {
-						text: '%'
-					}
-				},
-				series: [{
-					name: 'Schwarz',
-					data: [{
-						name: 'Tintenart',
-						y: parseInt(oData.toner_schwarz)
-					}],
-					color: 'black'
-				},
-					{
-						name: 'Cyan',
-						data: [{
-							name: 'Tintenart',
-							y: parseInt(oData.toner_cyan)
-						}],
-						color: "cyan"
-					},
-					{
-						name: 'Magenta',
-						data: [{
-							name: 'Tintenart',
-							y: parseInt(oData.toner_magenta)
-						}],
-						color: "magenta"
-					},
-					{
-						name: 'Gelb',
-						data: [{
-							name: 'Tintenart',
-							y: parseInt(oData.toner_gelb)
-						}],
-						color: "yellow"
-					}]
-			});
-		}	
+
+			switch (oData.typ) {
+
+				case "SW" :
+					this._$content = $('<div id="sw_ink_chart" ></div>').highcharts({
+						chart: {
+							type: 'column',
+							width: ($(sId).width() - 20).toString()
+						},
+						title: {
+							text: 'Tintenstand'
+						},
+						xAxis: {
+							type: 'category'
+						},
+						yAxis: {
+							max: 100,
+							title: {
+								text: '%'
+							}
+						},
+						series: [{
+							name: 'Schwarz',
+							data: [{
+								name: 'Tintenart',
+								y: parseInt(oData.toner_schwarz)
+							}],
+							color: 'black'
+						}]
+					});
+					break;
+
+				case "CO":
+					this._$content = $('<div id="co_ink_chart"></div>').highcharts({
+						chart: {
+							type: 'column',
+							width: ($(sId).width() - 20).toString()
+						},
+						title: {
+							text: 'Tintenstand'
+						},
+						xAxis: {
+							type: 'category'
+						},
+						yAxis: {
+							max: 100,
+							title: {
+								text: '%'
+							}
+						},
+						series: [{
+							name: 'Schwarz',
+							data: [{
+								name: 'Tintenart',
+								y: parseInt(oData.toner_schwarz)
+							}],
+							color: 'black'
+						},
+							{
+								name: 'Cyan',
+								data: [{
+									name: 'Tintenart',
+									y: parseInt(oData.toner_cyan)
+								}],
+								color: "cyan"
+							},
+							{
+								name: 'Magenta',
+								data: [{
+									name: 'Tintenart',
+									y: parseInt(oData.toner_magenta)
+								}],
+								color: "magenta"
+							},
+							{
+								name: 'Gelb',
+								data: [{
+									name: 'Tintenart',
+									y: parseInt(oData.toner_gelb)
+								}],
+								color: "yellow"
+							}]
+					});
+					break;
+			}
+		}
 		$(sId).append(this._$content);
 	},
 
 	// Zeigt auf dem UI die Papierverbrauchdiagramm an
 	_showPaperConsumptionChart: function (sId, oData) {
 
-		this._$content = $('<div id="test"></div>').highcharts({
+		this._$content = $('<div id="paper_consume_chart"></div>').highcharts({
 			chart: {
 				type: 'line',
 				width: ($(sId).width() - 20).toString()

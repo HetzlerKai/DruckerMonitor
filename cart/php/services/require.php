@@ -1,5 +1,4 @@
 <?php
-
 //  Datenbankklasse einbinden und Verbindung aufbauen
 require_once("../classes/DB.php");
 $host = "localhost";
@@ -14,5 +13,5 @@ $db = new DB($host,$database,$user,$pass);
 require_once("../classes/Ajax.php");
 $ajax = new AJAX($db);
 
-
+// fpdf eibinden um PDFs schreiben zu können
 require('../classes/fpdf/fpdf.php');

@@ -21,7 +21,7 @@ sap.ui.define([
              MessageBox) {
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
- 
+
 		// Einstellungen fuer die Navigation
 		metadata: {
 			includes: ["css/style.css"],
@@ -127,7 +127,7 @@ sap.ui.define([
 						return;
 					}
 
-					response = that._setCriticalFlagToResponseData(response);
+					response = that._setCriticalFlagToResponseData(that._analyzeDataAndAppendErrorHandlingObject(response));
 
 					// Ueberpruefung des Arrays auf die Inhaltlaenge
 					if (response instanceof Array && response.length > 0) {
@@ -158,40 +158,69 @@ sap.ui.define([
 			});
 
 		},
-		
+
+		_analyzeDataAndAppendErrorHandlingObject: function (aData) {
+			var i18n = this.getModel("i18n").getResourceBundle();
+
+			for (var count = 0; aData.length > count; count++) {
+
+				aData[count].error = {
+					noInkData: false,
+					allCartridgesEmpty: false,
+					noPaperData: false,
+					noPaperConsume: false,
+					inkErrorText: "",
+					paperErrorText: "",
+					isCritical: false
+				};
+
+				if (aData[count].toner_schwarz === "0" && aData[count].toner_cyan === "0" && aData[count].toner_gelb === "0" && aData[count].toner_magenta === "0"
+					|| aData[count].toner_schwarz === "0" && !aData[count].toner_cyan  && !aData[count].toner_gelb  && !aData[count].toner_magenta) {
+					aData[count].error.allCartridgesEmpty = true;
+					aData[count].error.inkErrorText = i18n.getText("ALL_CARTRIDGES_EMPTY_TEXT");
+				} else if (!aData[count].toner_schwarz && !aData[count].toner_cyan  && !aData[count].toner_gelb  && !aData[count].toner_magenta){
+					aData[count].error.noInkData = true;
+					aData[count].error.inkErrorText = i18n.getText("NO_INK_DATA_TEXT");
+				}
+
+			}
+
+			return aData;
+		},
+
 		_aCriticalEntryMap: [],
-		
-		_setCriticalEntriesIntoArray: function(i){
+
+		_setCriticalEntriesIntoArray: function (i) {
 			this._aCriticalEntryMap.push(i);
 		},
 
-		_setCriticalFlagToResponseData: function(aData){
+		_setCriticalFlagToResponseData: function (aData) {
 			var count;
-			
-			for(count = 0; aData.length > count; count++){
-				aData[count].isCritical = false;
-				
-				switch(aData[count].typ){
+
+			for (count = 0; aData.length > count; count++) {
+				aData[count].error.isCritical = false;
+
+				switch (aData[count].typ) {
 					case "SW":
 						if (aData[count].toner_schwarz < 10) {
-							
-							aData[count].isCritical = true;
+
+							aData[count].error.isCritical = true;
 							this._setCriticalEntriesIntoArray(count);
 						}
-					break;
-					
+						break;
+
 					case "CO":
 						if (aData[count].toner_cyan < 10 ||
 							aData[count].toner_gelb < 10 ||
 							aData[count].toner_magenta < 10 ||
 							aData[count].toner_schwarz < 10) {
-								
-							aData[count].isCritical = true;
+
+							aData[count].error.isCritical = true;
 							this._setCriticalEntriesIntoArray(count);
 						}
-					break;
+						break;
 				}
-				
+
 
 			}
 			return aData;

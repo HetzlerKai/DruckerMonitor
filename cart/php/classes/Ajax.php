@@ -4,18 +4,15 @@ CLASS AJAX{
 	private $db;
 
 	public function __construct($db) {
+		//baue Datenbankanbindung auf
 		$this->db = $db;
 	}
 
+	// wird über Ajax-Request abgerufen und wertet die POST-Parameter aus
+	
 	public function DoSomething(){
 		if(isset($_POST['post'])){
 			switch ($_POST['post']) {    
-	/*			case 'holeAlleDruckerDaten':
-				   return $this->holeAlleDruckerDaten();
-				break;		
-				case 'holeDruckerMitIp':
-				   return $this->holeDruckerMitIp($_POST['ip']);
-				break;				*/
 				case 'schreibeHistorie':
 				   return $this->schreibeHistorie($_POST['id'],$_POST['kommentar'],$_POST['patrone']);
 				break;						
@@ -69,13 +66,12 @@ CLASS AJAX{
 	}
 
 	private function holeAlleDruckerDaten(){
-		$q = "SELECT * FROM `drucker` WHERE `typ` != ''";
+		$q = "SELECT * FROM `drucker` WHERE `typ` != '' AND `typ` != 'unerreichbar'";
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 	}
 	public function holeDruckerMitIp($ip){
 		$q = "SELECT * FROM `drucker` WHERE `ip` = '".$ip."'";
-	//	echo $q;
 		$return = $this->db->getEinzeilig($q);
 		return $return;
 	}	
@@ -86,57 +82,99 @@ CLASS AJAX{
 	}
 	
 	private function pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow){
-		$q = "SELECT * FROM `krit_mail` WHERE `ip` = '".$id."'";
+		$q = "SELECT `kritisch`, `gesendet` FROM `drucker` WHERE `id` = '".$id."'";
 		$critArray = $this->db->getEinzeilig($q);		
-		if($typ === "CO"){
-			if($toner_schwarz < $critArray["schwarz"] || $toner_magenta < $critArray["magenta"] || $toner_cyan < $critArray["cyan"] || $toner_yellow < $critArray["gelb"] && $critArray["gesendet"] === 0){
-				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `id` = ".$id."";
-				$this->db->fuehreAus($q);		
-				require_once("../services/sendMail.php");
-			}
-		}elseif($typ === "SW"){
-			if($toner_schwarz < $critArray["schwarz"] && $critArray["gesendet"] === 0){
-				$q = "UPDATE `krit_mail` SET `gesendet` = 1 WHERE `id` = ".$id."";
+		$sendmail = false;
+		if($typ === "CO"){	// Falls Farbdrucker
+			if($toner_schwarz < 10 || $toner_magenta < 10 || $toner_cyan < 10 || $toner_yellow < 10){
+				$q = "UPDATE `drucker` SET `kritisch` = 1 WHERE `id` = ".$id."";
 				$this->db->fuehreAus($q);	
-				require_once("../services/sendMail.php");				
+				if($critArray["gesendet"] == 0){	
+					$sendmail = true;
+				}
+			}else{
+				$q = "UPDATE `drucker` SET `kritisch` = 0 WHERE `id` = ".$id."";
+				$this->db->fuehreAus($q);	
+				$sendmail = false;					
+			}
+		}elseif($typ === "SW"){ // FALLS Schwarz/Weißdrucker
+			if($toner_schwarz < 10){
+				$q = "UPDATE `drucker` SET `kritisch` = 1 WHERE `id` = ".$id."";
+				$this->db->fuehreAus($q);	
+				if($critArray["gesendet"] == 0){				
+					$sendmail = true;	
+				}
+				
+			}else{
+				$q = "UPDATE `drucker` SET `kritisch` = 0 WHERE `id` = ".$id."";
+				$this->db->fuehreAus($q);	
+				$sendmail = false;
 			}		
+		}
+		// Wenn sendmail true ist, hat eine der Patronen des Druckers einen kritischen Stand erreicht UND Es wurde noch keine Mail versendet. Eine E-Mail muss gesendet werden
+		if($sendmail){
+			set_time_limit(120);
+			require_once("require.php");
+			require '../classes/PHPMailer-master/class.phpmailer.php';
+			require '../classes/PHPMailer-master/PHPMailerAutoload.php';
+			require '../classes/PHPMailer-master/class.smtp.php'; // Optional, wenn du SMTP benutzen möchtest
+			require '../classes/PHPMailer-master/language/phpmailer.lang-de.php'; // Optional, wenn du deutsche Fehlermeldungen ausgeben möchtest
+			$mail = new PHPMailer;
+			$config = $db->getEinzeilig("SELECT * FROM `config_mail`");
+			echo "<pre>";
+			$mail->IsSMTP(); 
+		//	$mail->SMTPDebug  = 5;
+			$mail->Host = $config["host"];
+			$mail->Port = $config["Port"]; 
+			$mail->SMTPSecure = $config["SMTPSecure"];
+			$mail->Username = $config["Username"];
+			$mail->Password = $config["Password"];
+			$mail->SMTPAuth = true;
+			$mail->Timeout =   120;
+			#$mail->SMTPKeepAlive = true;
+			$mail->SMTPAutoTLS = false;
+			$mail->From = $config["From"];
+			$mail->FromName = $config["FromName"];
+			$mail->addAddress($config["addAddress"]);    // Der Name ist dabei optional
+			$mail->isHTML(true);                                  // Mail als HTML versenden
+			$mail->Subject = $config["Subject"];
+			$mail->Body    = $config["Body"];
+			$mail->AltBody = $config["AltBody"];
+			if(!$mail->send()) {
+				echo 'Mail wurde nicht abgesendet';
+				echo 'Fehlermeldung: ' . $mail->ErrorInfo;
+				$q = "UPDATE `drucker` SET `gesendet` = 0 WHERE `id` = ".$id."";
+				$this->db->fuehreAus($q);						
+			} else {
+				echo 'Nachricht wurde abgesendet.';
+				$q = "UPDATE `drucker` SET `gesendet` = 1 WHERE `id` = ".$id."";
+				$this->db->fuehreAus($q);					
+			}
+			$mail->SmtpClose();
 		}
 		return;
 	}
-		
+	// Falls eine IP übergeben wird, zeigt die PDF nur die Daten dieses Druckers.
+	// Falls die Funktion ohne Parameter aufgerufen wird, zeigt sie alle Drucker an.	
 	private function DruckerToPdf($druckerip=false){
 
 		require_once("../services/require.php");
-//		$pdf->header('Content-type: application/pdf');
-
 		$pdf=new FPDF();
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',16);
 		$pdf->Cell(0,0,'HSS DRUCKER MONITORING',0,1,'C');
 		$pdf->Cell(0,10,"",0,1);
-		$pdf->Cell(0,1,"",1,1);
-		$pdf->SetFont('Arial','',8);
-		$pdf->Cell(0,5,"",0,1);
+		$pdf->SetFont('Arial','B',8);
 		if($druckerip === false){	
 			
 			$ips = $this->holeAlleIPs();
 			for($i = 0; $i<count($ips);$i++){
 				$drucker = $this->holeDruckerMitIp($ips[$i]['ip']);
-			//	var_dump($drucker);
 				foreach($drucker as $key => $value){
-					if($value === ""){
-						$value = "-";
-					}
 					$string = "".$key.": ".$value;
-				//	var_dump($string);
-					$pdf->Cell(0,5,$key,0,1);
-					$pdf->SetFont('Arial','B',8);
-					$pdf->Cell(0,5,$value,0,1);
-					$pdf->SetFont('Arial','',8);
-					$pdf->Cell(0,3,"",0,1); 
+					$pdf->Cell(0,5,$string,0,1);
 				}
-				$pdf->Cell(0,10,"",0,1); 
-				$pdf->Cell(0,1,"",1,1);
+				$pdf->Cell(0,5,"",0,1); 
 			}
 		}else{
 				$drucker = $this->holeDruckerMitIp($druckerip);
@@ -144,22 +182,11 @@ CLASS AJAX{
 					echo "IP nicht vergeben";
 				}
 				foreach($drucker as $key => $value){
-					if($value === ""){
-						$value = "-";
-					}
 					$string = "".$key.": ".$value;
-				//	var_dump($string);
-					$pdf->Cell(0,5,$key,0,1);
-					$pdf->SetFont('Arial','B',8);
-					$pdf->Cell(0,5,$value,0,1);
-					$pdf->SetFont('Arial','',8);
-					$pdf->Cell(0,3,"",0,1); 
-//					$string = "".$key.": ".$value;
-//					$pdf->Cell(0,5,$string,0,1);
+					$pdf->Cell(0,5,$string,0,1);
 				}
-				//$pdf->Cell(0,5,"",0,1); 	
+				$pdf->Cell(0,5,"",0,1); 	
 		}
-	//	echo $pdf->Output();
 		$pfad = "././pdf/Monitoring.pdf";	
 		if(!(is_dir("././pdf/"))){
 			mkdir ("././pdf/",0777,true); 
@@ -178,6 +205,9 @@ CLASS AJAX{
 	
 	
 	public function trageEin($ip,$id,$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow){
+	
+	// Eintrag in die Drucker Tabelle
+	
 		$q ="
 			UPDATE 
 				`drucker`
@@ -192,17 +222,20 @@ CLASS AJAX{
 				`id` = ".$id."
 			
 		";
-	//	var_dump($q);
+		
+		
+	// Eintrag in die Statistik. Um die Statistik nicht zu überladen, wird nur ein Wert pro Monat angezeigt. Dieser sollte der aktuellste Wert sein.	
+		
 		$q2 = "DELETE FROM `statistik` WHERE MONTH(NOW()) AND `drucker_id` = ".$id."";
 		$q3 = "INSERT INTO `statistik`(`drucker_id`, `gedruckte_seiten`) VALUES (".$id.",".intval($gedruckteSeiten).")
 			
-		";
-	//	var_dump($q2);		
-	//	$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
+		";	
+		
+		// Prüfe auf kritischen Tintenstand und sende Mail falls erreicht
+		$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
 		$this->db->fuehreAus($q);
 		$this->db->fuehreAus($q2);
 		$this->db->fuehreAus($q3);
-	//	echo json_encode($return);	
 	}	
 	
 }	
