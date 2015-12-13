@@ -397,6 +397,7 @@ sap.ui.controller("view.Product", {
 
 		this._$content = $('<div id="sw_ink_chart" ></div>').highcharts(this._getChartSettingsAsJSON(sId, oData));
 		$(sId).append(this._$content);
+
 	},
 
 	// Zeigt auf dem UI die Papierverbrauchdiagramm an
