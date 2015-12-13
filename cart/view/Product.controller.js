@@ -153,7 +153,7 @@ sap.ui.controller("view.Product", {
 			this._removeChartIfLoaded();
 			this._updateKeyOfSelectedTab("ChartStatistic");
 
-			this.showStatisticChart(sId, oData);
+			this._showInkChart(sId, oData);
 
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
 			this._updateKeyOfSelectedTab("ChartPaper");
@@ -176,7 +176,7 @@ sap.ui.controller("view.Product", {
 		if (this._mSelectedTab["ChartStatistic"]) {
 			this._removeChartIfLoaded();
 			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
-			this.showStatisticChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
+			this._showInkChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
 		}
 	},
 
@@ -314,138 +314,89 @@ sap.ui.controller("view.Product", {
 		}
 	},
 
-	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
-	showStatisticChart: function (sId, oData) {
+	// Liefert das passende Objekt für das Tintenstand Diagramm
+	_getChartSettingsAsJSON: function (sId, oData) {
 
-		if (oData.error.noInkData) {
-			debugger;
-
-		} else if (oData.error.allCartridgesEmpty) {
-
-			this._$content = $('<div id="sw_ink_chart" ></div>').highcharts({
-				lang: {
-					noData: oData.error.inkErrorText},
-				chart: {
-					type: 'column',
-					width: ($(sId).width() - 20).toString()
-				},
+		var oChartSettings = {
+			lang: {
+				noData: oData.error.inkErrorText
+			},
+			chart: {
+				type: 'column',
+				width: ($(sId).width() - 20).toString()
+			},
+			title: {
+				text: 'Tintenstand'
+			},
+			xAxis: {
+				type: 'category'
+			},
+			yAxis: {
+				max: 100,
 				title: {
-					text: 'Tintenstand'
-				},
-				xAxis: {
-					type: 'category'
-				},
-				yAxis: {
-					title: {
-						text: '%'
-					}
-				},
-				series: [{
-					name: 'Schwarz',
-					data: [],
-					color: 'black'
-				},{
-					name: 'Gelb',
-					data: [],
-					color: 'yellow'
-				},{
-					name: 'Magenta',
-					data: [],
-					color: 'Magenta'
-				},{
+					text: '%'
+				}
+			},
+			series: [{
+				name: 'Schwarz',
+				data: [{
+					name: 'Tintenart',
+					y: parseInt(oData.toner_schwarz)
+				}],
+				color: 'black'
+			},
+				{
 					name: 'Cyan',
-					data: [],
-					color: 'Cyan'
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_cyan)
+					}],
+					color: "cyan"
+				},
+				{
+					name: 'Magenta',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_magenta)
+					}],
+					color: "magenta"
+				},
+				{
+					name: 'Gelb',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_gelb)
+					}],
+					color: "yellow"
 				}]
-			});
+		};
 
-		} else {
-
-			switch (oData.typ) {
-
-				case "SW" :
-					this._$content = $('<div id="sw_ink_chart" ></div>').highcharts({
-						chart: {
-							type: 'column',
-							width: ($(sId).width() - 20).toString()
-						},
-						title: {
-							text: 'Tintenstand'
-						},
-						xAxis: {
-							type: 'category'
-						},
-						yAxis: {
-							max: 100,
-							title: {
-								text: '%'
-							}
-						},
-						series: [{
-							name: 'Schwarz',
-							data: [{
-								name: 'Tintenart',
-								y: parseInt(oData.toner_schwarz)
-							}],
-							color: 'black'
-						}]
-					});
-					break;
-
-				case "CO":
-					this._$content = $('<div id="co_ink_chart"></div>').highcharts({
-						chart: {
-							type: 'column',
-							width: ($(sId).width() - 20).toString()
-						},
-						title: {
-							text: 'Tintenstand'
-						},
-						xAxis: {
-							type: 'category'
-						},
-						yAxis: {
-							max: 100,
-							title: {
-								text: '%'
-							}
-						},
-						series: [{
-							name: 'Schwarz',
-							data: [{
-								name: 'Tintenart',
-								y: parseInt(oData.toner_schwarz)
-							}],
-							color: 'black'
-						},
-							{
-								name: 'Cyan',
-								data: [{
-									name: 'Tintenart',
-									y: parseInt(oData.toner_cyan)
-								}],
-								color: "cyan"
-							},
-							{
-								name: 'Magenta',
-								data: [{
-									name: 'Tintenart',
-									y: parseInt(oData.toner_magenta)
-								}],
-								color: "magenta"
-							},
-							{
-								name: 'Gelb',
-								data: [{
-									name: 'Tintenart',
-									y: parseInt(oData.toner_gelb)
-								}],
-								color: "yellow"
-							}]
-					});
-					break;
-			}
+		if (oData.typ === "SW") {
+			oChartSettings.series = [{
+				name: 'Schwarz',
+				data: [{
+					name: 'Tintenart',
+					y: parseInt(oData.toner_schwarz)
+				}],
+				color: 'black'
+			}];
 		}
+
+		if (oData.error.noInkData || oData.error.allCartridgesEmpty) {
+			for (var count = 0; oChartSettings.series.length > count; count++) {
+				oChartSettings.series[count].data.length = null;
+			}
+			oChartSettings.yAxis.max = undefined;
+		}
+
+		return oChartSettings;
+	},
+
+	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
+	_showInkChart: function (sId, oData) {
+
+		this._$content = $('<div id="sw_ink_chart" ></div>').highcharts(this._getChartSettingsAsJSON(sId, oData));
+
 		$(sId).append(this._$content);
 	},
 
