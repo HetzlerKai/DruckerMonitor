@@ -7,7 +7,6 @@ $user = "root";
 $pass = "";
 $db = new DB($host,$database,$user,$pass);
 
-
 // AJAX-Klasse instanziieren und die Switch-Case Funktion aufrufen
 // Es wird das Datenbankobjekt übergeben
 require_once("../classes/Ajax.php");

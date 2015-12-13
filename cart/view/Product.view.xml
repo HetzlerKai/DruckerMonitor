@@ -37,11 +37,11 @@
 					<!--TODO: State has to be implemented-->
 					<ObjectStatus
 							text="{
-									path : 'DruckerData>isCritical',
+									path : 'DruckerData>error',
 									formatter : 'util.Formatter.statusText'
 							}"
 							state="{
-								path : 'DruckerData>isCritical',
+								path : 'DruckerData>error',
 								formatter : 'util.Formatter.statusState'
 							}"
 							tooltip="{i18n>CURRENT_INK_STATE}"/>

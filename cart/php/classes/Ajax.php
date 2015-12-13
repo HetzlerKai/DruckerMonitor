@@ -114,13 +114,15 @@ CLASS AJAX{
 		// Wenn sendmail true ist, hat eine der Patronen des Druckers einen kritischen Stand erreicht UND Es wurde noch keine Mail versendet. Eine E-Mail muss gesendet werden
 		if($sendmail){
 			set_time_limit(120);
+			if (!class_exists("phpmailer")) {
 			require_once("require.php");
-			require '../classes/PHPMailer-master/class.phpmailer.php';
-			require '../classes/PHPMailer-master/PHPMailerAutoload.php';
-			require '../classes/PHPMailer-master/class.smtp.php'; // Optional, wenn du SMTP benutzen möchtest
-			require '../classes/PHPMailer-master/language/phpmailer.lang-de.php'; // Optional, wenn du deutsche Fehlermeldungen ausgeben möchtest
-			$mail = new PHPMailer;
-			$config = $db->getEinzeilig("SELECT * FROM `config_mail`");
+			require_once '../classes/PHPMailer-master/class.phpmailer.php';
+			require_once '../classes/PHPMailer-master/PHPMailerAutoload.php';
+			require_once '../classes/PHPMailer-master/class.smtp.php'; // Optional, wenn du SMTP benutzen möchtest
+			require_once '../classes/PHPMailer-master/language/phpmailer.lang-de.php'; // Optional, wenn du deutsche Fehlermeldungen ausgeben möchtest
+			}	
+			$mail = new PHPMailer;	
+			$config = $this->db->getEinzeilig("SELECT * FROM `config_mail`");
 			echo "<pre>";
 			$mail->IsSMTP(); 
 		//	$mail->SMTPDebug  = 5;
@@ -158,23 +160,37 @@ CLASS AJAX{
 	// Falls die Funktion ohne Parameter aufgerufen wird, zeigt sie alle Drucker an.	
 	private function DruckerToPdf($druckerip=false){
 
+		
 		require_once("../services/require.php");
+//		$pdf->header('Content-type: application/pdf');
 		$pdf=new FPDF();
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',16);
 		$pdf->Cell(0,0,'HSS DRUCKER MONITORING',0,1,'C');
 		$pdf->Cell(0,10,"",0,1);
-		$pdf->SetFont('Arial','B',8);
+		$pdf->Cell(0,1,"",1,1);
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(0,5,"",0,1);
 		if($druckerip === false){	
 			
 			$ips = $this->holeAlleIPs();
 			for($i = 0; $i<count($ips);$i++){
 				$drucker = $this->holeDruckerMitIp($ips[$i]['ip']);
+			//	var_dump($drucker);
 				foreach($drucker as $key => $value){
+					if($value === ""){
+						$value = "-";
+					}
 					$string = "".$key.": ".$value;
-					$pdf->Cell(0,5,$string,0,1);
+				//	var_dump($string);
+					$pdf->Cell(0,5,$key,0,1);
+					$pdf->SetFont('Arial','B',8);
+					$pdf->Cell(0,5,$value,0,1);
+					$pdf->SetFont('Arial','',8);
+					$pdf->Cell(0,3,"",0,1); 
 				}
-				$pdf->Cell(0,5,"",0,1); 
+				$pdf->Cell(0,10,"",0,1); 
+				$pdf->Cell(0,1,"",1,1);
 			}
 		}else{
 				$drucker = $this->holeDruckerMitIp($druckerip);
@@ -182,11 +198,22 @@ CLASS AJAX{
 					echo "IP nicht vergeben";
 				}
 				foreach($drucker as $key => $value){
+					if($value === ""){
+						$value = "-";
+					}
 					$string = "".$key.": ".$value;
-					$pdf->Cell(0,5,$string,0,1);
+				//	var_dump($string);
+					$pdf->Cell(0,5,$key,0,1);
+					$pdf->SetFont('Arial','B',8);
+					$pdf->Cell(0,5,$value,0,1);
+					$pdf->SetFont('Arial','',8);
+					$pdf->Cell(0,3,"",0,1); 
+//					$string = "".$key.": ".$value;
+//					$pdf->Cell(0,5,$string,0,1);
 				}
-				$pdf->Cell(0,5,"",0,1); 	
+				//$pdf->Cell(0,5,"",0,1); 	
 		}
+	//	echo $pdf->Output();
 		$pfad = "././pdf/Monitoring.pdf";	
 		if(!(is_dir("././pdf/"))){
 			mkdir ("././pdf/",0777,true); 
@@ -208,7 +235,7 @@ CLASS AJAX{
 	
 	// Eintrag in die Drucker Tabelle
 	
-		$q ="
+		$q = "
 			UPDATE 
 				`drucker`
 			SET

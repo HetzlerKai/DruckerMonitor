@@ -7,12 +7,18 @@ util.Formatter = {
 	// Formatiert anhand des Statuswertes (Backend) den Status-Icon und -Text
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Statustext
-	statusText : function (bIsCrit) {		
+	statusText : function (oError) {		
 		var sStatus,
 		oI18N = this.getModel("i18n").getResourceBundle();
 		
-		if (bIsCrit){
+		if (!oError){
+			return "";
+		}
+		
+		if (oError.isCritical && !oError.allCartridgesEmpty && !oError.noInkData){
 			sStatus = oI18N.getText("CRIT_STATE");
+		} else if (oError.allCartridgesEmpty || oError.noInkData) {
+			sStatus = oError.inkErrorText;
 		} else {
 			sStatus = "";
 		}
@@ -21,10 +27,14 @@ util.Formatter = {
 	},
 	
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - Status
-	statusState : function (bIsCrit) {
+	statusState : function (oError) {
 		var sStatus;
 		
-		if (bIsCrit){
+		if (!oError){
+			return "None";
+		}
+
+		if (oError.isCritical){
 			sStatus = "Error";
 		} else {
 			sStatus = "None";
@@ -34,10 +44,14 @@ util.Formatter = {
 	},
 
 	// Vergleicht zuerwartende Werte mit tatsächlichen Backenddaten - StatusIcon
-	statusIcon : function(bIsCrit){
+	statusIcon : function(oError){
 		var sStatus;
 		
-		if (bIsCrit){			
+		if (!oError){
+			return "";
+		}
+		
+		if (oError.isCritical){			
 			sStatus = "sap-icon://message-error";
 		} else {
 			sStatus = "";
