@@ -396,7 +396,6 @@ sap.ui.controller("view.Product", {
 	_showInkChart: function (sId, oData) {
 
 		this._$content = $('<div id="sw_ink_chart" ></div>').highcharts(this._getChartSettingsAsJSON(sId, oData));
-
 		$(sId).append(this._$content);
 	},
 
@@ -425,6 +424,7 @@ sap.ui.controller("view.Product", {
 			}]
 		});
 		$(sId).append(this._$content);
+
 	},
 
 	_addEntryDialog: null,
