@@ -118,10 +118,6 @@ sap.ui.controller("view.Product", {
 		if (this._$content) {
 			this._$content.remove();
 		}
-		//if(this._content){
-		//	$("#" + this._content.getId()).remove();
-		//	this._content = null;
-		//}
 	},
 
 	_getIdOfTabToPlaceChartInto: function (sId) {
@@ -157,7 +153,7 @@ sap.ui.controller("view.Product", {
 			this._removeChartIfLoaded();
 			this._updateKeyOfSelectedTab("ChartStatistic");
 
-			this.showStatisticChart(sId, oData, oEvent);
+			this.showStatisticChart(sId, oData);
 
 		} else if (oSelectedItem.getKey() === "ChartPaper") {
 			this._updateKeyOfSelectedTab("ChartPaper");
@@ -319,16 +315,12 @@ sap.ui.controller("view.Product", {
 	},
 
 	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
-	showStatisticChart: function (sId, oData, oSelectedTab) {
-		//var sId = oSelectedTab.getParameter("id")
-		//sap.ui.getCore().byId(sId).destroyContent();
+	showStatisticChart: function (sId, oData) {
 
 		if (oData.error.noInkData) {
 			debugger;
 
 		} else if (oData.error.allCartridgesEmpty) {
-			//var sID = oSelectedTab.getParameter("id");
-			//var oText = new sap.m.Text().setText(oData.error.inkErrorText);
 
 			this._$content = $('<div id="sw_ink_chart" ></div>').highcharts({
 				lang: {
@@ -366,7 +358,6 @@ sap.ui.controller("view.Product", {
 					color: 'Cyan'
 				}]
 			});
-			//sap.ui.getCore().byId(sID).addContent(this._content);
 
 		} else {
 
