@@ -94,6 +94,7 @@ sap.ui.define([
 				title: "Anmeldung",
 				contentWidth: "13%",
 				contentHeight: "28%",
+				stretch: true,
 				content: oComponent.getDialogContent(oComponent),
 				beginButton: new Button({
 					id: "__login",
