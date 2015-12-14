@@ -10,8 +10,8 @@
 			<Button icon="sap-icon://log" press="onLogoutPressed" tooltip="{i18n>LOGOUT}"/>
 		</headerContent>
 		<footer>
-			<Toolbar>
-			</Toolbar>
+			<Bar>
+			</Bar>
 		</footer>
 		<content>
 			<Text

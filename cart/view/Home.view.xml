@@ -25,13 +25,15 @@
 			</Toolbar>
 		</subHeader>
 		<footer>
-			<Toolbar>
-				<Button
-						icon="sap-icon://download"
-						text="{i18n>DOWNLOAD_ALL_PDF}"
-						tooltip="{i18n>PRODUCT_ADD_BUTTON_TOOLTIP}"
-						press="handleDownloadAllButtonPress"/>
-			</Toolbar>
+			<Bar>
+				<contentRight>
+					<Button
+							icon="sap-icon://download"
+							text="{i18n>DOWNLOAD_ALL_PDF}"
+							tooltip="{i18n>PRODUCT_ADD_BUTTON_TOOLTIP}"
+							press="handleDownloadAllButtonPress"/>
+				</contentRight>			
+			</Bar>
 		</footer>
 		<content>
 			<List

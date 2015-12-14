@@ -13,14 +13,15 @@
 			<Button icon="sap-icon://log" press="_fnOnLogOutPress"/>
 		</headerContent>
 		<footer>
-			<Toolbar>
-				<ToolbarSpacer/>
-				<Button
-						icon="sap-icon://download"
-						text="{i18n>PRODUCT_ADD_BUTTON_TEXT}"
-						tooltip="{i18n>PRODUCT_ADD_BUTTON_TOOLTIP}"
-						press="handleDownloadButtonPress"/>
-			</Toolbar>
+			<Bar>
+				<contentRight>
+					<Button
+							icon="sap-icon://download"
+							text="{i18n>PRODUCT_ADD_BUTTON_TEXT}"
+							tooltip="{i18n>PRODUCT_ADD_BUTTON_TOOLTIP}"
+							press="handleDownloadButtonPress"/>
+				</contentRight>			
+			</Bar>
 		</footer>
 		<content>
 			<ObjectHeader
