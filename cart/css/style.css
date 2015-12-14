@@ -49,7 +49,7 @@
 /* Elemente unsichtbar machen um flackern zu verhindern für Login Dialog */
 .loginDialogLabel {
 	font-size: large;
-	margin-top: 8%;
+	margin-top: 4%;
 	margin-left: 10%;
 	visibility: visible !important;
 }
