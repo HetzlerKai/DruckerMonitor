@@ -33,7 +33,7 @@ sap.ui.controller("view.Home", {
 				oEvent.getSource().setColor("#cc1919");
 				this.isFiltered = true;
 				oFilter = new sap.ui.model.Filter(
-						"isCritical", 
+						"error/isCritical", 
 						sap.ui.model.FilterOperator.EQ, 
 						true
 				);
@@ -87,7 +87,7 @@ sap.ui.controller("view.Home", {
 				if (this.isFiltered){
 					
 					oCritFilter = new sap.ui.model.Filter(
-						"isCritical", 
+						"error/isCritical", 
 						sap.ui.model.FilterOperator.EQ, 
 						true
 					);
@@ -100,7 +100,7 @@ sap.ui.controller("view.Home", {
 			} else {
 				if (this.isFiltered) {
 					oFilter = new sap.ui.model.Filter(
-						"isCritical", 
+						"error/isCritical", 
 						sap.ui.model.FilterOperator.EQ, 
 						true
 					);
