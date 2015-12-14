@@ -38,8 +38,9 @@ sap.ui.controller("view.Home", {
 						true
 				);
 				oBinding.filter([oFilter]);
+				this.handleFilterInfoPopover(oEvent.getSource());
 			}
-		}	
+		}
 		
 	},
 	
@@ -60,6 +61,30 @@ sap.ui.controller("view.Home", {
 				jQuery.sap.log.error("Download as PDF failed");
 			}
 		});
+	},
+	
+	handleFilterInfoPopover: function(oFilterBtn){
+		
+		var oPopover = this.getFilterInfoPopover();
+		
+		oPopover.openBy(oFilterBtn);
+		
+		setTimeout(function(){
+			oPopover.close();
+		},2000);
+	},
+	
+	getFilterInfoPopover: function(){
+		
+		return new sap.m.Popover({
+			showHeader: false,
+			content: [
+			    new sap.m.Label({
+			    	text: "Um den Filter zu entfernen, erneut klicken"
+			    }).addStyleClass("PopoverLabel")
+			]
+		});
+		
 	},
  
 	// sucht für den eingegeben String in allen Druckernamen
