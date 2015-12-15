@@ -13,25 +13,23 @@
 	opacity: 1;
 
 	/* transition: IE10, Opera, Firefox, Chrome 26  */
-	transition:
-		color 2.5s ease-in-out,
-		transform 2.5s ease-in-out,
-		-webkit-transform 2.5s ease-in-out,
-		opacity 5s ease-in-out;
-	
+	transition: color 2.5s ease-in-out,
+	transform 2.5s ease-in-out,
+	-webkit-transform 2.5s ease-in-out,
+	opacity 5s ease-in-out;
+
 	/* -webkit-transition: Safari, Android Browser, BB Browser, Chrome 25 */
-	-webkit-transition:
-		color 2.5s ease-in-out,
-		-webkit-transform 2.5s ease-in-out,
-		opacity 8s ease-in-out;
+	-webkit-transition: color 2.5s ease-in-out,
+	-webkit-transform 2.5s ease-in-out,
+	opacity 8s ease-in-out;
 }
 
 .welcomeIconRotateForward {
-	color: rgb(51,51,51);
-	
+	color: rgb(51, 51, 51);
+
 	/* transform: IE10, Opera, Firefox */
 	transform: rotate(360deg);
-	
+
 	/* -webkit-transform: Chrome, Safari, Android Browser, BB Browser */
 	-webkit-transform: rotate(360deg);
 }
@@ -54,42 +52,38 @@
 	visibility: visible !important;
 }
 
-.loginDialogInputUserPosition{
+.loginDialogInputUserPosition {
 	margin-top: 2%;
 	margin-left: 10%;
 	visibility: visible !important;
 }
 
-.loginDialogInputPwdPosition{
+.loginDialogInputPwdPosition {
 	margin-top: 2%;
 	margin-left: 10%;
 	margin-bottom: 7%;
 	visibility: visible !important;
 }
 
-.loginDialogButtonPosition{
+.loginDialogButtonPosition {
 	margin-top: 2%;
 	margin-left: 10%;
 	margin-bottom: 5%;
-	visibility: visible !important;	
+	visibility: visible !important;
 }
 
-.loginDialog{
+.loginDialog {
 	background-color: white;
-    border: 2px solid grey;
-    margin: 10% 30% 30%;
+	border: 2px solid grey;
+	margin: 10% 30% 30%;
 }
 
-.PopoverLabel{
+.PopoverLabel {
 	margin: 8px;
 }
 
-.loginBackground{
-
-}
-
-.loginBackground .sapMDialogScroll{
+.loginBackground .sapMDialogScroll {
 	background-color: #f2f2f2;
-    background-image: linear-gradient(to bottom,#2da9b1 0,#178299 50%,#1a4c7d 100%);
+	background-image: linear-gradient(to bottom, #2da9b1 0, #178299 50%, #1a4c7d 100%);
 }
 
