@@ -67,6 +67,19 @@
 	visibility: visible !important;
 }
 
+.loginDialogButtonPosition{
+	margin-top: 2%;
+	margin-left: 10%;
+	margin-bottom: 5%;
+	visibility: visible !important;	
+}
+
+.loginDialog{
+	background-color: white;
+    border: 2px solid grey;
+    margin: 10% 30% 30%;
+}
+
 .PopoverLabel{
 	margin: 8px;
 }

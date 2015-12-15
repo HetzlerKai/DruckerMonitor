@@ -8,7 +8,8 @@ sap.ui.define([
 	'sap/m/Label',
 	'sap/m/Input',
 	'sap/m/Button',
-	'sap/m/MessageBox'
+	'sap/m/MessageBox',
+	'sap/m/FlexBox'
 ], function (UIComponent,
              Router,
              ResourceModel,
@@ -18,7 +19,8 @@ sap.ui.define([
              Label,
              Input,
              Button,
-             MessageBox) {
+             MessageBox,
+             FlexBox) {
 
 	return UIComponent.extend("sap.ui.demo.cart.Component", {
 
@@ -95,14 +97,7 @@ sap.ui.define([
 				contentWidth: "13%",
 				contentHeight: "28%",
 				stretch: true,
-				content: oComponent.getDialogContent(oComponent),
-				beginButton: new Button({
-					id: "__login",
-					text: "Anmelden",
-
-					// Mit der Verwendung der Proxy Funktion wird der aktuelle "this" Zeiger Aufbergeben an die handleLoginPress Funktion
-					press: jQuery.proxy(oComponent.handleLoginPress, oComponent, oView)
-				})
+				content: oComponent.getDialogContent(oComponent, oView)
 			});
 
 		},
@@ -239,34 +234,45 @@ sap.ui.define([
 
 		__pwd: null,
 
-		getDialogContent: function (oComponent) {
+		getDialogContent: function (oComponent, oView) {
 
 			// Aufbereitung des UI-Inhaltes fuer das Anmeldedialog
-			return [
-				new Label({
-					text: "Benutzername:",
-					id: "__userLabel"
-				}).addStyleClass("loginDialogLabel"),
-				new Input({
-					liveChange: function (oEvent) {
-						oComponent.__user = oEvent.getParameter('newValue');
-					},
-					id: "__userInput",
-					width: "80%"
-				}).addStyleClass("loginDialogInputUserPosition"),
-				new Label({
-					id: "__pwdLabel",
-					text: "Passwort:",
-				}).addStyleClass("loginDialogLabel"),
-				new Input({
-					liveChange: function (oEvent) {
-						oComponent.__pwd = oEvent.getParameter('newValue');
-					},
-					id: "__pwdInput",
-					width: "80%",
-					type: sap.m.InputType.Password
-				}).addStyleClass("loginDialogInputPwdPosition")
-			];
+			return new FlexBox({
+				direction: "Column",
+				justifyContent: "Center",
+				items: [
+					new Label({
+						text: "Benutzername:",
+						id: "__userLabel"
+					}).addStyleClass("loginDialogLabel"),
+					new Input({
+						liveChange: function (oEvent) {
+							oComponent.__user = oEvent.getParameter('newValue');
+						},
+						id: "__userInput",
+						width: "80%"
+					}).addStyleClass("loginDialogInputUserPosition"),
+					new Label({
+						id: "__pwdLabel",
+						text: "Passwort:",
+					}).addStyleClass("loginDialogLabel"),
+					new Input({
+						liveChange: function (oEvent) {
+							oComponent.__pwd = oEvent.getParameter('newValue');
+						},
+						id: "__pwdInput",
+						width: "80%",
+						type: sap.m.InputType.Password
+					}).addStyleClass("loginDialogInputPwdPosition"),
+					new Button({
+						id: "__login",
+						text: "Anmelden",
+						width: "80%",
+						// Mit der Verwendung der Proxy Funktion wird der aktuelle "this" Zeiger Aufbergeben an die handleLoginPress Funktion
+						press: jQuery.proxy(oComponent.handleLoginPress, oComponent, oView)
+					}).addStyleClass("loginDialogButtonPosition")
+				]
+			}).addStyleClass("loginDialog");
 		},
 
 		// Routervorbereitungen
