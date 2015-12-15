@@ -169,15 +169,20 @@ sap.ui.controller("view.Home", {
 		oComponent = this.getOwnerComponent(),
 		sPosInList;
 		
-		if (this.isFiltered){
-			sPosInList = oList.indexOfItem(oItem);
-			sId = oComponent._aCriticalEntryMap[sPosInList];
-			
-			this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);
-		} else {
-			sId = oList.indexOfItem(oItem);
-			this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);			
-		}
+//		if (this.isFiltered){
+//			sPosInList = oList.indexOfItem(oItem);
+//			sId = oComponent._aCriticalEntryMap[sPosInList];
+//			
+//			this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);
+//		} else {
+//			sId = oList.indexOfItem(oItem);
+//			this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);			
+//		}
+		
+		sId = oBindContext.sPath;
+		sId = sId.substring(1, sId.length);
+		
+		this._router.navTo("printerDetails", {id: sId, druckerId: sDruckerId}, !sap.ui.Device.system.phone);
 		
 //		sId = (parseInt(sId) - 1).toString();
 	}
