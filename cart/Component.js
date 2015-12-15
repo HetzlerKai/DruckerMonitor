@@ -93,12 +93,12 @@ sap.ui.define([
 		// Liefert eine neue Dialoginstanz
 		createDialog: function (oComponent, oView) {
 			return new Dialog({
-				title: "Anmeldung",
+				showHeader: false,
 				contentWidth: "13%",
 				contentHeight: "28%",
 				stretch: true,
 				content: oComponent.getDialogContent(oComponent, oView)
-			});
+			}).addStyleClass("loginBackground");
 
 		},
 
