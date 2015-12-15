@@ -217,7 +217,6 @@ sap.ui.define([
 						break;
 				}
 
-
 			}
 			return aData;
 		},
