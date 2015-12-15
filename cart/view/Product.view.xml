@@ -178,7 +178,7 @@
 					<IconTabFilter
 							icon="sap-icon://bar-chart"
 							tooltip="{i18n>STATS_FOR_PRINTER}"
-							key="ChartStatistic">
+							key="ChartInk">
 					</IconTabFilter>
 					<IconTabFilter
 							icon="sap-icon://line-chart"

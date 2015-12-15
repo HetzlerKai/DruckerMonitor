@@ -77,7 +77,7 @@ sap.ui.controller("view.Product", {
 
 	getDruckerIp: function () {
 		var oModel, oCurrentDrucker,
-			sIp = null;
+			sIp;
 
 		oModel = sap.ui.getCore().getModel("DruckerData");
 		oCurrentDrucker = oModel.getProperty(this.sDataPath);
@@ -126,13 +126,13 @@ sap.ui.controller("view.Product", {
 
 	_mSelectedTab: {
 		"History": false,
-		"ChartStatistic": false,
+		"ChartInk": false,
 		"ChartPaper": false,
 		"GeneralTab": false
 	},
 
 	_updateKeyOfSelectedTab: function (sTabName) {
-		this._mSelectedTab["ChartStatistic"] = false;
+		this._mSelectedTab["ChartInk"] = false;
 		this._mSelectedTab["History"] = false;
 		this._mSelectedTab["ChartPaper"] = false;
 		this._mSelectedTab["GeneralTab"] = false;
@@ -149,9 +149,9 @@ sap.ui.controller("view.Product", {
 			oData = oEvent.getSource().getModel("DruckerData").getProperty(sPath);
 
 		// Auswahl der Charts das geladen soll
-		if (oSelectedItem.getKey() === "ChartStatistic") {
+		if (oSelectedItem.getKey() === "ChartInk") {
 			this._removeChartIfLoaded();
-			this._updateKeyOfSelectedTab("ChartStatistic");
+			this._updateKeyOfSelectedTab("ChartInk");
 
 			this._showInkChart(sId, oData);
 
@@ -173,13 +173,29 @@ sap.ui.controller("view.Product", {
 	},
 
 	_refreshInkChart: function () {
-		if (this._mSelectedTab["ChartStatistic"]) {
+		if (this._mSelectedTab["ChartInk"]) {
 			this._removeChartIfLoaded();
 			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
 			this._showInkChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
 		}
 	},
 
+	_analyzePaperConsumptionDataAndRefreshErrorObjectSettings: function (aPaperConsumption) {
+		var oSinglePrinterData = sap.ui.getCore().getModel("DruckerData").getProperty(this.sDataPath);
+		var i18n = this.getView().getModel("i18n").getResourceBundle();
+
+		for (var count = 0; aPaperConsumption.length > count; count++) {
+
+			if (aPaperConsumption[count].gedruckte_seiten === "0") {
+				oSinglePrinterData.error.noPaperConsume = true;
+				oSinglePrinterData.error.paperErrorText = i18n.getText("NO_PAPER_CONSUME_TEXT");
+			} else if (!aPaperConsumption[count].gedruckte_seiten) {
+				oSinglePrinterData.error.noPaperData = true;
+				oSinglePrinterData.error.inkErrorText = i18n.getText("NO_PAPER_DATA_TEXT");
+			}
+
+		}
+	},
 
 	_setPaperConsumptionModel: function () {
 
@@ -199,6 +215,8 @@ sap.ui.controller("view.Product", {
 					drucker_id: this.getDruckerId()
 				},
 				success: function (aPaperConsumption) {
+					// Aktualisierung des Error Handling Objektes
+					that._analyzePaperConsumptionDataAndRefreshErrorObjectSettings(aPaperConsumption);
 
 					// Daten fuer das Papierdiagramm werden an die View gehaengt
 					oView.setModel(oJSONModel, "PapierVerbrauch");
@@ -207,9 +225,11 @@ sap.ui.controller("view.Product", {
 					// Diagramm wird entfernt falls vorhanden
 					that._removeChartIfLoaded();
 
-					// Intialisierung der beiden Arrays mit Namen der letzten 12 Monaten und den dazugehörigen Werten
-					that._setMonthValuesForPaperConsumptionChart();
-					that._setMonthArrayForPaperConsumptionChart();
+					if (!sap.ui.getCore().getModel("DruckerData").getProperty(that.sDataPath + "/error/noPaperData")) {
+						// Intialisierung der beiden Arrays mit Namen der letzten 12 Monaten und den dazugehörigen Werten
+						that._setMonthValuesForPaperConsumptionChart();
+						that._setMonthArrayForPaperConsumptionChart();
+					}
 
 					var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
 					that._showPaperConsumptionChart(that._getIdOfTabToPlaceChartInto(sTabId), that.getView().getModel("DruckerData").getProperty(that.sDataPath));
@@ -317,37 +337,43 @@ sap.ui.controller("view.Product", {
 	// Liefert das passende Objekt für das Tintenstand Diagramm
 	_getChartSettingsAsJSON: function (sId, oData) {
 
+		// Allgemeine Einstellungen für beide Diagramme
 		var oChartSettings = {
-			noData : {
+			noData: {
 				style: {
-					"fontSize" : 18
+					"fontSize": 18
 				}
 			},
 			lang: {
-				noData: oData.error.inkErrorText
+				noData: ''
 			},
 			chart: {
-				type: 'column',
+				type: '',
 				width: ($(sId).width() - 20).toString()
 			},
 			title: {
-				text: 'Tintenstand'
+				text: ''
 			},
 			xAxis: {
-				type: 'category'
+				type: ''
 			},
 			yAxis: {
 				max: 100,
 				title: {
 					style: {
-						"fontSize" : 18
+						"fontSize": 18
 					},
 					margin: 30,
 					rotation: 0,
 					text: '%'
 				}
 			},
-			series: [{
+			series: [{}]
+		};
+
+		// Spezifische Einstellungen für Tinte-Diagramm
+		if (this._mSelectedTab.ChartInk) {
+			oChartSettings.series = [{
 				name: 'Schwarz',
 				data: [{
 					name: 'Tintenart',
@@ -378,25 +404,50 @@ sap.ui.controller("view.Product", {
 						y: parseInt(oData.toner_gelb)
 					}],
 					color: "yellow"
-				}]
-		};
+				}];
+			oChartSettings.lang.text = oData.error.inkErrorText;
+			oChartSettings.chart.type = "column";
+			oChartSettings.title.text = "Tintenstand";
+			oChartSettings.xAxis.type = "category";
 
-		if (oData.typ === "SW") {
-			oChartSettings.series = [{
-				name: 'Schwarz',
-				data: [{
-					name: 'Tintenart',
-					y: parseInt(oData.toner_schwarz)
-				}],
-				color: 'black'
-			}];
-		}
-
-		if (oData.error.noInkData || oData.error.allCartridgesEmpty) {
-			for (var count = 0; oChartSettings.series.length > count; count++) {
-				oChartSettings.series[count].data.length = null;
+			if (oData.typ === "SW") {
+				oChartSettings.series = [{
+					name: 'Schwarz',
+					data: [{
+						name: 'Tintenart',
+						y: parseInt(oData.toner_schwarz)
+					}],
+					color: 'black'
+				}];
 			}
-			oChartSettings.yAxis.max = undefined;
+
+			if (oData.error.noInkData || oData.error.allCartridgesEmpty) {
+				for (var count = 0; oChartSettings.series.length > count; count++) {
+					oChartSettings.series[count].data.length = null;
+				}
+				oChartSettings.yAxis.max = undefined;
+			}
+
+		}
+		// Spezifische Einstellungen für Papier-Diagramm
+		else if (this._mSelectedTab.ChartPaper) {
+			oChartSettings.chart.type = "line";
+			oChartSettings.title.text = "Papierverbrauch";
+			oChartSettings.lang.noData = oData.error.paperErrorText;
+
+			if (!oData.error.noPaperConsume) {
+				oChartSettings.yAxis.max = undefined;
+			}
+
+			if (!oData.error.noPaperData) {
+				oChartSettings.series[0] = {
+					name: oData.name || "Kein Druckername vorhanden",
+					data: this._aMonthValuesForPaperConsumptionChart
+				};
+				oChartSettings.xAxis.categories = this._MonthArrayForPaperConsumptionChart;
+			}
+
+			oChartSettings.yAxis.title = 'Seiten';
 		}
 
 		return oChartSettings;
@@ -404,38 +455,14 @@ sap.ui.controller("view.Product", {
 
 	// Zeigt auf dem UI die Tintenverbrauchsdiagramm an
 	_showInkChart: function (sId, oData) {
-
 		this._$content = $('<div id="sw_ink_chart" ></div>').highcharts(this._getChartSettingsAsJSON(sId, oData));
 		$(sId).append(this._$content);
-
 	},
 
 	// Zeigt auf dem UI die Papierverbrauchdiagramm an
 	_showPaperConsumptionChart: function (sId, oData) {
-
-		this._$content = $('<div id="paper_consume_chart"></div>').highcharts({
-			chart: {
-				type: 'line',
-				width: ($(sId).width() - 20).toString()
-			},
-			title: {
-				text: 'Papierverbrauch'
-			},
-			xAxis: {
-				categories: this._MonthArrayForPaperConsumptionChart
-			},
-			yAxis: {
-				title: {
-					text: 'Seiten'
-				}
-			},
-			series: [{
-				name: oData.name || "Kein Druckername vorhanden",
-				data: this._aMonthValuesForPaperConsumptionChart
-			}]
-		});
+		this._$content = $('<div id="paper_consume_chart"></div>').highcharts(this._getChartSettingsAsJSON(sId, oData));
 		$(sId).append(this._$content);
-
 	},
 
 	_addEntryDialog: null,
