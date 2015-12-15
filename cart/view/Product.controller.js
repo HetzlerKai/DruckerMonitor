@@ -344,28 +344,18 @@ sap.ui.controller("view.Product", {
 					"fontSize": 18
 				}
 			},
-			lang: {
-				noData: ''
-			},
+			lang: {},
 			chart: {
-				type: '',
 				width: ($(sId).width() - 20).toString()
 			},
-			title: {
-				text: ''
-			},
-			xAxis: {
-				type: ''
-			},
+			title: {},
+			xAxis: {},
 			yAxis: {
 				max: 100,
 				title: {
 					style: {
 						"fontSize": 18
 					},
-					margin: 30,
-					rotation: 0,
-					text: '%'
 				}
 			},
 			series: [{}]
@@ -373,6 +363,7 @@ sap.ui.controller("view.Product", {
 
 		// Spezifische Einstellungen für Tinte-Diagramm
 		if (this._mSelectedTab.ChartInk) {
+
 			oChartSettings.series = [{
 				name: 'Schwarz',
 				data: [{
@@ -405,10 +396,14 @@ sap.ui.controller("view.Product", {
 					}],
 					color: "yellow"
 				}];
-			oChartSettings.lang.text = oData.error.inkErrorText;
+
+			oChartSettings.lang.noData = oData.error.inkErrorText;
 			oChartSettings.chart.type = "column";
 			oChartSettings.title.text = "Tintenstand";
 			oChartSettings.xAxis.type = "category";
+			oChartSettings.yAxis.title.text = "%";
+			oChartSettings.yAxis.title.rotation = 0;
+			oChartSettings.yAxis.title.margin = 30;
 
 			if (oData.typ === "SW") {
 				oChartSettings.series = [{
@@ -434,6 +429,8 @@ sap.ui.controller("view.Product", {
 			oChartSettings.chart.type = "line";
 			oChartSettings.title.text = "Papierverbrauch";
 			oChartSettings.lang.noData = oData.error.paperErrorText;
+			oChartSettings.yAxis.title.text = "Seiten";
+			//oChartSettings.yAxis.title.style = {};
 
 			if (!oData.error.noPaperConsume) {
 				oChartSettings.yAxis.max = undefined;
@@ -447,7 +444,6 @@ sap.ui.controller("view.Product", {
 				oChartSettings.xAxis.categories = this._MonthArrayForPaperConsumptionChart;
 			}
 
-			oChartSettings.yAxis.title = 'Seiten';
 		}
 
 		return oChartSettings;
