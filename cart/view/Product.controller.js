@@ -318,6 +318,11 @@ sap.ui.controller("view.Product", {
 	_getChartSettingsAsJSON: function (sId, oData) {
 
 		var oChartSettings = {
+			noData : {
+				style: {
+					"fontSize" : 18
+				}
+			},
 			lang: {
 				noData: oData.error.inkErrorText
 			},
@@ -334,6 +339,11 @@ sap.ui.controller("view.Product", {
 			yAxis: {
 				max: 100,
 				title: {
+					style: {
+						"fontSize" : 18
+					},
+					margin: 30,
+					rotation: 0,
 					text: '%'
 				}
 			},
@@ -453,7 +463,6 @@ sap.ui.controller("view.Product", {
 			});
 			this._addEntryDialog = new sap.m.Dialog({
 				title: "Eintrag erstellen",
-				//stretch: Device.system.phone,
 				content: [
 					this._dialogView
 				],
