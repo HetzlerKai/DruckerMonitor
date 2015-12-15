@@ -184,12 +184,6 @@ sap.ui.define([
 			return aData;
 		},
 
-		_aCriticalEntryMap: [],
-
-		_setCriticalEntriesIntoArray: function (i) {
-			this._aCriticalEntryMap.push(i);
-		},
-
 		_setCriticalFlagToResponseData: function (aData) {
 			var count;
 
@@ -201,7 +195,6 @@ sap.ui.define([
 						if (aData[count].toner_schwarz < 10) {
 
 							aData[count].error.isCritical = true;
-							this._setCriticalEntriesIntoArray(count);
 						}
 						break;
 
@@ -212,7 +205,6 @@ sap.ui.define([
 							aData[count].toner_schwarz < 10) {
 
 							aData[count].error.isCritical = true;
-							this._setCriticalEntriesIntoArray(count);
 						}
 						break;
 				}
