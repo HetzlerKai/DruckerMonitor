@@ -87,3 +87,9 @@
 	background-image: linear-gradient(to bottom, #2da9b1 0, #178299 50%, #1a4c7d 100%);
 }
 
+.sapUiFormResGridCont>div{
+	font-size: 22px;
+    font-weight: bold;
+}
+
+
