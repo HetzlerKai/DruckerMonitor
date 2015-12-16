@@ -35,7 +35,6 @@
 							}"/>
 				</attributes>
 				<firstStatus>
-					<!--TODO: State has to be implemented-->
 					<ObjectStatus
 							text="{
 									path : 'DruckerData>error',

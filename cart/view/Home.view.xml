@@ -14,6 +14,7 @@
 						id="searchField"
 						placeholder="{i18n>HOME_SEARCH_PLACEHOLDER}"
 						search="handleSearch"
+						liveChange="handleSearch"
 						tooltip="{i18n>HOME_SEARCH_TOOLTIP}"
 						width="100%">
 				</SearchField>
