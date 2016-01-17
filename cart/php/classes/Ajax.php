@@ -172,7 +172,7 @@ CLASS AJAX{
 		$pdf->Cell(0,10,"",0,1);
 		$pdf->Cell(0,1,"",1,1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->Cell(0,5,"",0,1);
+		$pdf->Cell(0,4,"",0,1);
 		if($druckerip === false){	
 			
 			$ips = $this->holeAlleIPs();
@@ -183,14 +183,20 @@ CLASS AJAX{
 						$value = "-";
 					}
 					$string = "".$key.": ".$value;
-					$pdf->Cell(0,5,$key,0,1);
+					$pdf->Cell(0,4,$key,0,1);
 					$pdf->SetFont('Arial','B',8);
-					$pdf->Cell(0,5,$value,0,1);
+					$pdf->Cell(0,4,$value,0,1);
 					$pdf->SetFont('Arial','',8);
 					$pdf->Cell(0,3,"",0,1); 
+					
 				}
-				$pdf->Cell(0,10,"",0,1); 
-				$pdf->Cell(0,1,"",1,1);
+				if($i !== (count($ips)-1)){
+					$pdf->AddPage();
+					$pdf->Cell(0,10,"",0,1); 
+					$pdf->Cell(0,1,"",1,1);					
+				}
+
+				
 			}
 		}else{
 				$drucker = $this->holeDruckerMitIp($druckerip);
@@ -202,9 +208,9 @@ CLASS AJAX{
 						$value = "-";
 					}
 					$string = "".$key.": ".$value;
-					$pdf->Cell(0,5,$key,0,1);
+					$pdf->Cell(0,4,$key,0,1);
 					$pdf->SetFont('Arial','B',8);
-					$pdf->Cell(0,5,$value,0,1);
+					$pdf->Cell(0,4,$value,0,1);
 					$pdf->SetFont('Arial','',8);
 					$pdf->Cell(0,3,"",0,1); 
 				}
