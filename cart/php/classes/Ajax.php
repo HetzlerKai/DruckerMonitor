@@ -81,7 +81,7 @@ CLASS AJAX{
 		return $return;
 	}
 	
-	private function pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow){
+	private function pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow,$debugmode=false){
 		$q = "SELECT `kritisch`, `gesendet` FROM `drucker` WHERE `id` = '".$id."'";
 		$critArray = $this->db->getEinzeilig($q);		
 		$sendmail = false;
@@ -125,7 +125,9 @@ CLASS AJAX{
 			$config = $this->db->getEinzeilig("SELECT * FROM `config_mail`");
 			echo "<pre>";
 			$mail->IsSMTP(); 
-		//	$mail->SMTPDebug  = 5;
+			if($debugmode){
+				$mail->SMTPDebug  = 5;
+			}	
 			$mail->Host = $config["host"];
 			$mail->Port = $config["Port"]; 
 			$mail->SMTPSecure = $config["SMTPSecure"];
@@ -137,11 +139,11 @@ CLASS AJAX{
 			$mail->SMTPAutoTLS = false;
 			$mail->From = $config["From"];
 			$mail->FromName = $config["FromName"];
-			$mail->addAddress($config["addAddress"]);    // Der Name ist dabei optional
+			$mail->addAddress($config["addAddress"]);    
 			$mail->isHTML(true);                                  // Mail als HTML versenden
 			$mail->Subject = $config["Subject"];
-			$mail->Body    = $config["Body"];
-			$mail->AltBody = $config["AltBody"];
+			$mail->Body    = "Der Drucker ".$id." hat mindestens einen kritischen Stand! Diese Mail wird nicht erneut versendet!";
+			$mail->AltBody = "Der Drucker ".$id." hat mindestens einen kritischen Stand! Diese Mail wird nicht erneut versendet!";
 			if(!$mail->send()) {
 				echo 'Mail wurde nicht abgesendet';
 				echo 'Fehlermeldung: ' . $mail->ErrorInfo;
@@ -176,13 +178,11 @@ CLASS AJAX{
 			$ips = $this->holeAlleIPs();
 			for($i = 0; $i<count($ips);$i++){
 				$drucker = $this->holeDruckerMitIp($ips[$i]['ip']);
-			//	var_dump($drucker);
 				foreach($drucker as $key => $value){
 					if($value === ""){
 						$value = "-";
 					}
 					$string = "".$key.": ".$value;
-				//	var_dump($string);
 					$pdf->Cell(0,5,$key,0,1);
 					$pdf->SetFont('Arial','B',8);
 					$pdf->Cell(0,5,$value,0,1);
@@ -202,18 +202,15 @@ CLASS AJAX{
 						$value = "-";
 					}
 					$string = "".$key.": ".$value;
-				//	var_dump($string);
 					$pdf->Cell(0,5,$key,0,1);
 					$pdf->SetFont('Arial','B',8);
 					$pdf->Cell(0,5,$value,0,1);
 					$pdf->SetFont('Arial','',8);
 					$pdf->Cell(0,3,"",0,1); 
-//					$string = "".$key.": ".$value;
-//					$pdf->Cell(0,5,$string,0,1);
 				}
-				//$pdf->Cell(0,5,"",0,1); 	
+
 		}
-	//	echo $pdf->Output();
+
 		$pfad = "././pdf/Monitoring.pdf";	
 		if(!(is_dir("././pdf/"))){
 			mkdir ("././pdf/",0777,true); 
@@ -231,7 +228,7 @@ CLASS AJAX{
 	}
 	
 	
-	public function trageEin($ip,$id,$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow){
+	public function trageEin($ip,$id,$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow,$debugmode = false){
 	
 	// Eintrag in die Drucker Tabelle
 	
@@ -244,7 +241,8 @@ CLASS AJAX{
 				`toner_cyan` = ".$toner_cyan.", `toner_magenta` = ".$toner_magenta.", `toner_gelb` = ".$toner_yellow.", 
 				`trommelstand` = ".intval($trommelstand).", `gedruckteSeiten` = ".intval($gedruckteSeiten).", 
 				`patronentyp_schwarz` = '".trim(str_replace("STRING:","",$patronentyp_schwarz))."', `patronentyp_cyan` = '".trim(str_replace("STRING:","",$patronentyp_cyan))."',
-				`patronentyp_magenta` = '".trim(str_replace("STRING:","",$patronentyp_magenta))."',`patronentyp_gelb` = '".trim(str_replace("STRING:","",$patronentyp_yellow))."'
+				`patronentyp_magenta` = '".trim(str_replace("STRING:","",$patronentyp_magenta))."',`patronentyp_gelb` = '".trim(str_replace("STRING:","",$patronentyp_yellow))."',
+				`aktualisiert` = NOW()
 			WHERE 
 				`id` = ".$id."
 			
@@ -257,7 +255,15 @@ CLASS AJAX{
 		$q3 = "INSERT INTO `statistik`(`drucker_id`, `gedruckte_seiten`) VALUES (".$id.",".intval($gedruckteSeiten).")
 			
 		";	
-		
+		if($debugmode){
+			echo "<pre>";
+			echo $q."<br>";
+			echo $q2."<br>";
+			echo $q3."<br>";
+			$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow,true);			
+			echo "END OF DEBUG!";
+			exit;	
+		}
 		// Prüfe auf kritischen Tintenstand und sende Mail falls erreicht
 		$this->pruefeStand($id,$typ,$toner_schwarz,$toner_magenta,$toner_cyan,$toner_yellow);
 		$this->db->fuehreAus($q);

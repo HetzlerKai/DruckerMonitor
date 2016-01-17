@@ -10,10 +10,12 @@ set_include_path(get_include_path() . PATH_SEPARATOR . 'library');
 
 require_once '../classes/Kohut/Printer.php';
 
-// IP address of printer in network
 
-$ip = "10.103.210.202";
-
+if(isset($_POST["ip"])){
+	$ip = $_POST["ip"];
+}else{
+	$ip = "10.103.210.202";
+}
 echo "<pre>";
 
 $typ = "";
@@ -36,12 +38,6 @@ $patronentyp_yellow = "";
 	$printer = new Kohut_SNMP_Printer($ip);  
 	$printer->setMaxTimeout(60);  
 
-	echo "<pre>";
-
-	echo "<br>";
-	echo $printer."<br>";
-//	echo "TONERLEVEL :".$printer->getBlackTonerLevel()."!<br>";
-	echo "</pre>";
 	if($printer->getBlackTonerLevel() !== 0){
 		if ($printer->isColorPrinter()){
 			$typ = 'CO';}
@@ -66,7 +62,5 @@ $patronentyp_yellow = "";
 		$patronentyp_magenta =  $printer->getMagentaCatridgeType();
 		$patronentyp_yellow =  $printer->getYellowCatridgeType();
 
-//		$ajax->trageEin($ip,$id,$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow);
+		$ajax->trageEin($ip,"dummy",$typ,$hersteller,$vendor,$seriennummer,$toner_schwarz,$toner_cyan,$toner_magenta,$toner_yellow,$trommelstand,$gedruckteSeiten,$patronentyp_schwarz,$patronentyp_cyan,$patronentyp_magenta,$patronentyp_yellow,true);
 	}
-
-echo "hello world";
