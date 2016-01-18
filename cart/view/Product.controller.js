@@ -9,10 +9,10 @@ sap.ui.controller("view.Product", {
 
 	onInit: function () {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
-		this._router.getRoute("product").attachPatternMatched(this._routePatternMatched, this);
+
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
 
-		// Wenn ein neuer Drucker aus der Liste auf dem UI ausgewaehlt wurde, wird das Model automatisch aktualisiert
+		//this._router.getRoute("printerDetails").attachPatternMatched(this.getHistoryModel, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._setPaperConsumptionModel, this);
 		this._router.getRoute("printerDetails").attachPatternMatched(this._refreshInkChart, this);
 	},
@@ -20,7 +20,6 @@ sap.ui.controller("view.Product", {
 	onAfterRendering: function () {
 		// Das ist notwendig um einen Aufruf der Seite direkt ueber die URL zuermoeglichen
 		this.sDataPath = this.getView().getBindingContext("DruckerData").getPath();
-		this.getHistoryModel();
 	},
 
 	// Laedt die Seite neu als Logout
@@ -32,7 +31,6 @@ sap.ui.controller("view.Product", {
 
 	_routePatternMatched: function (oEvent) {
 		var sId = oEvent.getParameter("arguments").id,
-			sDruckerId = oEvent.getParameter("arguments").druckerId,
 			oView = this.getView(),
 			sPath = "/" + sId,
 			that = this,
@@ -40,8 +38,11 @@ sap.ui.controller("view.Product", {
 			oData = oModel.getProperty(sPath);
 
 		this.sDataPath = sPath;
-		this.getHistoryModel();
 
+		//this.getHistoryModel();
+		if($("div[id^='__xmlview'][id$='printer_tab_bar']").control()[0]) {
+			$("div[id^='__xmlview'][id$='printer_tab_bar']").control()[0].setSelectedKey("GeneralTab");
+		}
 		oView.bindElement("DruckerData>" + sPath);
 
 		if (!oData) {
@@ -81,14 +82,13 @@ sap.ui.controller("view.Product", {
 
 		oModel = sap.ui.getCore().getModel("DruckerData");
 		oCurrentDrucker = oModel.getProperty(this.sDataPath);
-
 		sIp = oCurrentDrucker.ip;
 
 		return sIp;
 	},
 
 	// Download Druckerdaten als PDF
-	handleDownloadButtonPress: function (oEvent) {
+	handleDownloadButtonPress: function () {
 		var that = this;
 
 		sap.m.MessageToast.show("Download wurde gestarted");
@@ -101,10 +101,10 @@ sap.ui.controller("view.Product", {
 				post: 'DruckerAlsPdf',
 				ip: that.getDruckerIp()
 			},
-			success: function (response) {
+			success: function () {
 				window.open('./php/services/pdf/Monitoring.pdf');
 			},
-			error: function (error) {
+			error: function () {
 				jQuery.sap.log.error("Download as PDF failed");
 			}
 		});
@@ -165,6 +165,7 @@ sap.ui.controller("view.Product", {
 			this._removeChartIfLoaded();
 
 		} else if (oSelectedItem.getKey() === "History") {
+			this.getHistoryModel();
 			this._updateKeyOfSelectedTab("History");
 			this._removeChartIfLoaded();
 
@@ -175,7 +176,7 @@ sap.ui.controller("view.Product", {
 	_refreshInkChart: function () {
 		if (this._mSelectedTab["ChartInk"]) {
 			this._removeChartIfLoaded();
-			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+			var sTabId = $("div[id^='__xmlview'][id$='printer_tab_bar-content']").control()[0].getId();
 			this._showInkChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
 		}
 	},
@@ -231,7 +232,7 @@ sap.ui.controller("view.Product", {
 						that._setMonthArrayForPaperConsumptionChart();
 					}
 
-					var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+					var sTabId = $("div[id^='__xmlview'][id$='printer_tab_bar-content']").control()[0].getId();
 					that._showPaperConsumptionChart(that._getIdOfTabToPlaceChartInto(sTabId), that.getView().getModel("DruckerData").getProperty(that.sDataPath));
 
 				},
@@ -320,6 +321,10 @@ sap.ui.controller("view.Product", {
 
 		this._MonthArrayForPaperConsumptionChart = aMonthArrayForPaperConsumptionChart;
 
+	},
+
+	test: function(oEvent){
+		debugger;
 	},
 
 	_getLengthDifferenceBetweenAllAndRecievedMonths: function () {
@@ -430,7 +435,6 @@ sap.ui.controller("view.Product", {
 			oChartSettings.title.text = "Papierverbrauch";
 			oChartSettings.lang.noData = oData.error.paperErrorText;
 			oChartSettings.yAxis.title.text = "Seiten";
-			//oChartSettings.yAxis.title.style = {};
 
 			if (!oData.error.noPaperConsume) {
 				oChartSettings.yAxis.max = undefined;
@@ -492,7 +496,7 @@ sap.ui.controller("view.Product", {
 				leftButton: new sap.m.Button({
 					text: bundle.getText('ADD_ENTRY_DIALOG_SAVE_BUTTON_TITLE'),
 					type: "Accept",
-					press: function (oEvent) {
+					press: function () {
 						var sPatrone,
 							sText;
 
@@ -539,10 +543,10 @@ sap.ui.controller("view.Product", {
 				kommentar: sText,
 				id: this.getDruckerId()
 			},
-			success: function (response) {
+			success: function () {
 				that.refreshHistoryData();
 			},
-			error: function (response) {
+			error: function () {
 				jQuery.sap.log.error("Couldn't write new History Entry");
 				that.refreshHistoryData();
 			}
@@ -574,7 +578,7 @@ sap.ui.controller("view.Product", {
 			success: function (response) {
 				aData = response;
 			},
-			error: function (e) {
+			error: function () {
 				jQuery.sap.log.error("Couldn't retrieve History Data");
 			}
 		});
