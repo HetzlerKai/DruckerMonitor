@@ -228,7 +228,7 @@ CLASS AJAX{
 		echo "./services/pdf/Monitoring.pdf";
 	}	
 	private function getStatistik($drucker_id){
-		$q = "SELECT `drucker_id`, `gedruckte_seiten` , UNIX_TIMESTAMP(`datum`)*1000 as `datum` FROM  `statistik` WHERE `drucker_id` = '".$drucker_id."' ORDER BY `datum` DESC LIMIT 12";
+		$q = "SELECT `drucker_id`, `gedruckte_seiten` , UNIX_TIMESTAMP(`datum`)*1000 as `datum` FROM  `statistik` WHERE `drucker_id` = '".$drucker_id."' ORDER BY UNIX_TIMESTAMP(`datum`) ASC LIMIT 12";
 		$return = $this->db->getMehrzeilig($q);
 		echo json_encode($return);
 	}
