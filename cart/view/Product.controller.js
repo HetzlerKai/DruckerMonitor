@@ -176,7 +176,7 @@ sap.ui.controller("view.Product", {
 	_refreshInkChart: function () {
 		if (this._mSelectedTab["ChartInk"]) {
 			this._removeChartIfLoaded();
-			var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+			var sTabId = $("div[id^='__xmlview'][id$='printer_tab_bar-content']").control()[0].getId();
 			this._showInkChart(this._getIdOfTabToPlaceChartInto(sTabId), this.getView().getModel("DruckerData").getProperty(this.sDataPath));
 		}
 	},
@@ -232,7 +232,7 @@ sap.ui.controller("view.Product", {
 						that._setMonthArrayForPaperConsumptionChart();
 					}
 
-					var sTabId = $("div[id^='__bar'][id$='content']").control()[0].getId();
+					var sTabId = $("div[id^='__xmlview'][id$='printer_tab_bar-content']").control()[0].getId();
 					that._showPaperConsumptionChart(that._getIdOfTabToPlaceChartInto(sTabId), that.getView().getModel("DruckerData").getProperty(that.sDataPath));
 
 				},
