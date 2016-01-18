@@ -9,12 +9,7 @@ sap.ui.controller("view.Product", {
 
 	onInit: function () {
 		this._router = sap.ui.core.UIComponent.getRouterFor(this);
-
 		this._router.getRoute("printerDetails").attachPatternMatched(this._routePatternMatched, this);
-
-		//this._router.getRoute("printerDetails").attachPatternMatched(this.getHistoryModel, this);
-		this._router.getRoute("printerDetails").attachPatternMatched(this._setPaperConsumptionModel, this);
-		this._router.getRoute("printerDetails").attachPatternMatched(this._refreshInkChart, this);
 	},
 
 	onAfterRendering: function () {
@@ -39,10 +34,11 @@ sap.ui.controller("view.Product", {
 
 		this.sDataPath = sPath;
 
-		//this.getHistoryModel();
 		if($("div[id^='__xmlview'][id$='printer_tab_bar']").control()[0]) {
+			this._updateKeyOfSelectedTab("GeneralTab");
 			$("div[id^='__xmlview'][id$='printer_tab_bar']").control()[0].setSelectedKey("GeneralTab");
 		}
+
 		oView.bindElement("DruckerData>" + sPath);
 
 		if (!oData) {
