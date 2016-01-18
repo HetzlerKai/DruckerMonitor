@@ -40,7 +40,9 @@ sap.ui.controller("view.Product", {
 		this.sDataPath = sPath;
 
 		//this.getHistoryModel();
-
+		if($("div[id^='__xmlview'][id$='printer_tab_bar']").control()[0]) {
+			$("div[id^='__xmlview'][id$='printer_tab_bar']").control()[0].setSelectedKey("GeneralTab");
+		}
 		oView.bindElement("DruckerData>" + sPath);
 
 		if (!oData) {
@@ -319,6 +321,10 @@ sap.ui.controller("view.Product", {
 
 		this._MonthArrayForPaperConsumptionChart = aMonthArrayForPaperConsumptionChart;
 
+	},
+
+	test: function(oEvent){
+		debugger;
 	},
 
 	_getLengthDifferenceBetweenAllAndRecievedMonths: function () {
